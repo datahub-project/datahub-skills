@@ -188,9 +188,9 @@ Other platforms do the same things through natural language ("Review my connecto
 
 22 standards live in `standards/`, split into two groups:
 
-Core (11): main, api, sql, code_style, containers, lineage, patterns, performance, platform_registration, registration, testing
+**Core (11):** main, api, sql, code_style, containers, lineage, patterns, performance, platform_registration, registration, testing
 
-Source-type (11): bi_tools, data_lakes, data_warehouses, identity_platforms, ml_platforms, nosql_databases, orchestration_tools, product_analytics, query_engines, sql_databases, streaming_platforms
+**Source-type (11):** bi_tools, data_lakes, data_warehouses, identity_platforms, ml_platforms, nosql_databases, orchestration_tools, product_analytics, query_engines, sql_databases, streaming_platforms
 
 ## Repo layout
 
