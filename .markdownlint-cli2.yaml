@@ -20,3 +20,4 @@ config:
 ignores:
   - node_modules/**
   - .github/**/*.md
+  - CHANGELOG.md
