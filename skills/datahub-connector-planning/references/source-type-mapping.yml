@@ -1,0 +1,303 @@
+# Source Category to Type Mapping
+# Maps detailed source_category to source_type and configuration
+#
+# Used by the workflow to:
+# 1. Derive source_type from source_category
+# 2. Load the appropriate standards file
+# 3. Determine which entities to extract
+# 4. Select the right implementation guide
+
+source_categories:
+  # ============================================================
+  # SQL-BASED SOURCES
+  # These use SQLAlchemy, JDBC, or direct SQL connections
+  # ============================================================
+
+  sql_databases:
+    source_type: sql
+    standards_file: source_types/sql_databases.md
+    implementation_guide: sql.md
+    description: "Traditional relational databases"
+    entities:
+      - Dataset      # Tables, views
+      - Container    # Databases, schemas
+    aspects:
+      - schemaMetadata
+      - datasetProperties
+      - viewProperties
+      - containerProperties
+      - upstreamLineage
+    features:
+      - schema_metadata
+      - containers
+      - lineage_from_views
+    examples:
+      - PostgreSQL
+      - MySQL
+      - Oracle
+      - SQL Server
+      - SQLite
+      - DuckDB
+
+  data_warehouses:
+    source_type: sql
+    standards_file: source_types/data_warehouses.md
+    implementation_guide: sql.md
+    description: "Cloud data warehouses with rich metadata"
+    entities:
+      - Dataset      # Tables, views, materialized views
+      - Container    # Databases, schemas
+    aspects:
+      - schemaMetadata
+      - datasetProperties
+      - viewProperties
+      - containerProperties
+      - upstreamLineage
+      - datasetUsageStatistics
+      - globalTags
+    features:
+      - schema_metadata
+      - containers
+      - lineage_from_views
+      - lineage_from_query_logs
+      - usage_statistics
+      - native_tags
+    examples:
+      - Snowflake
+      - BigQuery
+      - Redshift
+      - Databricks
+      - Azure Synapse
+
+  query_engines:
+    source_type: sql
+    standards_file: source_types/query_engines.md
+    implementation_guide: sql.md
+    description: "Distributed SQL query engines"
+    entities:
+      - Dataset      # Tables from catalogs
+      - Container    # Catalogs, schemas
+    aspects:
+      - schemaMetadata
+      - datasetProperties
+      - containerProperties
+    features:
+      - schema_metadata
+      - containers
+      - multi_catalog
+    examples:
+      - Presto
+      - Trino
+      - Spark SQL
+      - Dremio
+      - Starburst
+
+  data_lakes:
+    source_type: sql
+    standards_file: source_types/data_lakes.md
+    implementation_guide: sql.md
+    description: "Table formats on object storage"
+    entities:
+      - Dataset      # Tables
+      - Container    # Namespaces, schemas
+    aspects:
+      - schemaMetadata
+      - datasetProperties
+      - containerProperties
+    features:
+      - schema_metadata
+      - containers
+      - partitioning
+      - table_format_metadata
+    examples:
+      - Delta Lake
+      - Apache Iceberg
+      - Apache Hudi
+      - Hive Metastore
+
+  # ============================================================
+  # API-BASED SOURCES
+  # These use REST, GraphQL, or custom APIs
+  # ============================================================
+
+  bi_tools:
+    source_type: api
+    standards_file: source_types/bi_tools.md
+    implementation_guide: api.md
+    description: "Business intelligence and visualization tools"
+    entities:
+      - Dashboard    # Main BI dashboards
+      - Chart        # Individual visualizations
+      - Dataset      # Data sources (for lineage)
+      - Container    # Workspaces, projects, folders
+    aspects:
+      - dashboardInfo
+      - chartInfo
+      - containerProperties
+      - ownership
+      - globalTags
+    features:
+      - dashboards
+      - charts
+      - lineage_to_datasets
+      - ownership
+      - tags
+    examples:
+      - Tableau
+      - Looker
+      - Power BI
+      - Metabase
+      - Superset
+      - Qlik
+
+  orchestration_tools:
+    source_type: api
+    standards_file: source_types/orchestration_tools.md
+    implementation_guide: api.md
+    description: "Workflow orchestration and scheduling"
+    entities:
+      - DataFlow     # DAGs, pipelines
+      - DataJob      # Tasks, operators
+      - Dataset      # Input/output datasets (for lineage)
+    aspects:
+      - dataFlowInfo
+      - dataJobInfo
+      - dataJobInputOutput
+      - ownership
+      - globalTags
+    features:
+      - dataflows
+      - datajobs
+      - job_lineage
+      - ownership
+      - tags
+    examples:
+      - Apache Airflow
+      - Prefect
+      - Dagster
+      - AWS Step Functions
+      - Azure Data Factory
+
+  streaming_platforms:
+    source_type: api
+    standards_file: source_types/streaming_platforms.md
+    implementation_guide: api.md
+    description: "Event streaming and messaging platforms"
+    entities:
+      - Dataset      # Topics as datasets
+      - Container    # Clusters, namespaces
+      - DataFlow     # Stream processing jobs (optional)
+      - DataJob      # Consumers/producers (optional)
+    aspects:
+      - schemaMetadata    # From schema registry
+      - datasetProperties
+      - containerProperties
+    features:
+      - topics
+      - schemas
+      - partitions
+      - consumer_groups
+    examples:
+      - Apache Kafka
+      - Confluent
+      - Apache Pulsar
+      - AWS Kinesis
+      - Azure Event Hubs
+
+  ml_platforms:
+    source_type: api
+    standards_file: source_types/ml_platforms.md
+    implementation_guide: api.md
+    description: "Machine learning platforms and model registries"
+    entities:
+      - MLModel      # Trained models
+      - MLModelGroup # Model groups/projects
+      - Dataset      # Training/inference datasets
+      - Container    # Projects, experiments
+    aspects:
+      - mlModelProperties
+      - mlModelGroupProperties
+      - containerProperties
+    features:
+      - models
+      - model_versions
+      - experiments
+      - lineage_to_datasets
+    examples:
+      - MLflow
+      - AWS SageMaker
+      - Vertex AI
+      - Azure ML
+      - Weights & Biases
+
+  identity_platforms:
+    source_type: api
+    standards_file: source_types/identity_platforms.md
+    implementation_guide: api.md
+    description: "Identity and access management systems"
+    entities:
+      - CorpUser     # Users
+      - CorpGroup    # Groups, roles
+    aspects:
+      - corpUserInfo
+      - corpGroupInfo
+      - groupMembership
+    features:
+      - users
+      - groups
+      - group_membership
+    examples:
+      - Okta
+      - Azure AD
+      - LDAP
+      - AWS IAM
+
+  product_analytics:
+    source_type: api
+    standards_file: source_types/product_analytics.md
+    implementation_guide: api.md
+    description: "Product analytics and event tracking"
+    entities:
+      - Dataset      # Event schemas, cohorts
+      - Dashboard    # Analytics dashboards
+      - Chart        # Funnels, charts
+    aspects:
+      - schemaMetadata
+      - dashboardInfo
+      - chartInfo
+    features:
+      - event_schemas
+      - dashboards
+      - funnels
+    examples:
+      - Amplitude
+      - Mixpanel
+      - Segment
+      - Heap
+
+  # ============================================================
+  # OTHER SOURCES
+  # Special cases that don't fit SQL or typical API patterns
+  # ============================================================
+
+  nosql_databases:
+    source_type: other
+    standards_file: source_types/nosql_databases.md
+    implementation_guide: api.md
+    description: "Document, key-value, and graph databases"
+    entities:
+      - Dataset      # Collections, tables
+      - Container    # Databases, keyspaces
+    aspects:
+      - schemaMetadata    # If schema available
+      - datasetProperties
+      - containerProperties
+    features:
+      - schema_inference
+      - containers
+    examples:
+      - MongoDB
+      - Cassandra
+      - DynamoDB
+      - Redis
+      - Neo4j

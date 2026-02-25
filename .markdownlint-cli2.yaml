@@ -1,0 +1,22 @@
+# markdownlint-cli2 configuration
+# https://github.com/DavidAnson/markdownlint-cli2
+
+config:
+  # Disabled rules
+  MD001: false # heading-increment — deep nesting with skipped levels in standards files
+  MD010: false # no-hard-tabs — not a concern for this repo
+  MD013: false # line-length — 228 lines exceed 120 chars in tables/prose
+  MD024: false # no-duplicate-heading — same-named headings under different parents
+  MD026: false # no-trailing-punctuation — headings like "What is X?" are intentional
+  MD033: false # no-inline-html — 17 files use <!-- --> HTML comments
+  MD034: false # no-bare-urls — angle-bracket URLs in standards files
+  MD036: false # no-emphasis-as-heading — **bold** used for inline emphasis
+  MD040: false # fenced-code-language — some blocks are generic prompts
+  MD041: false # first-line-heading — SKILL.md/agent/command files have YAML frontmatter
+  MD046: false # code-block-style — not worth enforcing
+  MD051: false # link-fragments — can produce false positives
+  MD056: false # table-column-count — templates have variable column counts
+
+ignores:
+  - node_modules/**
+  - .github/**/*.md

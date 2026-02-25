@@ -1,0 +1,13 @@
+{
+  "name": "datahub-skills",
+  "owner": {
+    "name": "DataHub Project"
+  },
+  "plugins": [
+    {
+      "name": "datahub-skills",
+      "source": ".",
+      "description": "DataHub connector development toolkit with connector planning and PR review skills for building and reviewing DataHub ingestion sources"
+    }
+  ]
+}

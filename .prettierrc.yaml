@@ -1,0 +1,12 @@
+# Prettier configuration
+# Scoped to markdown via pre-commit (types_or: [markdown])
+
+# Don't rewrap prose — aligns with markdownlint MD013 (line-length) being disabled
+proseWrap: preserve
+
+# 2-space indent — aligns with markdownlint MD007 (list indentation)
+tabWidth: 2
+useTabs: false
+
+# Consistent line endings — aligns with pre-commit trailing-whitespace hook
+endOfLine: lf
