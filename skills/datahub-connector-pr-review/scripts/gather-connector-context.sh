@@ -38,6 +38,24 @@ if [[ -z "$CONNECTOR" ]]; then
     usage
 fi
 
+# Input validation: reject path traversal and shell metacharacters
+if [[ "$CONNECTOR" =~ [/\\.\$\`\;\|\&\>\<\!\(\)\{\}\[\]\'\"] ]] || [[ "$CONNECTOR" == *..* ]]; then
+    echo "Error: Invalid connector name. Use only alphanumeric characters, hyphens, and underscores." >&2
+    exit 1
+fi
+
+# Validate connector name is a simple identifier
+if ! [[ "$CONNECTOR" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    echo "Error: Connector name must contain only alphanumeric characters, hyphens, and underscores." >&2
+    exit 1
+fi
+
+# Validate repo path exists
+if [[ ! -d "$REPO_PATH" ]]; then
+    echo "Error: Repository path does not exist: $REPO_PATH" >&2
+    exit 1
+fi
+
 SOURCE_BASE="$REPO_PATH/metadata-ingestion/src/datahub/ingestion/source"
 SOURCE_DIR="$SOURCE_BASE/$CONNECTOR"
 SOURCE_FILE="$SOURCE_BASE/${CONNECTOR}.py"
@@ -57,7 +75,7 @@ echo ""
 # Check if connector exists (directory or single file)
 if [[ -d "$SOURCE_DIR" ]]; then
     echo "📍 Source type: Directory-based connector"
-    SOURCE_FILES=($(find "$SOURCE_DIR" -name "*.py" -type f 2>/dev/null))
+    mapfile -t SOURCE_FILES < <(find "$SOURCE_DIR" -name "*.py" -type f 2>/dev/null)
 elif [[ -f "$SOURCE_FILE" ]]; then
     echo "📍 Source type: Single-file connector"
     IS_SINGLE_FILE=true
@@ -71,7 +89,7 @@ else
     if [[ -n "$FOUND" ]]; then
         echo "📍 Found directory: $FOUND"
         SOURCE_DIR="$FOUND"
-        SOURCE_FILES=($(find "$SOURCE_DIR" -name "*.py" -type f 2>/dev/null))
+        mapfile -t SOURCE_FILES < <(find "$SOURCE_DIR" -name "*.py" -type f 2>/dev/null)
     else
         # Try to find single file anywhere in source tree (e.g., sql/duckdb.py)
         FOUND=$(find "$SOURCE_BASE" -type f -name "${CONNECTOR}.py" 2>/dev/null | head -1)

@@ -23,10 +23,12 @@ description: |
 model: haiku
 color: green
 tools:
-  - Bash
+  - Bash(python3 *extract_aspects.py*), Bash(python3 *verify-extraction*), Bash(python3 *check-capabilities*), Bash(python3 *run-code-quality*), Bash(bash *verify-extraction*), Bash(bash *check-capabilities*), Bash(bash *run-code-quality*), Bash(datahub ingest *), Bash(datahub *), Bash(test -f *), Bash(ls *)
   - Read
   - Grep
   - Glob
+  - TaskCreate
+  - TaskUpdate
 ---
 
 # DataHub Connector Validator Agent

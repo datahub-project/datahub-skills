@@ -6,9 +6,6 @@ argument-hint: "[connector name or path]"
 
 # DataHub Connector PR Review
 
-> **Prerequisite:** This command requires the `pr-review-toolkit` plugin. Install it with:
-> `claude plugins install pr-review-toolkit@claude-plugins-official`
-
 Use the Skill tool to invoke the full `datahub-connector-pr-review` skill:
 
 ```
