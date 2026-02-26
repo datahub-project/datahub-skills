@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "datahub-skills",
-      "source": ".",
+      "source": "./",
       "description": "DataHub connector development toolkit with connector planning and PR review skills for building and reviewing DataHub ingestion sources"
     }
   ]
