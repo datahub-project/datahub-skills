@@ -59,13 +59,13 @@ This skill requires the **pr-review-toolkit** plugin from the official Claude pl
 ### Installing pr-review-toolkit
 
 ```bash
-claude plugins install pr-review-toolkit@claude-plugins-official
+claude plugin install pr-review-toolkit@claude-plugins-official
 ```
 
 **Verify installation:**
 
 ```bash
-claude plugins list | grep pr-review-toolkit
+claude plugin list | grep pr-review-toolkit
 ```
 
 ## Installation

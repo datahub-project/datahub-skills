@@ -26,7 +26,7 @@ Checks connector code against the 22 standards (see below). On Claude Code it ru
 If you're on Claude Code and want the parallel review, also install `pr-review-toolkit`:
 
 ```bash
-claude plugins install pr-review-toolkit@claude-plugins-official
+claude plugin install pr-review-toolkit@claude-plugins-official
 ```
 
 ### Load standards
@@ -56,10 +56,10 @@ Works with most agents including Claude Code, Cursor, Codex, Copilot, Gemini CLI
 
 ```bash
 # Option A: Plugin install (gets you hooks, slash commands, multi-agent dispatch)
-claude plugins install datahub-skills --from github:datahub-project/datahub-skills
+claude plugin install datahub-skills
 
 # Also install pr-review-toolkit for multi-agent reviews:
-claude plugins install pr-review-toolkit@claude-plugins-official
+claude plugin install pr-review-toolkit@claude-plugins-official
 ```
 
 ```bash
