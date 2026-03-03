@@ -23,7 +23,7 @@ description: |
 model: sonnet
 color: orange
 tools:
-  - Bash
+  - Bash(gh api repos/*/pulls/*/comments *), Bash(gh api repos/*/pulls/*/reviews *), Bash(gh api repos/*/pulls/*/commits *), Bash(gh api repos/*/pulls/*/files *), Bash(gh api repos/*/issues/*/comments *), Bash(gh pr view *), Bash(gh pr diff *)
   - Read
   - Glob
   - Grep

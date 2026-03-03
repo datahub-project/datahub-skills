@@ -2,7 +2,7 @@
 name: datahub-connector-pr-review
 description: This skill should be used when the user asks to "review my connector", "check my datahub connector", "review connector code", "audit connector", "review PR", "check code quality", or any request to review/check/audit a DataHub ingestion source. Covers compliance with standards, best practices, testing quality, and merge readiness.
 user-invocable: true
-allowed-tools: Bash(gh pr view *), Bash(gh pr diff *), Bash(gh pr list *), Bash(git diff *), Bash(git log *), Bash(git branch *), WebFetch(domain:github.com), WebFetch(domain:docs.datahub.com), WebFetch(domain:docs.aws.amazon.com)
+allowed-tools: Bash(gh pr view *), Bash(gh pr diff *), Bash(gh pr list *), Bash(git diff *), Bash(git log *), Bash(git branch *), Bash(bash *gather-connector-context*), Bash(python *extract_aspects.py*)
 hooks:
   SessionStart:
     - type: prompt
@@ -12,10 +12,9 @@ hooks:
         **Follow the workflow in order:**
         1. Load golden standards from `${CLAUDE_PLUGIN_ROOT}/standards/`
         2. Create task checklist for progress tracking
-        3. Verify pr-review-toolkit is available (REQUIRED - check `~/.claude/plugins/installed_plugins.json` for "pr-review-toolkit")
-        4. Proceed with review mode (Full/Incremental/Specialized)
+        3. Proceed with review mode (Full/Incremental/Specialized)
 
-        If pr-review-toolkit is not installed, stop and tell user to run `claude plugins install pr-review-toolkit@claude-plugins-official`.
+        If pr-review-toolkit agents are available, use them for deep analysis. Otherwise, perform the checks manually using the fallback instructions in the skill.
 ---
 
 # DataHub Connector Review
@@ -57,19 +56,9 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 
 ---
 
-## Prerequisite: pr-review-toolkit Plugin (Claude Code)
+## Optional: pr-review-toolkit Agents
 
-🔴 **Claude Code users:** This skill requires the `pr-review-toolkit` plugin to be installed.
-
-If not installed, the review will not proceed. Install it with:
-
-```
-claude plugins install pr-review-toolkit@claude-plugins-official
-```
-
-Then start a new session.
-
-**Other agents:** If you don't have access to `pr-review-toolkit` agents, you can still perform a thorough review by following the checklists and procedures in this document directly. Where the workflow says "launch agents," instead perform those checks yourself using the detailed review sections below.
+This skill can leverage `pr-review-toolkit` agents for deeper parallel analysis. If available, they will be used automatically. If not available, the skill performs the same checks manually using the fallback instructions provided inline.
 
 ---
 
@@ -99,18 +88,15 @@ After loading, briefly confirm: "Loaded connector standards. Ready to review."
 
 **After loading standards**, create a task checklist using TaskCreate to track review progress. This ensures systematic coverage and provides visibility to the user.
 
-🔴 **IMPORTANT:** Create ALL tasks listed below exactly as shown. Do NOT skip any tasks, especially the pr-review-toolkit verification step.
-
 ### Task Creation by Review Mode
 
 **For Full Review:**
 
 ```
 TaskCreate: "Load golden standards from standards/ directory"
-TaskCreate: "🔴 Verify pr-review-toolkit is installed (check ~/.claude/plugins/installed_plugins.json)"
 TaskCreate: "Gather connector context using gather-connector-context.sh"
 TaskCreate: "Read standards files (patterns.md, testing.md, code_style.md, main.md)"
-TaskCreate: "Launch all 5 review agents in parallel (4 pr-review-toolkit + comment-resolution-checker)"
+TaskCreate: "Launch review agents in parallel (or perform manual checks)"
 TaskCreate: "Complete systematic review checklist"
 TaskCreate: "Aggregate findings and generate report"
 ```
@@ -119,10 +105,9 @@ TaskCreate: "Aggregate findings and generate report"
 
 ```
 TaskCreate: "Load golden standards from standards/ directory"
-TaskCreate: "🔴 Verify pr-review-toolkit is installed (check ~/.claude/plugins/installed_plugins.json)"
 TaskCreate: "Get changed files from PR/branch"
 TaskCreate: "Read relevant standards files"
-TaskCreate: "Launch review agents on changed files (4 pr-review-toolkit + comment-resolution-checker)"
+TaskCreate: "Launch review agents on changed files (or perform manual checks)"
 TaskCreate: "Assess change impact and regression risk"
 TaskCreate: "Generate incremental review report"
 ```
@@ -131,10 +116,9 @@ TaskCreate: "Generate incremental review report"
 
 ```
 TaskCreate: "Load golden standards from standards/ directory"
-TaskCreate: "🔴 Verify pr-review-toolkit is installed (check ~/.claude/plugins/installed_plugins.json)"
 TaskCreate: "Identify focus area from user request"
 TaskCreate: "Read standards for [focus area]"
-TaskCreate: "Launch relevant pr-review-toolkit agents"
+TaskCreate: "Launch relevant review agents (or perform manual checks)"
 TaskCreate: "Generate specialized report"
 ```
 

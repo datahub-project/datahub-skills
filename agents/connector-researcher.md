@@ -28,7 +28,7 @@ tools:
   - Grep
   - WebSearch
   - WebFetch
-  - Bash
+  - Bash(pip index versions *), Bash(ls *), Bash(find * -name * -type *)
 ---
 
 # DataHub Connector Research Agent
@@ -79,9 +79,12 @@ ls -la src/datahub/ingestion/source/sql/
 
 # Find API-based sources
 ls -la src/datahub/ingestion/source/
+```
 
-# Search for similar patterns
-grep -r "similar_keyword" src/datahub/ingestion/source/ --include="*.py" -l | head -10
+Use the **Grep tool** (not bash grep) to search for similar patterns:
+
+```
+Grep: pattern="similar_keyword", path="src/datahub/ingestion/source/", glob="*.py"
 ```
 
 For each similar connector found:

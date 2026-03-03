@@ -3,7 +3,7 @@ name: datahub-connector-planning
 description: |
   Use this skill when the user wants to plan a new DataHub connector, research a source system for connector development, create a connector planning document, or design a connector architecture. Triggers on: "plan a connector", "new connector for X", "research X for DataHub", "design connector for X", "create planning doc", or any request to plan/research/design a DataHub ingestion source.
 user-invocable: true
-allowed-tools: WebSearch(*), WebFetch(domain:*), Bash(pip index versions *), Bash(ls *), Bash(find *), Bash(grep *)
+allowed-tools: Bash(pip index versions *), Bash(ls *), Bash(find * -name * -type *), Bash(grep * --include=*.py *)
 hooks:
   SessionStart:
     - type: prompt

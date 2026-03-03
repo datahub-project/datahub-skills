@@ -126,8 +126,18 @@ def parse_record(record: dict) -> list:
         return []
 
 
+MAX_FILE_SIZE_MB = 100
+
+
 def load_golden_file(filepath: str) -> list:
     """Load and parse golden file."""
+    file_size = Path(filepath).stat().st_size
+    if file_size > MAX_FILE_SIZE_MB * 1024 * 1024:
+        raise ValueError(
+            f"File too large ({file_size / 1024 / 1024:.1f}MB). "
+            f"Maximum allowed: {MAX_FILE_SIZE_MB}MB"
+        )
+
     with open(filepath, "r") as f:
         data = json.load(f)
 
