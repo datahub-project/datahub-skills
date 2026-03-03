@@ -1,6 +1,6 @@
 {
   "name": "datahub-skills",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "DataHub connector development toolkit with connector planning and PR review skills for building and reviewing DataHub ingestion sources",
   "author": {
     "name": "DataHub Project"
