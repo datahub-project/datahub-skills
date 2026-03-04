@@ -29,6 +29,16 @@ If you're on Claude Code and want the parallel review, also install `pr-review-t
 claude plugin install pr-review-toolkit@claude-plugins-official
 ```
 
+### Connector community feedback
+
+Guides community members through field-testing a DataHub connector against their real source system (or a local Quickstart) and collecting structured feedback for connector authors. Covers: installation experience, configuration intuitiveness, asset coverage, feature support, cross-platform lineage scenarios, and edge cases. Works for both in-progress PRs and already-merged connectors.
+
+```
+> I want to test the Snowflake connector from PR #1234
+> /connector-community-feedback
+> Help me give feedback on the DuckDB connector
+```
+
 ### Load standards
 
 Loads all 22 connector standards into context. Run this before starting connector work so the agent actually knows what it's checking against.
