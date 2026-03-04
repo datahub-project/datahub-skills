@@ -320,8 +320,9 @@ Show a brief summary of what was found, then set expectations for the session:
 > - **~10 min** — validate results in the DataHub UI
 > - **~5 min** — capture your feedback
 >
-> Your findings go directly to the connector author and become part of the public record
-> for this PR. Even a quick test with one schema is more valuable than no test at all.
+> At the end, you'll have the option of sharing this feedback directly with the connector
+> author — as a PR comment, a GitHub issue, or just a local file to keep for yourself.
+> Even a quick test with one schema is more valuable than no test at all.
 > Ready?"
 
 
