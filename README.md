@@ -31,12 +31,24 @@ claude plugin install pr-review-toolkit@claude-plugins-official
 
 ### Connector community feedback
 
-Guides community members through field-testing a DataHub connector against their real source system (or a local Quickstart) and collecting structured feedback for connector authors. Covers: installation experience, configuration intuitiveness, asset coverage, feature support, cross-platform lineage scenarios, and edge cases. Works for both in-progress PRs and already-merged connectors.
+A guided ~30-minute field test for community members who actually run the source system in production. Because no automated review can catch what a real user discovers in their real environment.
+
+The skill walks you through seven phases:
+
+1. **Connector discovery** — fetch the PR or branch, summarize what's being tested
+2. **Tester profile** — source system version, deployment type, DataHub environment
+3. **Scenario scoping** — select which assets and features to validate; lineage prerequisites checked
+4. **Pre-flight + ingestion** — environment checks, connector install, credential-safe recipe (credentials stay in env vars — never in the chat), agent runs ingestion
+5. **UI verification** — pre-generated pass/fail checklist with direct DataHub links
+6. **Structured feedback** — setup experience, config intuitiveness, docs accuracy, edge cases, "would you recommend to a colleague?"
+7. **Output** — save a local report, post as a PR comment, or file a GitHub issue
+
+Works for both open PRs and already-merged connectors.
 
 ```
 > I want to test the Snowflake connector from PR #1234
 > /connector-community-feedback
-> Help me give feedback on the DuckDB connector
+> Help me give feedback on the dlt connector
 ```
 
 ### Load standards
@@ -155,36 +167,39 @@ npx skills add datahub-project/datahub-skills -a windsurf
 
 ```bash
 git clone https://github.com/datahub-project/datahub-skills.git
-cp -r datahub-skills/skills/datahub-connector-pr-review  your-project/.agents/skills/
-cp -r datahub-skills/skills/datahub-connector-planning   your-project/.agents/skills/
-cp -r datahub-skills/skills/load-standards               your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-connector-pr-review          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-connector-planning            your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-connector-community-feedback  your-project/.agents/skills/
+cp -r datahub-skills/skills/load-standards                        your-project/.agents/skills/
 ```
 
 Each skill directory is self-contained. The `standards` symlinks get dereferenced into real files on copy, so everything travels together.
 
 ### What works where
 
-| Feature                     | Claude Code           | Cursor / Copilot / Codex / Gemini CLI / Windsurf |
-| --------------------------- | --------------------- | ------------------------------------------------ |
-| Planning workflow           | Yes                   | Yes                                              |
-| Load standards              | Yes                   | Yes                                              |
-| Review against standards    | Yes                   | Yes                                              |
-| Parallel multi-agent review | Yes (5 sub-agents)    | No (runs sequentially)                           |
-| Research agent delegation   | Yes (dedicated agent) | No (inline fallback)                             |
-| Slash commands              | Yes                   | No (use natural language instead)                |
-| Progress tracking           | Yes                   | No                                               |
-| SessionStart hooks          | Yes                   | No                                               |
+| Feature                           | Claude Code           | Cursor / Copilot / Codex / Gemini CLI / Windsurf |
+| --------------------------------- | --------------------- | ------------------------------------------------ |
+| Planning workflow                 | Yes                   | Yes                                              |
+| Load standards                    | Yes                   | Yes                                              |
+| Review against standards          | Yes                   | Yes                                              |
+| Community feedback (field test)   | Yes                   | Yes                                              |
+| Parallel multi-agent review       | Yes (5 sub-agents)    | No (runs sequentially)                           |
+| Research agent delegation         | Yes (dedicated agent) | No (inline fallback)                             |
+| Slash commands                    | Yes                   | No (use natural language instead)                |
+| Progress tracking                 | Yes                   | No                                               |
+| SessionStart hooks                | Yes                   | No                                               |
 
 ## Commands (Claude Code only)
 
 Other platforms do the same things through natural language ("Review my connector", "Plan a connector for DuckDB").
 
-| Command                             | What it does                            |
-| ----------------------------------- | --------------------------------------- |
-| `/connector-planning [source]`      | Plan a new connector                    |
-| `/connector-review [connector]`     | Review connector code against standards |
-| `/load-standards`                   | Load all 22 standards into context      |
-| `/comprehensive-review [connector]` | Deep multi-agent review                 |
+| Command                                   | What it does                                      |
+| ----------------------------------------- | ------------------------------------------------- |
+| `/connector-planning [source]`            | Plan a new connector                              |
+| `/connector-review [connector]`           | Review connector code against standards           |
+| `/connector-community-feedback [PR/name]` | Guided field test + structured feedback capture   |
+| `/load-standards`                         | Load all 22 standards into context                |
+| `/comprehensive-review [connector]`       | Deep multi-agent review                           |
 
 ## Agents
 
@@ -221,6 +236,10 @@ datahub-skills/
 │   │   ├── references/
 │   │   ├── scripts/
 │   │   └── templates/
+│   ├── datahub-connector-community-feedback/
+│   │   ├── SKILL.md
+│   │   ├── references/        # version ranges, feature map, URL patterns
+│   │   └── templates/         # feedback-report.md, pr-comment.md
 │   └── load-standards/
 │       ├── SKILL.md
 │       └── standards -> ../../standards
@@ -248,6 +267,7 @@ Where things live:
 - Standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
 - Planning steps: `skills/datahub-connector-planning/SKILL.md`
+- Community feedback workflow: `skills/datahub-connector-community-feedback/SKILL.md`
 - Agent prompts: `agents/`
 
 ## License
