@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/datahub-project/datahub-skills/compare/v1.2.0...v1.2.1) (2026-03-06)
+
+
+### Bug Fixes
+
+* harden existing skills against security scanner findings ([#10](https://github.com/datahub-project/datahub-skills/issues/10)) ([17c684e](https://github.com/datahub-project/datahub-skills/commit/17c684e8c98fb19eecde3c8e81158bba3d3e3218))
+
 ## [1.2.0](https://github.com/datahub-project/datahub-skills/compare/v1.1.0...v1.2.0) (2026-03-03)
 
 
