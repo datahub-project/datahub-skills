@@ -641,7 +641,7 @@ class TokenRefreshManager:
     def _refresh_token(self):
         # Call token API
         response = requests.post(
-            "https://auth.mydatabase.com/token",
+            "https://auth.example.com/token",
             data={
                 "grant_type": "refresh_token",
                 "refresh_token": self.config.refresh_token.get_secret_value(),
