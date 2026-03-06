@@ -65,7 +65,7 @@ Use WebSearch to find:
 For SQL databases:
 
 ```bash
-# Validate {{source}} is alphanumeric before use; quote to prevent shell injection
+# Quote to prevent word splitting and glob expansion
 pip index versions "sqlalchemy-{{source}}" 2>/dev/null || echo "No dedicated dialect"
 ```
 
