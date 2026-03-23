@@ -3,6 +3,7 @@
 For use when sub-agent dispatch is unavailable. Each section covers one review mode.
 
 ## Contents
+
 - [Mode 1: Full Review](#mode-1-full-review)
 - [Mode 2: Specialized Review](#mode-2-specialized-review)
 - [Mode 3: Incremental Review](#mode-3-incremental-review)

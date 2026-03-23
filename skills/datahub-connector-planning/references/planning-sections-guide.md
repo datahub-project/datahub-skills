@@ -1,6 +1,7 @@
 # Planning Document Sections Guide
 
 ## Contents
+
 - [Load Standards First](#load-standards-first)
 - [Load Reference Documents](#load-reference-documents)
 - [Section 1: Source System Overview](#section-1-source-system-overview)

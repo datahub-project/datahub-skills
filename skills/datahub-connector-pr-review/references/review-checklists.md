@@ -1,6 +1,7 @@
 # Review Checklists
 
 ## Contents
+
 - [Architecture Review](#architecture-review)
 - [Code Organization Review](#code-organization-review)
 - [Python Code Quality Review](#python-code-quality-review)
