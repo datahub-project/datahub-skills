@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # Run all datahub-skills tests.
-# Usage: ./tests/run-tests.sh [--test test-name] [--verbose]
+# Usage: ./tests/run-tests.sh [--test test-name] [--model model-id] [--verbose]
 #
 # Options:
 #   --test NAME    Run only the test file matching NAME (e.g. --test load-standards)
+#   --model ID     Claude model to use (default: claude-haiku-4-5-20251001)
+#                  Examples: claude-haiku-4-5-20251001, claude-sonnet-4-6, claude-opus-4-6
 #   --verbose      Show full Claude output on failures
 
 set -euo pipefail
@@ -12,11 +14,13 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 VERBOSE=false
 FILTER=""
+export TEST_MODEL="${TEST_MODEL:-claude-haiku-4-5-20251001}"
 
 while [[ $# -gt 0 ]]; do
     case $1 in
         --verbose) VERBOSE=true; shift ;;
         --test)    FILTER="$2"; shift 2 ;;
+        --model)   export TEST_MODEL="$2"; shift 2 ;;
         *) echo "Unknown argument: $1"; exit 1 ;;
     esac
 done
@@ -28,6 +32,7 @@ if ! command -v claude &>/dev/null; then
 fi
 
 echo "Claude Code: $(claude --version 2>/dev/null || echo 'unknown version')"
+echo "Model:       $TEST_MODEL"
 echo ""
 
 TESTS=(

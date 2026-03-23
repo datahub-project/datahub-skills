@@ -4,6 +4,10 @@
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
+# Model to use — defaults to Claude Code's configured model (respects skill effort: frontmatter).
+# Override with TEST_MODEL env var or --model flag in run-tests.sh.
+TEST_MODEL="${TEST_MODEL:-}"
+
 # macOS ships without GNU timeout; use gtimeout (brew install coreutils) if available
 _timeout_cmd() {
     if command -v gtimeout &>/dev/null; then
@@ -23,7 +27,10 @@ run_claude() {
     local output_file
     output_file=$(mktemp)
 
-    if _timeout_cmd "$timeout" claude --add-dir "$REPO_ROOT" -p "$prompt" >"$output_file" 2>&1; then
+    local model_flag=()
+    [ -n "$TEST_MODEL" ] && model_flag=(--model "$TEST_MODEL")
+
+    if _timeout_cmd "$timeout" claude --add-dir "$REPO_ROOT" "${model_flag[@]}" -p "$prompt" >"$output_file" 2>&1; then
         cat "$output_file"
         rm -f "$output_file"
         return 0
