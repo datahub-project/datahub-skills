@@ -1,8 +1,9 @@
 ---
 name: load-standards
 description: |
-  Use this skill when the user wants to load, review, or reference DataHub connector golden standards. Triggers on: "load standards", "show standards", "what are the connector standards", "load golden standards", "review standards", or any request to understand DataHub connector development guidelines before building or reviewing a connector.
+  Loads all 22 DataHub connector golden standards into context. Use before starting connector development or review work to ensure the full set of standards is available for reference. Triggers on: "load standards", "show standards", "what are the connector standards", "load golden standards", "review standards", or any request to load DataHub connector development guidelines.
 user-invocable: true
+effort: low
 ---
 
 # Load DataHub Connector Golden Standards

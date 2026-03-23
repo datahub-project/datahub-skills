@@ -21,6 +21,7 @@ description: |
   </commentary>
   </example>
 model: sonnet
+background: true
 color: blue
 tools:
   - Read
