@@ -168,37 +168,7 @@ Once the research agent returns, present findings and ask the user these questio
 
 ## Step 3: Create the Planning Document
 
-### Load Standards First
-
-Before creating the planning document, read the relevant golden standards:
-
-**Core standards (always load):**
-
-```
-Read standards/main.md
-Read standards/containers.md
-Read standards/patterns.md
-Read standards/testing.md
-```
-
-**Source-type specific standards:**
-
-- For SQL sources: `standards/sql.md`
-- For API sources: `standards/api.md`
-- If lineage needed: `standards/lineage.md`
-
-**Source-category standards:**
-
-- `standards/[standards_file from classification]` (e.g., `standards/source_types/sql_databases.md`)
-
-### Load Reference Documents
-
-Read the relevant reference docs from this skill:
-
-- `references/two-tier-vs-three-tier.md` (for SQL sources — base class selection)
-- `references/capability-mapping.md` (for mapping features to @capability decorators)
-- `references/testing-patterns.md` (for test strategy)
-- `references/mce-vs-mcp-formats.md` (for understanding output format expectations)
+Before creating the planning document, read the relevant standards and reference docs listed in `references/planning-sections-guide.md` under "Load Standards First" and "Load Reference Documents".
 
 ### Create the Planning Document
 
