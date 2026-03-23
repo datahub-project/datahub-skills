@@ -222,7 +222,7 @@ datahub-connector-pr-review/
 └── templates/         # Report templates (full, incremental, specialized)
 ```
 
-Standards are in `${CLAUDE_PLUGIN_ROOT}/standards/` (shared across skills).
+Standards are in `${CLAUDE_SKILL_DIR}/standards/` (shared across skills).
 
 ## Standards Reference
 

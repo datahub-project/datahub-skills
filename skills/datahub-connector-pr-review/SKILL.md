@@ -10,7 +10,7 @@ hooks:
         DataHub Connector PR Review skill activated.
 
         **Follow the workflow in order:**
-        1. Load golden standards from `${CLAUDE_PLUGIN_ROOT}/standards/`
+        1. Load golden standards from `${CLAUDE_SKILL_DIR}/standards/`
         2. Create task checklist for progress tracking
         3. Proceed with review mode (Full/Incremental/Specialized)
 

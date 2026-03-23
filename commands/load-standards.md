@@ -8,7 +8,7 @@ Read and confirm all golden connector standard files have been loaded.
 You should:
 
 1. Read all files in the standards directory:
-   - ${CLAUDE_PLUGIN_ROOT}/standards/\*.md
+   - ${CLAUDE_SKILL_DIR}/standards/\*.md
 
 2. After reading all files, provide a brief summary confirming:
    - Which standards you've loaded

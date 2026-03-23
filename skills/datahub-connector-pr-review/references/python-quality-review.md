@@ -2,7 +2,7 @@
 
 Review code as a Python expert specializing in clean, performant, and idiomatic Python.
 
-**Source of truth for standards:** `${CLAUDE_PLUGIN_ROOT}/standards/code_style.md`
+**Source of truth for standards:** `${CLAUDE_SKILL_DIR}/standards/code_style.md`
 
 ---
 
@@ -19,7 +19,7 @@ Review code as a Python expert specializing in clean, performant, and idiomatic 
 
 ## Python Quality Checklist
 
-**See `${CLAUDE_PLUGIN_ROOT}/standards/code_style.md` for the complete checklist.**
+**See `${CLAUDE_SKILL_DIR}/standards/code_style.md` for the complete checklist.**
 
 Key areas to verify:
 
