@@ -12,7 +12,7 @@
 - [Section 7: Known Limitations](#section-7-known-limitations)
 - [Section 8: Implementation Order](#section-8-implementation-order)
 
-### Load Standards First
+## Load Standards First
 
 Before creating the planning document, read the relevant golden standards:
 
@@ -35,7 +35,7 @@ Read standards/testing.md
 
 - `standards/[standards_file from classification]` (e.g., `standards/source_types/sql_databases.md`)
 
-### Load Reference Documents
+## Load Reference Documents
 
 Read the relevant reference docs from this skill:
 
@@ -44,20 +44,14 @@ Read the relevant reference docs from this skill:
 - `references/testing-patterns.md` (for test strategy)
 - `references/mce-vs-mcp-formats.md` (for understanding output format expectations)
 
-### Create the Planning Document
-
-Read the template: `templates/planning-doc.template.md`
-
-Create `_PLANNING.md` in the user's working directory (or a location they specify). The document must include these sections:
-
-#### Section 1: Source System Overview
+## Section 1: Source System Overview
 
 - Type classification (from Step 1)
 - Authentication method
 - API/SDK documentation links
 - Docker image for testing (if available)
 
-#### Section 2: Entity Mapping Table
+## Section 2: Entity Mapping Table
 
 Map source concepts to DataHub entities. Consult `standards/containers.md` for container hierarchy patterns. Select the mapping table from the template that matches the source category. The template (`templates/planning-doc.template.md`) provides entity mapping tables for each category:
 
@@ -71,7 +65,7 @@ Map source concepts to DataHub entities. Consult `standards/containers.md` for c
 
 For each entity, fill in the actual source concept name (e.g., for Tableau: "Workbook" maps to Dashboard, "Sheet" maps to Chart). Look up `references/source-type-mapping.yml` for the expected entities and aspects per category.
 
-#### Section 3: Architecture Decisions
+## Section 3: Architecture Decisions
 
 **Base class selection** — Reference `standards/main.md` and the template's Architecture Decisions section:
 
@@ -106,7 +100,7 @@ For NoSQL sources — Reference `standards/source_types/nosql_databases.md`:
 - Custom fields needed
 - Validation rules
 
-#### Section 4: Capabilities to Implement
+## Section 4: Capabilities to Implement
 
 Reference `references/capability-mapping.md` for mapping features to `@capability` decorators. Select the capability table from the template that matches the source category:
 
@@ -120,7 +114,7 @@ Reference `references/capability-mapping.md` for mapping features to `@capabilit
 
 Mark each capability as Required / Per user scope / Optional based on the user's chosen feature scope from Step 2. Look up the full per-category capability tables in the template.
 
-#### Section 5: Configuration Design
+## Section 5: Configuration Design
 
 Use the config example from the template matching the source type. The three patterns are:
 
@@ -170,7 +164,7 @@ source:
 
 Customize the config fields based on the specific source system's connection requirements.
 
-#### Section 6: Testing Strategy
+## Section 6: Testing Strategy
 
 Reference `standards/testing.md` and [testing-patterns.md](references/testing-patterns.md):
 
@@ -180,13 +174,13 @@ Reference `standards/testing.md` and [testing-patterns.md](references/testing-pa
 | Integration tests      | Golden file with real data, >5KB, >20 events         | `tests/integration/SOURCE/`        |
 | Golden file validation | schemaMetadata for datasets, container hierarchy     | Via `extract_aspects.py`           |
 
-#### Section 7: Known Limitations
+## Section 7: Known Limitations
 
 | Limitation                   | Impact | Workaround |
 | ---------------------------- | ------ | ---------- |
 | (list any known constraints) |        |            |
 
-#### Section 8: Implementation Order
+## Section 8: Implementation Order
 
 Select the implementation order from the template matching the source type:
 
