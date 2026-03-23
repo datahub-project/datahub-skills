@@ -1,5 +1,8 @@
 {
   "name": "datahub-skills",
+  "metadata": {
+    "description": "Marketplace for DataHub skills. Includes connector development tools: planning new connectors, reviewing connector PRs against 22 golden standards, and loading connector development guidelines."
+  },
   "owner": {
     "name": "DataHub Project"
   },
