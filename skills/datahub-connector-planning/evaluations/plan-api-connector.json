@@ -1,0 +1,12 @@
+{
+  "skills": ["datahub-connector-planning"],
+  "query": "Plan a connector for Tableau",
+  "expected_behavior": [
+    "Classifies Tableau as an API/BI Tool source type",
+    "Confirms classification with user before proceeding",
+    "Launches connector-researcher agent or performs inline research on Tableau's REST API",
+    "Asks user about Tableau server URL, credentials, and which entity types to extract",
+    "Creates a _PLANNING.md with entity mapping (dashboards, charts, data sources), API client design, and implementation order",
+    "Presents summary and requests user approval"
+  ]
+}

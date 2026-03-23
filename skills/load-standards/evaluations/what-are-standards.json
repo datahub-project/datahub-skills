@@ -1,0 +1,10 @@
+{
+  "skills": ["load-standards"],
+  "query": "What are the connector standards?",
+  "expected_behavior": [
+    "Recognizes this as a request to load standards, not a question to answer from memory",
+    "Reads all 22 DataHub connector standard files from the standards/ directory",
+    "Outputs a comprehensive summary of what each standard covers",
+    "Does NOT answer from prior training data — loads and reads the actual files"
+  ]
+}

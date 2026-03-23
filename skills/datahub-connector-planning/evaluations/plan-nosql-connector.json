@@ -1,0 +1,12 @@
+{
+  "skills": ["datahub-connector-planning"],
+  "query": "Plan a connector for MongoDB",
+  "expected_behavior": [
+    "Classifies MongoDB as a NoSQL/Document Store source type",
+    "Confirms classification with user before proceeding",
+    "Launches connector-researcher agent or performs inline research on MongoDB",
+    "Asks user about collections to include, schema inference approach, and access permissions",
+    "Creates a _PLANNING.md with entity mapping, schema inference strategy, and implementation order",
+    "Presents summary and requests user approval"
+  ]
+}

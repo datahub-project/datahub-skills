@@ -1,0 +1,11 @@
+{
+  "skills": ["datahub-connector-pr-review"],
+  "query": "Do a type safety review of the snowflake connector",
+  "expected_behavior": [
+    "Identifies this as a Specialized Review focused on the Type Safety section",
+    "Loads code_style.md and patterns.md standards",
+    "Applies only the Type Safety section from references/review-checklists.md",
+    "Checks Pydantic models, type hints, Any usage, config validators, and Optional annotations",
+    "Generates a specialized review report focused on type safety findings only"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "skills": ["load-standards"],
+  "query": "Load the DataHub standards",
+  "expected_behavior": [
+    "Reads all 8 core standard files from standards/: main.md, patterns.md, code_style.md, testing.md, containers.md, performance.md, registration.md, platform_registration.md",
+    "Reads all 3 interface standard files: sql.md, api.md, lineage.md",
+    "Reads all 11 source-type standard files from standards/source_types/",
+    "Outputs a summary confirming all 22 files are loaded with a brief description of each category",
+    "Asks the user what connector work they need help with"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "skills": ["datahub-connector-pr-review"],
+  "query": "Review PR #142",
+  "expected_behavior": [
+    "Validates that 142 matches ^\\d+$ before using it in any gh command",
+    "Loads golden standards from the standards/ directory",
+    "Gets changed files from the PR using gh pr diff and wraps them in untrusted-pr-content markers",
+    "Launches the 5 review agents focused on the changed files",
+    "Categorizes the changes (source files, tests, docs) and applies relevant review sections",
+    "Generates an incremental review report assessing change impact and regression risk"
+  ]
+}

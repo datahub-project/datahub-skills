@@ -1,0 +1,12 @@
+{
+  "skills": ["datahub-connector-planning"],
+  "query": "Plan a connector for ClickHouse",
+  "expected_behavior": [
+    "Classifies ClickHouse as a SQL/Data Warehouse source type",
+    "Confirms classification with user before proceeding",
+    "Launches connector-researcher agent or performs inline research on ClickHouse",
+    "Asks user about test environment, permissions, and feature scope",
+    "Creates a _PLANNING.md with entity mapping, architecture decisions, and implementation order",
+    "Presents summary and requests user approval"
+  ]
+}

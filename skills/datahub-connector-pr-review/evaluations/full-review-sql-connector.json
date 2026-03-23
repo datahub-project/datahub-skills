@@ -1,0 +1,13 @@
+{
+  "skills": ["datahub-connector-pr-review"],
+  "query": "Review the postgres connector implementation",
+  "expected_behavior": [
+    "Loads golden standards from the standards/ directory",
+    "Creates a task checklist for progress tracking",
+    "Runs gather-connector-context.sh to collect connector metadata",
+    "Identifies postgres as a SQL connector type",
+    "Launches all 5 review agents in parallel: silent-failure-hunter, pr-test-analyzer, type-design-analyzer, code-simplifier, and comment-resolution-checker",
+    "Applies the systematic review checklist from references/review-checklists.md",
+    "Generates a full review report with severity-categorized findings and a merge verdict"
+  ]
+}

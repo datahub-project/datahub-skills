@@ -1,0 +1,9 @@
+{
+  "skills": ["load-standards"],
+  "query": "Load golden standards before I start building a connector",
+  "expected_behavior": [
+    "Reads all 22 DataHub connector standard files across core, interface, and source-type categories",
+    "Outputs a summary of the loaded standards organized by category",
+    "Asks the user what type of connector they are building to provide targeted guidance"
+  ]
+}
