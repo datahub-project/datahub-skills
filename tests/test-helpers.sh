@@ -4,13 +4,26 @@
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
+# macOS ships without GNU timeout; use gtimeout (brew install coreutils) if available
+_timeout_cmd() {
+    if command -v gtimeout &>/dev/null; then
+        gtimeout "$@"
+    elif command -v timeout &>/dev/null; then
+        timeout "$@"
+    else
+        # No timeout available — run without it
+        local _t="$1"; shift
+        "$@"
+    fi
+}
+
 run_claude() {
     local prompt="$1"
     local timeout="${2:-60}"
     local output_file
     output_file=$(mktemp)
 
-    if timeout "$timeout" claude --add-dir "$REPO_ROOT" -p "$prompt" >"$output_file" 2>&1; then
+    if _timeout_cmd "$timeout" claude --add-dir "$REPO_ROOT" -p "$prompt" >"$output_file" 2>&1; then
         cat "$output_file"
         rm -f "$output_file"
         return 0
