@@ -64,8 +64,8 @@ for test_file in "${TESTS[@]}"; do
             ((failed++))
         fi
     else
-        output=$(bash "$test_file" 2>&1)
-        if echo "$output" | grep -q "\[FAIL\]"; then
+        output=$(bash "$test_file" 2>&1) && exit_code=0 || exit_code=$?
+        if [ "$exit_code" -ne 0 ] || echo "$output" | grep -q "\[FAIL\]"; then
             echo "$output"
             ((failed++))
         else
