@@ -1,5 +1,5 @@
 ---
-name: configure-mfe-datahub
+name: datahub-mfe-configure-app
 description: >-
   Configure a DataHub instance to load and display a Micro Frontend (MFE) app.
   Use when the user wants to register an MFE with DataHub, add an MFE to the
@@ -45,7 +45,7 @@ workspace. The user will type their own.
 > //                                   ^^^^^^^^^^^^^^^^^  ← this value
 > ```
 > If the name in the YAML config doesn't match this exactly, the MFE will
-> fail to load. If you used the `create-mfe-app` skill, the name was printed
+> fail to load. If you used the `datahub-mfe-create-app` skill, the name was printed
 > in the summary as "Module Federation name".
 
 ## Step 2: Generate the YAML Config Entry

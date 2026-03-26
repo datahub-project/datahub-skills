@@ -1,6 +1,6 @@
 # MFE Configuration Reference
 
-Detailed reference material for the `configure-mfe-datahub` skill.
+Detailed reference material for the `datahub-mfe-configure-app` skill.
 
 ---
 
@@ -190,7 +190,7 @@ headers: {
 },
 ```
 
-These are included by default in the `create-mfe-app` scaffold.
+These are included by default in the `datahub-mfe-create-app` scaffold.
 
 ### Nav item doesn't appear
 

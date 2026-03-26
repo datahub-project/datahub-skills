@@ -1,5 +1,5 @@
 ---
-name: create-mfe-app
+name: datahub-mfe-create-app
 description: >-
   Scaffold a new DataHub Micro Frontend (MFE) app with all boilerplate files.
   Use when the user wants to create a new micro frontend, MFE, remote app,
@@ -92,7 +92,7 @@ proceeding.
 Tell the user:
 
 > Your MFE app is running! To integrate it with DataHub, use the
-> **configure-mfe-datahub** skill — it will walk you through adding this app
+> **datahub-mfe-configure-app** skill — it will walk you through adding this app
 > to the DataHub frontend config so it appears at `/mfe/<path>` and optionally
 > in the nav sidebar.
 
@@ -108,7 +108,7 @@ Created __APP_DIR__/ with 7 files:
   tsconfig.json         — TypeScript config
   public/index.html     — dev HTML shell
 
-Module Federation name: __MF_NAME__   ← use this as "MFE app name" in configure-mfe-datahub
+Module Federation name: __MF_NAME__   ← use this as "MFE app name" in datahub-mfe-configure-app
 Remote entry URL:       http://localhost:__PORT__/remoteEntry.js
 Module path:            __MF_NAME__/mount
 ```
