@@ -9,8 +9,8 @@
   "plugins": [
     {
       "name": "datahub-skills",
-      "source": "./",
-      "description": "DataHub connector development toolkit with connector planning and PR review skills for building and reviewing DataHub ingestion sources"
+      "source": ".",
+      "description": "DataHub development and interaction toolkit with connector planning, PR review, catalog search, metadata enrichment, lineage tracing, and connection setup skills"
     }
   ]
 }

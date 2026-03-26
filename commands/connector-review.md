@@ -15,12 +15,6 @@ Skill tool:
 
 **User's request:** $ARGUMENTS
 
-The skill launches 5 review agents in parallel with DataHub standards context:
-
-- `pr-review-toolkit:silent-failure-hunter` - Find error handling gaps (with patterns.md)
-- `pr-review-toolkit:pr-test-analyzer` - Analyze test coverage quality (with testing.md)
-- `pr-review-toolkit:type-design-analyzer` - Review Pydantic models and type safety (with patterns.md)
-- `pr-review-toolkit:code-simplifier` - Find complexity and refactoring opportunities (with patterns.md)
-- `datahub-skills:comment-resolution-checker` - Verify previous review comments were substantively addressed
+This skill reviews connector code against the 22 DataHub standards. On Claude Code with `pr-review-toolkit` installed, it runs 5 review agents in parallel. Otherwise it performs the same checks sequentially.
 
 If no arguments provided, ask which connector to review.

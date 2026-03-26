@@ -1,7 +1,7 @@
 {
   "name": "datahub-skills",
   "version": "1.2.1",
-  "description": "DataHub connector development toolkit with connector planning and PR review skills for building and reviewing DataHub ingestion sources",
+  "description": "DataHub development and interaction toolkit with connector planning, PR review, catalog search, metadata enrichment, lineage tracing, and connection setup skills",
   "author": {
     "name": "DataHub Project"
   }
