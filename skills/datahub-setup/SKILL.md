@@ -38,11 +38,11 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 | If the user wants to... | Use this instead |
 | --- | --- |
 | Search or discover entities | `/datahub-search` |
-| Assign entities to a domain | `/datahub-govern` (not the same as configuring a default domain scope) |
-| Run a metadata report | `/datahub-audit` |
 | Update entity metadata | `/datahub-enrich` |
+| Manage assertions, incidents, or subscriptions | `/datahub-quality` |
+| Explore lineage or dependencies | `/datahub-lineage` |
 
-**Key boundary:** Setup handles **environment setup** (CLI install, auth, connectivity) and **agent configuration** (default scopes, profiles). Govern handles **domain assignment to entities**. If the user says "focus on Finance domain", that's Setup (configuring scope). If they say "assign these tables to Finance domain", that's Govern.
+**Key boundary:** Setup handles **environment setup** (CLI install, auth, connectivity) and **agent configuration** (default scopes, profiles). If the user says "focus on Finance domain", that's Setup (configuring scope). If they say "assign these tables to Finance domain", that's Enrich.
 
 ---
 

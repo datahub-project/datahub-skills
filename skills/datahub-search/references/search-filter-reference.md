@@ -13,6 +13,9 @@
 | `owners` | Entity owners | User/group URN |
 | `container` | Parent container | Container URN |
 | `fieldPaths` | Column/field names (datasets) | Field name (e.g., `customer_id`, `email`) |
+| `hasActiveIncidents` | Has active incidents | `true` |
+| `hasFailingAssertions` | Has failing assertions | `true` |
+| `hasErroringAssertions` | Has erroring assertions | `true` |
 
 Use `datahub search list-filters` to discover all available filters.
 Use `datahub search describe-filter <name>` for details on a specific filter.

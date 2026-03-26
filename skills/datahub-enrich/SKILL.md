@@ -38,7 +38,7 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 | Search or discover entities | `/datahub-search` |
 | Explore lineage or dependencies | `/datahub-lineage` |
 | Generate quality reports or audits | `/datahub-audit` |
-| Set up data quality assertions or incidents | Future `/datahub-quality` skill |
+| Set up data quality assertions or incidents | `/datahub-quality` |
 
 ---
 
