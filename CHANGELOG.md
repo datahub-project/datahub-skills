@@ -7,7 +7,7 @@
 
 * added skills for creating and configuring Micro-frontend (MFE) apps ([53e1e74](https://github.com/datahub-project/datahub-skills/commit/53e1e7430a970dcb36783891c0b4ba0097611299))
 * Adding data-quality skill supporting DataHub OSS + Cloud ([#16](https://github.com/datahub-project/datahub-skills/issues/16)) ([7115481](https://github.com/datahub-project/datahub-skills/commit/7115481ebd6403a0753c733556df6237b2e2da7d))
-* modernize skills with progressive disclosure, evaluations, and test suite ([#12](https://github.com/datahub-project/datahub-skills/issues/12)) ([c1cb9a3](https://github.com/datahub-project/datahub-skills/commit/c1cb9a35c97ff5f1a4aa5ae1847fe2ac203a6119))
+* modernize skills with progressive disclosure, evaluations, and test suite.. ([#12](https://github.com/datahub-project/datahub-skills/issues/12)) ([c1cb9a3](https://github.com/datahub-project/datahub-skills/commit/c1cb9a35c97ff5f1a4aa5ae1847fe2ac203a6119))
 
 ## [1.2.1](https://github.com/datahub-project/datahub-skills/compare/v1.2.0...v1.2.1) (2026-03-06)
 
