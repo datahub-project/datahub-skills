@@ -1,6 +1,6 @@
 {
   "name": "datahub-skills",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "DataHub development and interaction toolkit with connector planning, PR review, catalog search, metadata enrichment, lineage tracing, data quality management, and connection setup skills",
   "author": {
     "name": "DataHub Project"
