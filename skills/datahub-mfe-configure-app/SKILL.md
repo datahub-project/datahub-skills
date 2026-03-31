@@ -114,7 +114,7 @@ Tell the user:
 1. Show the user the complete YAML config to add to their production config
    file (which may live in a separate config repo).
 
-2. Explain the env var and volume mount setup. See [reference.md](reference.md)
+2. Explain the env var and volume mount setup. See [reference.md](references/reference.md)
    for the full k8s ConfigMap pattern.
 
 3. Remind the user about `MFE_PUBLIC_PATH`:
@@ -140,7 +140,7 @@ Guide the user through these checks:
 3. **Nav check** (if `showInNav: true`): The sidebar should show the
    `__DISPLAY_LABEL__` item with the chosen icon. Click it to navigate.
 
-If any check fails, see the Troubleshooting section in [reference.md](reference.md).
+If any check fails, see the Troubleshooting section in [reference.md](references/reference.md).
 
 ## Step 5: Summary
 

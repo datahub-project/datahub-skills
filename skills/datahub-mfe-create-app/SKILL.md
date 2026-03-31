@@ -38,7 +38,7 @@ Given an `app_name` like `team-dashboard`:
 ## Step 2: Generate Files
 
 Create the directory at the workspace root (sibling to `datahub-web-react/`).
-Generate **all 7 files** using the templates in [templates.md](templates.md).
+Generate **all 7 files** using the templates in [templates.md](assets/templates.md).
 
 Apply these substitutions to every template:
 
