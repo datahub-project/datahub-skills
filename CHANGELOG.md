@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/datahub-project/datahub-skills/compare/v1.4.0...v1.4.1) (2026-04-21)
+
+
+### Bug Fixes
+
+* invalid source path in marketplace.json ([#21](https://github.com/datahub-project/datahub-skills/issues/21)) ([756c2fb](https://github.com/datahub-project/datahub-skills/commit/756c2fbb0260aff3b5c0017b0416bf0b505b355c))
+* use GitHub App token for release-please to trigger CI checks ([#18](https://github.com/datahub-project/datahub-skills/issues/18)) ([918e415](https://github.com/datahub-project/datahub-skills/commit/918e4158c9b8495289497719a0383ffe8d5e1537))
+
 ## [1.4.0](https://github.com/datahub-project/datahub-skills/compare/v1.3.0...v1.4.0) (2026-03-31)
 
 
