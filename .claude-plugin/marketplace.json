@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "datahub-skills",
-      "source": ".",
+      "source": "./",
       "description": "DataHub development and interaction toolkit with connector planning, PR review, catalog search, metadata enrichment, lineage tracing, data quality management, and connection setup skills"
     }
   ]
