@@ -47,6 +47,17 @@ Manage data quality — create and run assertions (freshness, volume, SQL, field
 > Subscribe me to assertion failures via Slack
 ```
 
+#### Audit
+
+Generate systematic metadata coverage reports and governance health checks across the catalog. Measures description, ownership, tag, glossary term, and domain assignment coverage. Identifies governance gaps — unassigned domains, missing data product membership, deprecated entities with active consumers, and PII classification gaps.
+
+```
+> How complete is our metadata?
+> Which Snowflake tables lack descriptions?
+> /datahub-audit ownership coverage report for the Finance domain
+> Governance health check for PROD datasets
+```
+
 #### Setup
 
 Install the DataHub CLI, configure authentication, verify connectivity, and set up default scopes and profiles for the other interaction skills.
@@ -236,6 +247,7 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 | Metadata enrichment         | Yes                   | Yes                                              |
 | Lineage exploration         | Yes                   | Yes                                              |
 | Data quality management     | Yes                   | Yes                                              |
+| Metadata coverage audit     | Yes                   | Yes                                              |
 | Connection setup            | Yes                   | Yes                                              |
 | Planning workflow           | Yes                   | Yes                                              |
 | Load standards              | Yes                   | Yes                                              |
@@ -257,6 +269,7 @@ Other platforms do the same things through natural language.
 | `/catalog-enrich [entity]`       | Add or update metadata                           |
 | `/catalog-lineage [entity]`      | Explore lineage and trace dependencies           |
 | `/catalog-quality [entity]`      | Manage assertions, incidents, and subscriptions  |
+| `/catalog-audit [scope]`         | Audit metadata coverage and governance health    |
 | `/catalog-setup [task]`          | Set up connection and configure defaults         |
 
 ### Connector development
@@ -306,6 +319,11 @@ datahub-skills/
 │   │   └── templates/
 │   ├── datahub-quality/             # Data quality management
 │   │   ├── SKILL.md
+│   │   ├── references/
+│   │   └── templates/
+│   ├── datahub-audit/               # Metadata coverage and governance audit
+│   │   ├── SKILL.md
+│   │   ├── evaluations/
 │   │   ├── references/
 │   │   └── templates/
 │   ├── datahub-setup/               # Connection setup and config

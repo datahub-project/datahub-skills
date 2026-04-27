@@ -1,0 +1,15 @@
+{
+  "skills": ["datahub-audit"],
+  "query": "Run a governance health check on our PROD datasets",
+  "expected_behavior": [
+    "Classifies intent as a governance audit",
+    "Confirms audit scope with the user before executing",
+    "Checks domain assignment coverage — finds datasets not assigned to any domain",
+    "Checks data product membership — finds datasets not in any data product",
+    "Checks deprecation hygiene — finds deprecated datasets that still have active downstream consumers",
+    "Generates a governance audit report with a summary table",
+    "Applies score thresholds to each governance dimension",
+    "Suggests using /datahub-enrich to assign domains and data products",
+    "Suggests using /datahub-lineage to investigate deprecated entities with consumers"
+  ]
+}

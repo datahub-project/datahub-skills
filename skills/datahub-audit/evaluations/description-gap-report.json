@@ -1,0 +1,14 @@
+{
+  "skills": ["datahub-audit"],
+  "query": "Which tables in BigQuery are missing descriptions?",
+  "expected_behavior": [
+    "Classifies intent as a description coverage audit",
+    "Scopes to BigQuery datasets",
+    "Queries for entities where both description and editableDescription are NULL",
+    "Projects siblings to check whether a dbt sibling holds the description before marking entity as undocumented",
+    "Returns a list of genuinely undocumented entities (not just those missing ingestion-provided descriptions)",
+    "Calculates the description coverage percentage",
+    "Presents results as a table with entity name, platform, and owner",
+    "Suggests using /datahub-enrich to add descriptions to the identified entities"
+  ]
+}

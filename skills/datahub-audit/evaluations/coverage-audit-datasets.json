@@ -1,0 +1,16 @@
+{
+  "skills": ["datahub-audit"],
+  "query": "How complete is our metadata for Snowflake datasets in PROD?",
+  "expected_behavior": [
+    "Classifies intent as a coverage audit",
+    "Confirms audit scope (entity type: dataset, platform: Snowflake, env: PROD) with the user before executing",
+    "Runs a count query first to establish the total entity denominator",
+    "Queries for entities missing descriptions, checking both properties.description and editableProperties.description",
+    "Projects siblings to avoid counting dbt-documented entities as undocumented",
+    "Queries for entities missing owners",
+    "Calculates coverage percentages for each dimension",
+    "Generates a coverage report with a summary table showing counts, gaps, and percentages",
+    "Applies score thresholds (>=80% green, 50-79% yellow, <50% red)",
+    "Suggests using /datahub-enrich to fix the identified gaps"
+  ]
+}

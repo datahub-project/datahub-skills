@@ -39,6 +39,7 @@ TESTS=(
     "$SCRIPT_DIR/test-load-standards.sh"
     "$SCRIPT_DIR/test-connector-planning.sh"
     "$SCRIPT_DIR/test-connector-pr-review.sh"
+    "$SCRIPT_DIR/test-datahub-audit.sh"
 )
 
 passed=0
