@@ -10,9 +10,9 @@
 
 ## Proposed Changes
 
-| # | Entity | URN | Current Value | New Value |
-| --- | --- | --- | --- | --- |
-| 1 | <!-- name --> | <!-- urn --> | <!-- current --> | <!-- proposed --> |
+| #   | Entity        | URN          | Current Value    | New Value         |
+| --- | ------------- | ------------ | ---------------- | ----------------- |
+| 1   | <!-- name --> | <!-- urn --> | <!-- current --> | <!-- proposed --> |
 
 ## Approval
 

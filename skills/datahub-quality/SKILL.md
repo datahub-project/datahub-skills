@@ -39,12 +39,12 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 
 ## Not This Skill
 
-| If the user wants to... | Use this instead |
-| --- | --- |
-| Search or discover entities (without quality focus) | `/datahub-search` |
-| Update metadata (descriptions, tags, ownership) | `/datahub-enrich` |
-| Explore lineage or dependencies | `/datahub-lineage` |
-| Install CLI, authenticate, configure defaults | `/datahub-setup` |
+| If the user wants to...                             | Use this instead   |
+| --------------------------------------------------- | ------------------ |
+| Search or discover entities (without quality focus) | `/datahub-search`  |
+| Update metadata (descriptions, tags, ownership)     | `/datahub-enrich`  |
+| Explore lineage or dependencies                     | `/datahub-lineage` |
+| Install CLI, authenticate, configure defaults       | `/datahub-setup`   |
 
 **Key boundaries:**
 
@@ -71,30 +71,30 @@ User-supplied values (assertion descriptions, incident titles, SQL statements) a
 
 ### Open Source capabilities
 
-| Capability | How |
-| --- | --- |
-| Find assets with health problems | Search with `hasActiveIncidents` or `hasFailingAssertions` filters |
-| Check health status on a dataset | Query `health` field on the entity |
-| List assertions on a dataset | Query `assertions` field on the entity |
-| View assertion run results | Query `runEvents` on an assertion entity |
-| List incidents on a dataset | Query `incidents(state: ACTIVE)` on the entity |
-| View incident details | Fetch incident entity by URN |
-| Report external assertion results | `reportAssertionResult` mutation |
-| Register external assertions | `upsertCustomAssertion` mutation |
+| Capability                        | How                                                                |
+| --------------------------------- | ------------------------------------------------------------------ |
+| Find assets with health problems  | Search with `hasActiveIncidents` or `hasFailingAssertions` filters |
+| Check health status on a dataset  | Query `health` field on the entity                                 |
+| List assertions on a dataset      | Query `assertions` field on the entity                             |
+| View assertion run results        | Query `runEvents` on an assertion entity                           |
+| List incidents on a dataset       | Query `incidents(state: ACTIVE)` on the entity                     |
+| View incident details             | Fetch incident entity by URN                                       |
+| Report external assertion results | `reportAssertionResult` mutation                                   |
+| Register external assertions      | `upsertCustomAssertion` mutation                                   |
 
 ### Cloud-only capabilities (Acryl SaaS)
 
 Everything above, **plus:**
 
-| Capability | How |
-| --- | --- |
-| Create native assertions | `createFreshnessAssertion`, `createVolumeAssertion`, `createSqlAssertion`, `createFieldAssertion` |
-| Create assertion monitors (schedule + evaluate) | `upsertDataset*AssertionMonitor` mutations |
-| Smart assertions (AI-inferred) | `inferWithAI: true` on monitor upsert inputs |
-| Run assertions on demand | `runAssertion`, `runAssertions`, `runAssertionsForAsset` |
-| Raise incidents | `raiseIncident` mutation |
-| Resolve incidents | `updateIncidentStatus` with `state: RESOLVED` |
-| Create notification subscriptions | `createSubscription` mutation |
+| Capability                                      | How                                                                                               |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Create native assertions                        | `createFreshnessAssertion`, `createVolumeAssertion`, `createSqlAssertion`, `createFieldAssertion` |
+| Create assertion monitors (schedule + evaluate) | `upsertDataset*AssertionMonitor` mutations                                                        |
+| Smart assertions (AI-inferred)                  | `inferWithAI: true` on monitor upsert inputs                                                      |
+| Run assertions on demand                        | `runAssertion`, `runAssertions`, `runAssertionsForAsset`                                          |
+| Raise incidents                                 | `raiseIncident` mutation                                                                          |
+| Resolve incidents                               | `updateIncidentStatus` with `state: RESOLVED`                                                     |
+| Create notification subscriptions               | `createSubscription` mutation                                                                     |
 
 ---
 
@@ -229,11 +229,11 @@ rm /tmp/dp-query.graphql
 
 Use search filters to find assets with quality problems across the estate.
 
-| Filter | Description |
-| --- | --- |
-| `hasActiveIncidents` | Assets with at least one active incident |
-| `hasFailingAssertions` | Assets with at least one failing assertion |
-| `hasErroringAssertions` | Assets with erroring assertions |
+| Filter                  | Description                                |
+| ----------------------- | ------------------------------------------ |
+| `hasActiveIncidents`    | Assets with at least one active incident   |
+| `hasFailingAssertions`  | Assets with at least one failing assertion |
+| `hasErroringAssertions` | Assets with erroring assertions            |
 
 ```bash
 datahub -C skill=datahub-quality search "*" \
@@ -318,16 +318,18 @@ query {
 **Overall Health:** FAIL
 
 ### Assertions (3 total)
-| # | Type | Description | Last Result | Last Run |
-|---|------|-------------|-------------|----------|
-| 1 | FRESHNESS | Updated within 24h | FAILURE | 2h ago |
-| 2 | VOLUME | Row count > 1000 | SUCCESS | 2h ago |
-| 3 | FIELD | email not null | SUCCESS | 2h ago |
+
+| #   | Type      | Description        | Last Result | Last Run |
+| --- | --------- | ------------------ | ----------- | -------- |
+| 1   | FRESHNESS | Updated within 24h | FAILURE     | 2h ago   |
+| 2   | VOLUME    | Row count > 1000   | SUCCESS     | 2h ago   |
+| 3   | FIELD     | email not null     | SUCCESS     | 2h ago   |
 
 ### Active Incidents (1)
-| # | Type | Title | Priority | Stage | Raised |
-|---|------|-------|----------|-------|--------|
-| 1 | FRESHNESS | Stale data in orders | HIGH | INVESTIGATION | 3h ago |
+
+| #   | Type      | Title                | Priority | Stage         | Raised |
+| --- | --------- | -------------------- | -------- | ------------- | ------ |
+| 1   | FRESHNESS | Stale data in orders | HIGH     | INVESTIGATION | 3h ago |
 ```
 
 ---
@@ -340,14 +342,14 @@ For write operations, present what will be created or changed before executing. 
 
 The user specifies exactly what to check and what thresholds to use. Available check types:
 
-| Type | Mutation | What it checks |
-| --- | --- | --- |
-| **Freshness** | `createFreshnessAssertion` / `upsertDatasetFreshnessAssertionMonitor` | Data should update on a schedule (cron, fixed interval, or since last check) |
-| **Volume** | `createVolumeAssertion` / `upsertDatasetVolumeAssertionMonitor` | Row count total, row count change, segment counts |
-| **Field (column)** | `createFieldAssertion` / `upsertDatasetFieldAssertionMonitor` | Column-level — nulls, ranges, regex, uniqueness, field metrics |
-| **Schema** | `upsertDatasetSchemaAssertionMonitor` (monitor only) | Expected columns exist, compatibility mode (exact, superset, subset) |
-| **SQL** | `createSqlAssertion` / `upsertDatasetSqlAssertionMonitor` | Custom SQL metric compared against a threshold |
-| **Custom** | `upsertCustomAssertion` + `reportAssertionResult` | External tool results pushed to DataHub (works on OSS too) |
+| Type               | Mutation                                                              | What it checks                                                               |
+| ------------------ | --------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Freshness**      | `createFreshnessAssertion` / `upsertDatasetFreshnessAssertionMonitor` | Data should update on a schedule (cron, fixed interval, or since last check) |
+| **Volume**         | `createVolumeAssertion` / `upsertDatasetVolumeAssertionMonitor`       | Row count total, row count change, segment counts                            |
+| **Field (column)** | `createFieldAssertion` / `upsertDatasetFieldAssertionMonitor`         | Column-level — nulls, ranges, regex, uniqueness, field metrics               |
+| **Schema**         | `upsertDatasetSchemaAssertionMonitor` (monitor only)                  | Expected columns exist, compatibility mode (exact, superset, subset)         |
+| **SQL**            | `createSqlAssertion` / `upsertDatasetSqlAssertionMonitor`             | Custom SQL metric compared against a threshold                               |
+| **Custom**         | `upsertCustomAssertion` + `reportAssertionResult`                     | External tool results pushed to DataHub (works on OSS too)                   |
 
 **Freshness + Volume + Field** cover 80% of data quality needs. Suggest these first. SQL assertions are powerful but require the user to write and maintain SQL. Schema assertions guard against breaking changes.
 
@@ -357,13 +359,13 @@ The user specifies exactly what to check and what thresholds to use. Available c
 
 Monitors need to know **how** to execute the check. This is controlled by `evaluationParameters.sourceType`, which is **required** on freshness, volume, and field monitors. Pick the right source type based on the user's platform and performance needs:
 
-| Assertion type | Source type options | Default recommendation |
-| --- | --- | --- |
-| **Freshness** | `INFORMATION_SCHEMA` (system metadata), `FIELD_VALUE` (timestamp column), `AUDIT_LOG` (audit API), `FILE_METADATA` (filesystem), `DATAHUB_OPERATION` (DataHub operation aspect) | `INFORMATION_SCHEMA` for warehouses; `FIELD_VALUE` when the user has a reliable `updated_at` column |
-| **Volume** | `INFORMATION_SCHEMA` (fast, approximate), `QUERY` (exact `COUNT(*)`, slower), `DATAHUB_DATASET_PROFILE` (profile aspect) | `QUERY` for accuracy; `INFORMATION_SCHEMA` if speed matters |
-| **Field** | `ALL_ROWS_QUERY` (full scan), `CHANGED_ROWS_QUERY` (incremental, requires `changedRowsField`), `DATAHUB_DATASET_PROFILE` (profile, metrics only) | `ALL_ROWS_QUERY` for most cases; `DATAHUB_DATASET_PROFILE` if profiles are already collected |
-| **SQL** | N/A — runs the user's SQL directly against the warehouse | — |
-| **Schema** | Optional — only `DATAHUB_SCHEMA` (uses DataHub's schema metadata) | Omit — defaults to checking DataHub metadata |
+| Assertion type | Source type options                                                                                                                                                             | Default recommendation                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Freshness**  | `INFORMATION_SCHEMA` (system metadata), `FIELD_VALUE` (timestamp column), `AUDIT_LOG` (audit API), `FILE_METADATA` (filesystem), `DATAHUB_OPERATION` (DataHub operation aspect) | `INFORMATION_SCHEMA` for warehouses; `FIELD_VALUE` when the user has a reliable `updated_at` column |
+| **Volume**     | `INFORMATION_SCHEMA` (fast, approximate), `QUERY` (exact `COUNT(*)`, slower), `DATAHUB_DATASET_PROFILE` (profile aspect)                                                        | `QUERY` for accuracy; `INFORMATION_SCHEMA` if speed matters                                         |
+| **Field**      | `ALL_ROWS_QUERY` (full scan), `CHANGED_ROWS_QUERY` (incremental, requires `changedRowsField`), `DATAHUB_DATASET_PROFILE` (profile, metrics only)                                | `ALL_ROWS_QUERY` for most cases; `DATAHUB_DATASET_PROFILE` if profiles are already collected        |
+| **SQL**        | N/A — runs the user's SQL directly against the warehouse                                                                                                                        | —                                                                                                   |
+| **Schema**     | Optional — only `DATAHUB_SCHEMA` (uses DataHub's schema metadata)                                                                                                               | Omit — defaults to checking DataHub metadata                                                        |
 
 For freshness with `FIELD_VALUE`, the user must also specify which timestamp column to check:
 
@@ -380,11 +382,11 @@ evaluationParameters: {
 
 Smart assertions use historical data patterns to **automatically infer thresholds** — no manual configuration needed. Pass `inferWithAI: true` on the monitor upsert input.
 
-| Check type | Monitor mutation | What AI infers |
-| --- | --- | --- |
-| **Freshness** | `upsertDatasetFreshnessAssertionMonitor` | Normal update cadence from historical patterns |
-| **Volume** | `upsertDatasetVolumeAssertionMonitor` | Expected row count range from historical trends |
-| **Column (field metrics)** | `upsertDatasetFieldAssertionMonitor` | Normal metric ranges (null %, unique %, etc.) from historical data |
+| Check type                 | Monitor mutation                         | What AI infers                                                     |
+| -------------------------- | ---------------------------------------- | ------------------------------------------------------------------ |
+| **Freshness**              | `upsertDatasetFreshnessAssertionMonitor` | Normal update cadence from historical patterns                     |
+| **Volume**                 | `upsertDatasetVolumeAssertionMonitor`    | Expected row count range from historical trends                    |
+| **Column (field metrics)** | `upsertDatasetFieldAssertionMonitor`     | Normal metric ranges (null %, unique %, etc.) from historical data |
 
 Smart assertions are **only available as monitors** (they need a schedule to collect training data). They go through a `TRAINING` phase before evaluation begins — set expectations with the user that results may take time to stabilize.
 
@@ -412,19 +414,19 @@ Include `actions` in any `create*Assertion` or `upsertDataset*AssertionMonitor` 
 
 ### Incident fields
 
-| Field | Values |
-| --- | --- |
-| Type | `FRESHNESS`, `VOLUME`, `FIELD`, `SQL`, `DATA_SCHEMA`, `OPERATIONAL`, `CUSTOM` |
-| Priority | `CRITICAL` > `HIGH` > `MEDIUM` > `LOW` |
-| Stages | `TRIAGE` → `INVESTIGATION` → `WORK_IN_PROGRESS` → `FIXED` / `NO_ACTION_REQUIRED` |
+| Field    | Values                                                                           |
+| -------- | -------------------------------------------------------------------------------- |
+| Type     | `FRESHNESS`, `VOLUME`, `FIELD`, `SQL`, `DATA_SCHEMA`, `OPERATIONAL`, `CUSTOM`    |
+| Priority | `CRITICAL` > `HIGH` > `MEDIUM` > `LOW`                                           |
+| Stages   | `TRIAGE` → `INVESTIGATION` → `WORK_IN_PROGRESS` → `FIXED` / `NO_ACTION_REQUIRED` |
 
 ### Subscription channels
 
-| Channel | Config field | Key parameters |
-| --- | --- | --- |
-| **Slack** | `slackSettings` | `userHandle` (DM) or `channels` (channel names) |
-| **Email** | `emailSettings` | `email` address |
-| **Microsoft Teams** | `teamsSettings` | `user` or `channels` |
+| Channel             | Config field    | Key parameters                                  |
+| ------------------- | --------------- | ----------------------------------------------- |
+| **Slack**           | `slackSettings` | `userHandle` (DM) or `channels` (channel names) |
+| **Email**           | `emailSettings` | `email` address                                 |
+| **Microsoft Teams** | `teamsSettings` | `user` or `channels`                            |
 
 Quality-relevant change types: `ASSERTION_PASSED`, `ASSERTION_FAILED`, `ASSERTION_ERROR`, `INCIDENT_RAISED`, `INCIDENT_RESOLVED`.
 
@@ -439,13 +441,13 @@ Use `UPSTREAM_ENTITY_CHANGE` (in addition to `ENTITY_CHANGE`) if the user also w
 **Operation:** Create freshness assertion monitor
 **Tier:** Cloud
 
-| Parameter | Value |
-| --- | --- |
-| Type | Freshness (dataset change) |
-| Schedule | Every 6 hours |
-| Evaluation | Daily at 9am UTC |
-| On failure | Raise incident |
-| On success | Resolve incident |
+| Parameter  | Value                      |
+| ---------- | -------------------------- |
+| Type       | Freshness (dataset change) |
+| Schedule   | Every 6 hours              |
+| Evaluation | Daily at 9am UTC           |
+| On failure | Raise incident             |
+| On success | Resolve incident           |
 
 Proceed? (yes/no)
 ```
@@ -471,12 +473,15 @@ Use `datahub graphql --query '...' --format json`. See the reference docs for fu
 ### GraphQL best practices
 
 1. **Only use documented fields and mutations.** Do not guess or invent GraphQL field names from training data — they are often wrong. The CLI has built-in introspection commands to verify the live schema (see `../shared-references/datahub-cli-reference.md` → "GraphQL Discovery"):
+
    ```bash
    datahub graphql --describe dataProduct --recurse --format json   # show fields on a type
    datahub graphql --list-operations --format json                  # list all available operations
    datahub graphql --list-mutations --format json                   # list mutations only
    ```
+
    If you need a field or operation not documented in this skill, **introspect first** using these commands rather than guessing.
+
 2. **If a query fails with `FieldUndefined`**, run `--describe` on the parent type to see what fields actually exist. Do not try a different guessed name.
 3. **Use `--strip-unknown-fields` on read queries** as a safety net — it silently drops unrecognized fields instead of failing. Never use on mutations (removing fields could change behavior).
 4. Use `--variables` with a temp JSON file for any mutation involving dataset URNs (they contain parentheses that break shell escaping).
@@ -651,12 +656,12 @@ After executing, confirm the change took effect:
 
 ## Reference Documents
 
-| Document | Path | Purpose |
-| --- | --- | --- |
-| Assertion mutations reference | `references/assertion-mutations-reference.md` | All assertion types, standalone/monitor/smart patterns, running, reporting |
-| Incident & subscription reference | `references/incident-subscription-reference.md` | Incident CRUD, subscription CRUD, notification channels |
-| Quality report template | `templates/quality-report.template.md` | Quality status report format |
-| CLI reference (shared) | `../shared-references/datahub-cli-reference.md` | CLI syntax |
+| Document                          | Path                                            | Purpose                                                                    |
+| --------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------- |
+| Assertion mutations reference     | `references/assertion-mutations-reference.md`   | All assertion types, standalone/monitor/smart patterns, running, reporting |
+| Incident & subscription reference | `references/incident-subscription-reference.md` | Incident CRUD, subscription CRUD, notification channels                    |
+| Quality report template           | `templates/quality-report.template.md`          | Quality status report format                                               |
+| CLI reference (shared)            | `../shared-references/datahub-cli-reference.md` | CLI syntax                                                                 |
 
 ---
 

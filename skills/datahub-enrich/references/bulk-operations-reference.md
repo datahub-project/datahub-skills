@@ -16,12 +16,12 @@ For operations without batch support (`updateDescription`, `upsertStructuredProp
 
 ## Safety Limits
 
-| Limit | Value |
-| --- | --- |
-| Preview | Show up to 20 entities |
-| Auto-proceed | Up to 50 entities with confirmation |
-| Hard limit | None (user can override, but always confirm count) |
-| Error tolerance | Stop on first error |
+| Limit           | Value                                              |
+| --------------- | -------------------------------------------------- |
+| Preview         | Show up to 20 entities                             |
+| Auto-proceed    | Up to 50 entities with confirmation                |
+| Hard limit      | None (user can override, but always confirm count) |
+| Error tolerance | Stop on first error                                |
 
 ## Error Handling
 

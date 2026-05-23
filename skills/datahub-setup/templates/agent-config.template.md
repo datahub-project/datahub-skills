@@ -8,15 +8,15 @@ name: "<!-- PROFILE_NAME -->"
 description: "<!-- DESCRIPTION -->"
 
 scope:
-  platforms: []         # e.g., ["snowflake", "bigquery"]. Empty = all.
-  domains: []           # e.g., ["Finance"]. Empty = all.
-  entity_types: []      # e.g., ["dataset", "dashboard"]. Empty = all.
-  environment: ""       # e.g., "PROD". Empty = all.
+  platforms: [] # e.g., ["snowflake", "bigquery"]. Empty = all.
+  domains: [] # e.g., ["Finance"]. Empty = all.
+  entity_types: [] # e.g., ["dataset", "dashboard"]. Empty = all.
+  environment: "" # e.g., "PROD". Empty = all.
 
 search:
   default_count: 10
   exclude_deprecated: false
   exclude_soft_deleted: true
 
-owner_filter: ""        # e.g., "urn:li:corpuser:jdoe"
+owner_filter: "" # e.g., "urn:li:corpuser:jdoe"
 ```

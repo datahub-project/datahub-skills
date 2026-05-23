@@ -2,21 +2,21 @@
 
 ## Entity Types for Search
 
-| User Mentions | Entity Type Filter | DataHub Entity |
-| --- | --- | --- |
-| tables, views, topics, files, datasets | `dataset` | dataset |
-| dashboards, reports | `dashboard` | dashboard |
-| charts, visualizations, widgets | `chart` | chart |
-| pipelines, DAGs, workflows, data flows | `dataFlow` | dataFlow |
-| tasks, jobs, operators | `dataJob` | dataJob |
-| databases, schemas, folders, projects | `container` | container |
-| glossary terms, business terms | `glossaryTerm` | glossaryTerm |
-| tags, labels | `tag` | tag |
-| domains, business domains | `domain` | domain |
-| users, people | `corpuser` | corpuser |
-| groups, teams | `corpGroup` | corpGroup |
-| data products | `dataProduct` | dataProduct |
-| ML models, machine learning | `mlModel` | mlModel |
+| User Mentions                            | Entity Type Filter   | DataHub Entity     |
+| ---------------------------------------- | -------------------- | ------------------ |
+| tables, views, topics, files, datasets   | `dataset`            | dataset            |
+| dashboards, reports                      | `dashboard`          | dashboard          |
+| charts, visualizations, widgets          | `chart`              | chart              |
+| pipelines, DAGs, workflows, data flows   | `dataFlow`           | dataFlow           |
+| tasks, jobs, operators                   | `dataJob`            | dataJob            |
+| databases, schemas, folders, projects    | `container`          | container          |
+| glossary terms, business terms           | `glossaryTerm`       | glossaryTerm       |
+| tags, labels                             | `tag`                | tag                |
+| domains, business domains                | `domain`             | domain             |
+| users, people                            | `corpuser`           | corpuser           |
+| groups, teams                            | `corpGroup`          | corpGroup          |
+| data products                            | `dataProduct`        | dataProduct        |
+| ML models, machine learning              | `mlModel`            | mlModel            |
 | structured properties, custom properties | `structuredProperty` | structuredProperty |
 
 ## URN Format Quick Reference
@@ -39,20 +39,20 @@ structuredProperty:  urn:li:structuredProperty:QUALIFIED_NAME
 
 ## Common Platforms
 
-| Platform | DataHub ID |
-| --- | --- |
-| Snowflake | `snowflake` |
-| BigQuery | `bigquery` |
-| Redshift | `redshift` |
-| PostgreSQL | `postgres` |
-| MySQL | `mysql` |
+| Platform   | DataHub ID   |
+| ---------- | ------------ |
+| Snowflake  | `snowflake`  |
+| BigQuery   | `bigquery`   |
+| Redshift   | `redshift`   |
+| PostgreSQL | `postgres`   |
+| MySQL      | `mysql`      |
 | Databricks | `databricks` |
-| dbt | `dbt` |
-| Airflow | `airflow` |
-| Looker | `looker` |
-| Tableau | `tableau` |
-| Kafka | `kafka` |
-| Spark | `spark` |
-| Hive | `hive` |
-| S3 | `s3` |
-| Power BI | `powerbi` |
+| dbt        | `dbt`        |
+| Airflow    | `airflow`    |
+| Looker     | `looker`     |
+| Tableau    | `tableau`    |
+| Kafka      | `kafka`      |
+| Spark      | `spark`      |
+| Hive       | `hive`       |
+| S3         | `s3`         |
+| Power BI   | `powerbi`    |

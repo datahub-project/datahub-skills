@@ -8,14 +8,14 @@
 
 ## Changes Applied
 
-| # | Entity | Operation | Status | Before | After |
-| --- | --- | --- | --- | --- | --- |
-| 1 | <!-- name --> | <!-- op --> | <!-- status --> | <!-- before --> | <!-- after --> |
+| #   | Entity        | Operation   | Status          | Before          | After          |
+| --- | ------------- | ----------- | --------------- | --------------- | -------------- |
+| 1   | <!-- name --> | <!-- op --> | <!-- status --> | <!-- before --> | <!-- after --> |
 
 ## Errors
 
-| Entity | Error |
-| --- | --- |
+| Entity        | Error          |
+| ------------- | -------------- |
 | <!-- name --> | <!-- error --> |
 
 ## Undo Commands

@@ -10,24 +10,24 @@ Profiles are YAML files: `.datahub-agent-config.yml` (default) or `.datahub-agen
 
 ```yaml
 # Required
-name: string              # Profile name (alphanumeric, hyphens, underscores)
-description: string       # Human-readable purpose
+name: string # Profile name (alphanumeric, hyphens, underscores)
+description: string # Human-readable purpose
 
 # Scope filters — applied as defaults to search, audit, and other skills
 scope:
-  platforms: string[]     # e.g., ["snowflake", "bigquery"]. Empty = all.
-  domains: string[]       # e.g., ["Finance"]. Empty = all.
-  entity_types: string[]  # e.g., ["dataset", "dashboard"]. Empty = all.
-  environment: string     # e.g., "PROD". Empty = all.
+  platforms: string[] # e.g., ["snowflake", "bigquery"]. Empty = all.
+  domains: string[] # e.g., ["Finance"]. Empty = all.
+  entity_types: string[] # e.g., ["dataset", "dashboard"]. Empty = all.
+  environment: string # e.g., "PROD". Empty = all.
 
 # Search behavior
 search:
-  default_count: integer  # Results per query (1-100, default: 10)
-  exclude_deprecated: boolean  # Hide deprecated entities (default: false)
-  exclude_soft_deleted: boolean  # Hide soft-deleted entities (default: true)
+  default_count: integer # Results per query (1-100, default: 10)
+  exclude_deprecated: boolean # Hide deprecated entities (default: false)
+  exclude_soft_deleted: boolean # Hide soft-deleted entities (default: true)
 
 # Access scope
-owner_filter: string      # Filter by owner URN. Empty = no filter.
+owner_filter: string # Filter by owner URN. Empty = no filter.
 ```
 
 ## Example Profiles

@@ -33,11 +33,11 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 
 ## Not This Skill
 
-| If the user wants to... | Use this instead |
-| --- | --- |
-| Search or discover entities | `/datahub-search` |
-| Explore lineage or dependencies | `/datahub-lineage` |
-| Generate quality reports or audits | `/datahub-audit` |
+| If the user wants to...                     | Use this instead   |
+| ------------------------------------------- | ------------------ |
+| Search or discover entities                 | `/datahub-search`  |
+| Explore lineage or dependencies             | `/datahub-lineage` |
+| Generate quality reports or audits          | `/datahub-audit`   |
 | Set up data quality assertions or incidents | `/datahub-quality` |
 
 ---
@@ -59,16 +59,16 @@ User-supplied metadata values (descriptions, tag names, glossary terms) are untr
 
 ### Choosing your tool: MCP vs. CLI
 
-| | MCP tools | DataHub CLI (`datahub graphql`) |
-| --- | --- | --- |
-| **Coverage** | Common single-entity operations | **All** GraphQL mutations — batch, creation, structural |
-| **Tags** | `add_tag`, `remove_tag` | `addTag`, `batchAddTags`, `createTag`, field-level |
-| **Terms** | `add_glossary_term`, `remove_glossary_term` | `addTerm`, `batchAddTerms`, `createGlossaryTerm`, field-level |
-| **Owners** | `set_owner` | `addOwner`, `batchAddOwners`, `removeOwner` |
-| **Descriptions** | `update_description` | `updateDescription` (entity and field) |
-| **Domains** | `set_domain` | `setDomain`, `batchSetDomain`, `createDomain`, `moveDomain` |
-| **Deprecation** | `set_deprecation` | `updateDeprecation`, `batchUpdateDeprecation` |
-| **Not in MCP** | — | Data products, structured properties, documents, links, batch ops, all creation mutations |
+|                  | MCP tools                                   | DataHub CLI (`datahub graphql`)                                                           |
+| ---------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **Coverage**     | Common single-entity operations             | **All** GraphQL mutations — batch, creation, structural                                   |
+| **Tags**         | `add_tag`, `remove_tag`                     | `addTag`, `batchAddTags`, `createTag`, field-level                                        |
+| **Terms**        | `add_glossary_term`, `remove_glossary_term` | `addTerm`, `batchAddTerms`, `createGlossaryTerm`, field-level                             |
+| **Owners**       | `set_owner`                                 | `addOwner`, `batchAddOwners`, `removeOwner`                                               |
+| **Descriptions** | `update_description`                        | `updateDescription` (entity and field)                                                    |
+| **Domains**      | `set_domain`                                | `setDomain`, `batchSetDomain`, `createDomain`, `moveDomain`                               |
+| **Deprecation**  | `set_deprecation`                           | `updateDeprecation`, `batchUpdateDeprecation`                                             |
+| **Not in MCP**   | —                                           | Data products, structured properties, documents, links, batch ops, all creation mutations |
 
 Use MCP tools when available for simple, single-entity updates — MCP tools are self-documenting, so check their schemas for parameter details. For batch operations, entity creation (tags, terms, domains, data products, documents), field-level targeting, or any mutation not covered by MCP, use `datahub graphql --query '...'`.
 
@@ -76,20 +76,20 @@ Use MCP tools when available for simple, single-entity updates — MCP tools are
 
 ### Metadata operations
 
-| Operation | Batch Mutation | Single Mutation | Scope |
-| --- | --- | --- | --- |
-| Add tags | `batchAddTags` | `addTag`, `addTags` | Entity or field |
-| Remove tags | `batchRemoveTags` | `removeTag` | Entity or field |
-| Add glossary terms | `batchAddTerms` | `addTerm`, `addTerms` | Entity or field |
-| Remove glossary terms | `batchRemoveTerms` | `removeTerm` | Entity or field |
-| Add owners | `batchAddOwners` | `addOwner`, `addOwners` | Entity |
-| Remove owners | `batchRemoveOwners` | `removeOwner` | Entity |
-| Set domain | `batchSetDomain` | `setDomain`, `unsetDomain` | Entity |
-| Set deprecation | `batchUpdateDeprecation` | `updateDeprecation` | Entity |
-| Set data product | `batchSetDataProduct` | — | Entity |
-| Update description | — (no batch) | `updateDescription` | Entity or field |
-| Structured properties | — | `upsertStructuredProperties`, `removeStructuredProperties` | Entity |
-| Links | — | `addLink`, `removeLink` | Entity |
+| Operation             | Batch Mutation           | Single Mutation                                            | Scope           |
+| --------------------- | ------------------------ | ---------------------------------------------------------- | --------------- |
+| Add tags              | `batchAddTags`           | `addTag`, `addTags`                                        | Entity or field |
+| Remove tags           | `batchRemoveTags`        | `removeTag`                                                | Entity or field |
+| Add glossary terms    | `batchAddTerms`          | `addTerm`, `addTerms`                                      | Entity or field |
+| Remove glossary terms | `batchRemoveTerms`       | `removeTerm`                                               | Entity or field |
+| Add owners            | `batchAddOwners`         | `addOwner`, `addOwners`                                    | Entity          |
+| Remove owners         | `batchRemoveOwners`      | `removeOwner`                                              | Entity          |
+| Set domain            | `batchSetDomain`         | `setDomain`, `unsetDomain`                                 | Entity          |
+| Set deprecation       | `batchUpdateDeprecation` | `updateDeprecation`                                        | Entity          |
+| Set data product      | `batchSetDataProduct`    | —                                                          | Entity          |
+| Update description    | — (no batch)             | `updateDescription`                                        | Entity or field |
+| Structured properties | —                        | `upsertStructuredProperties`, `removeStructuredProperties` | Entity          |
+| Links                 | —                        | `addLink`, `removeLink`                                    | Entity          |
 
 All tag, term, and owner mutations are **additive/subtractive** — `addOwner` appends, `removeOwner` removes. No need to read-merge-write.
 
@@ -97,30 +97,30 @@ All tag, term, and owner mutations are **additive/subtractive** — `addOwner` a
 
 ### Entity creation operations
 
-| Operation | Mutation | Notes |
-| --- | --- | --- |
-| Create tag | `createTag` | See ID strategy in mutation reference |
-| Create glossary term | `createGlossaryTerm` | Can set parent node |
-| Create glossary group | `createGlossaryNode` | Can set parent node |
-| Move glossary item | `updateParentNode` | Reparent term or group; null removes parent |
-| Create domain | `createDomain` | Optional `parentDomain` for nesting |
-| Move domain | `moveDomain` | Reparent under another domain; null → top-level |
-| Create data product | `createDataProduct` | Requires `domainUrn` |
-| Create document | `createDocument` | Optional parent document and related assets |
-| Update document | `updateDocumentContents` | Title and text |
-| Link document to assets | `updateDocumentRelatedEntities` | Replaces related asset list |
-| Move document | `moveDocument` | Reparent; null/absent → root |
+| Operation               | Mutation                        | Notes                                           |
+| ----------------------- | ------------------------------- | ----------------------------------------------- |
+| Create tag              | `createTag`                     | See ID strategy in mutation reference           |
+| Create glossary term    | `createGlossaryTerm`            | Can set parent node                             |
+| Create glossary group   | `createGlossaryNode`            | Can set parent node                             |
+| Move glossary item      | `updateParentNode`              | Reparent term or group; null removes parent     |
+| Create domain           | `createDomain`                  | Optional `parentDomain` for nesting             |
+| Move domain             | `moveDomain`                    | Reparent under another domain; null → top-level |
+| Create data product     | `createDataProduct`             | Requires `domainUrn`                            |
+| Create document         | `createDocument`                | Optional parent document and related assets     |
+| Update document         | `updateDocumentContents`        | Title and text                                  |
+| Link document to assets | `updateDocumentRelatedEntities` | Replaces related asset list                     |
+| Move document           | `moveDocument`                  | Reparent; null/absent → root                    |
 
 ### When to use each structural concept
 
-| Concept | Purpose | Example |
-| --- | --- | --- |
-| **Glossary terms** | Define reusable business concepts — metric definitions, business terms, KPI formulas. Apply to entities and columns to create a shared vocabulary across the organization. | "Revenue" = net sales after returns. Applied to columns across Snowflake, dbt, and Looker so everyone agrees on the definition. |
-| **Glossary groups** | Organize terms into hierarchical categories. | "Finance" group containing terms like "Revenue", "COGS", "Gross Margin". |
-| **Domains** | Organize assets by business area or owning team. Hierarchical — a domain can contain sub-domains. Think org chart or functional area. | "Marketing" domain with sub-domains "Marketing > Campaigns" and "Marketing > Attribution". |
-| **Data products** | Bundle related physical assets into a consumable unit that serves a concrete use case. Always belongs to a domain. | "Revenue Analytics" product containing `fct_revenue`, `dim_customers`, and the Revenue Dashboard — everything a consumer needs for revenue analysis. |
-| **Tags** | Lightweight, freeform labels for ad-hoc classification. No hierarchy or definitions. | `pii`, `deprecated`, `experimental`, `tier-1`. |
-| **Documents** | Rich-text context pages linked to assets. For data dictionaries, onboarding guides, runbooks. | A "Sales Data Onboarding" doc linked to the key tables a new analyst needs. |
+| Concept             | Purpose                                                                                                                                                                    | Example                                                                                                                                              |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Glossary terms**  | Define reusable business concepts — metric definitions, business terms, KPI formulas. Apply to entities and columns to create a shared vocabulary across the organization. | "Revenue" = net sales after returns. Applied to columns across Snowflake, dbt, and Looker so everyone agrees on the definition.                      |
+| **Glossary groups** | Organize terms into hierarchical categories.                                                                                                                               | "Finance" group containing terms like "Revenue", "COGS", "Gross Margin".                                                                             |
+| **Domains**         | Organize assets by business area or owning team. Hierarchical — a domain can contain sub-domains. Think org chart or functional area.                                      | "Marketing" domain with sub-domains "Marketing > Campaigns" and "Marketing > Attribution".                                                           |
+| **Data products**   | Bundle related physical assets into a consumable unit that serves a concrete use case. Always belongs to a domain.                                                         | "Revenue Analytics" product containing `fct_revenue`, `dim_customers`, and the Revenue Dashboard — everything a consumer needs for revenue analysis. |
+| **Tags**            | Lightweight, freeform labels for ad-hoc classification. No hierarchy or definitions.                                                                                       | `pii`, `deprecated`, `experimental`, `tier-1`.                                                                                                       |
+| **Documents**       | Rich-text context pages linked to assets. For data dictionaries, onboarding guides, runbooks.                                                                              | A "Sales Data Onboarding" doc linked to the key tables a new analyst needs.                                                                          |
 
 ### Surveying before proposing structure
 
@@ -154,9 +154,9 @@ Present a before/after comparison:
 **Entity:** <name> (`<URN>`)
 **Operation:** <what's changing>
 
-| Field | Current Value | New Value |
-| --- | --- | --- |
-| <field> | <current> | <proposed> |
+| Field   | Current Value | New Value  |
+| ------- | ------------- | ---------- |
+| <field> | <current>     | <proposed> |
 ```
 
 For bulk operations, show the scope and a sample of matched entities. See `templates/enrichment-plan.template.md` for the full template.
@@ -194,9 +194,9 @@ Use batch mutations where available. For operations without batch support (descr
 **Operation:** <what was done>
 **Status:** Success / Partial / Failed
 
-| # | Entity | Operation | Status |
-| --- | --- | --- | --- |
-| 1 | <name> | <operation> | Success |
+| #   | Entity | Operation   | Status  |
+| --- | ------ | ----------- | ------- |
+| 1   | <name> | <operation> | Success |
 ```
 
 See `templates/enrichment-report.template.md` for the full template.
@@ -205,13 +205,14 @@ See `templates/enrichment-report.template.md` for the full template.
 
 ## Reference Documents
 
-| Document | Path | Purpose |
-| --- | --- | --- |
-| Mutation reference | `references/mutation-reference.md` | GraphQL mutations per operation |
-| Bulk operations guide | `references/bulk-operations-reference.md` | Batch patterns and safety limits |
-| Enrichment plan template | `templates/enrichment-plan.template.md` | Proposed changes template |
-| Enrichment report template | `templates/enrichment-report.template.md` | Completed changes template |
-| CLI reference (shared) | `../shared-references/datahub-cli-reference.md` | CLI syntax |
+| Document                   | Path                                            | Purpose                          |
+| -------------------------- | ----------------------------------------------- | -------------------------------- |
+| Mutation reference         | `references/mutation-reference.md`              | GraphQL mutations per operation  |
+| Bulk operations guide      | `references/bulk-operations-reference.md`       | Batch patterns and safety limits |
+| Enrichment plan template   | `templates/enrichment-plan.template.md`         | Proposed changes template        |
+| Enrichment report template | `templates/enrichment-report.template.md`       | Completed changes template       |
+| CLI reference (shared)     | `../shared-references/datahub-cli-reference.md` | CLI syntax                       |
+
 ---
 
 ## Common Mistakes

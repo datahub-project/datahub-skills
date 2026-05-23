@@ -19,9 +19,9 @@ Data quality management for DataHub — assertions, incidents, and notification 
 
 ## Files
 
-| File | Purpose |
-| --- | --- |
-| `SKILL.md` | Main skill instructions |
-| `references/assertion-mutations-reference.md` | GraphQL mutations for all assertion types |
+| File                                            | Purpose                                         |
+| ----------------------------------------------- | ----------------------------------------------- |
+| `SKILL.md`                                      | Main skill instructions                         |
+| `references/assertion-mutations-reference.md`   | GraphQL mutations for all assertion types       |
 | `references/incident-subscription-reference.md` | Incident and subscription mutations and queries |
-| `templates/quality-report.template.md` | Quality status report format |
+| `templates/quality-report.template.md`          | Quality status report format                    |

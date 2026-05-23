@@ -10,17 +10,17 @@ The config file is served by the DataHub Play backend at `/mfe/config`. The
 frontend parses it as YAML and validates each entry.
 
 ```yaml
-subNavigationMode: false    # true = dropdown menu, false = sidebar group
+subNavigationMode: false # true = dropdown menu, false = sidebar group
 microFrontends:
-  - id: unique-id           # Unique identifier (string, required)
-    label: Display Name     # Shown in nav and page header (string, required)
-    path: /url-path         # URL path — becomes /mfe/url-path (string, must start with /)
-    remoteEntry: http://host:port/remoteEntry.js  # Full URL to remote entry (string, required)
-    module: federationName/mount   # Must match ModuleFederationPlugin.name + "/mount" (string with /)
+  - id: unique-id # Unique identifier (string, required)
+    label: Display Name # Shown in nav and page header (string, required)
+    path: /url-path # URL path — becomes /mfe/url-path (string, must start with /)
+    remoteEntry: http://host:port/remoteEntry.js # Full URL to remote entry (string, required)
+    module: federationName/mount # Must match ModuleFederationPlugin.name + "/mount" (string with /)
     flags:
-      enabled: true         # Whether to load this MFE (boolean, required)
-      showInNav: true       # Whether to show in sidebar (boolean, required)
-    navIcon: Trophy         # Phosphor icon name (non-empty string, required)
+      enabled: true # Whether to load this MFE (boolean, required)
+      showInNav: true # Whether to show in sidebar (boolean, required)
+    navIcon: Trophy # Phosphor icon name (non-empty string, required)
 ```
 
 ### Validation Rules (from `mfeConfigLoader.tsx`)
@@ -39,16 +39,16 @@ Invalid entries are logged and skipped; they don't break other MFEs.
 
 ## Environment Variables
 
-| Variable | Where | Purpose |
-|---|---|---|
-| `MFE_CONFIG_FILE_PATH` | `datahub-frontend` container (Docker, k8s) | Absolute path to the MFE YAML config file |
-| `MFE_PUBLIC_PATH` | MFE build time | Sets webpack `output.publicPath` for production builds |
+| Variable               | Where                                      | Purpose                                                |
+| ---------------------- | ------------------------------------------ | ------------------------------------------------------ |
+| `MFE_CONFIG_FILE_PATH` | `datahub-frontend` container (Docker, k8s) | Absolute path to the MFE YAML config file              |
+| `MFE_PUBLIC_PATH`      | MFE build time                             | Sets webpack `output.publicPath` for production builds |
 
 ### Default values by workflow
 
-| Workflow | Config file used | How the default is set |
-|---|---|---|
-| Docker / `datahub-dev.sh` | `datahub-frontend/conf/mfe.config.dev.yaml` | `ENV MFE_CONFIG_FILE_PATH=...` in `docker/datahub-frontend/Dockerfile` line 58 |
+| Workflow                     | Config file used                              | How the default is set                                                                      |
+| ---------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Docker / `datahub-dev.sh`    | `datahub-frontend/conf/mfe.config.dev.yaml`   | `ENV MFE_CONFIG_FILE_PATH=...` in `docker/datahub-frontend/Dockerfile` line 58              |
 | Play server / sbt / IntelliJ | `datahub-frontend/conf/mfe.config.local.yaml` | `MFE_CONFIG_FILE_PATH=../conf/mfe.config.local.yaml` in `datahub-frontend/run/frontend.env` |
 
 **Always edit `mfe.config.dev.yaml` for Docker-based local dev** (the standard
@@ -131,11 +131,11 @@ datahub-frontend:
 The `remoteEntry.js` bundle and its chunks need to be accessible from the
 user's browser. Common hosting options:
 
-| Method | URL pattern | Notes |
-|---|---|---|
-| CDN (S3 + CloudFront) | `https://cdn.example.com/my-mfe/remoteEntry.js` | Best performance, set `MFE_PUBLIC_PATH` during build |
-| Static file server (nginx) | `https://mfe.internal.company.com/my-mfe/remoteEntry.js` | Simple, good for internal tools |
-| Same k8s cluster (Service) | `http://my-mfe-service:3002/remoteEntry.js` | Only works if browser can reach the service |
+| Method                     | URL pattern                                              | Notes                                                |
+| -------------------------- | -------------------------------------------------------- | ---------------------------------------------------- |
+| CDN (S3 + CloudFront)      | `https://cdn.example.com/my-mfe/remoteEntry.js`          | Best performance, set `MFE_PUBLIC_PATH` during build |
+| Static file server (nginx) | `https://mfe.internal.company.com/my-mfe/remoteEntry.js` | Simple, good for internal tools                      |
+| Same k8s cluster (Service) | `http://my-mfe-service:3002/remoteEntry.js`              | Only works if browser can reach the service          |
 
 Set `MFE_PUBLIC_PATH` so webpack writes correct chunk URLs:
 

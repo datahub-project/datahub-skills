@@ -17,25 +17,25 @@
 
 ### By Type
 
-| Type | Count | Entities |
-| --- | --- | --- |
-| Datasets | <!-- n --> | <!-- list --> |
+| Type       | Count      | Entities      |
+| ---------- | ---------- | ------------- |
+| Datasets   | <!-- n --> | <!-- list --> |
 | Dashboards | <!-- n --> | <!-- list --> |
-| Data Jobs | <!-- n --> | <!-- list --> |
-| Charts | <!-- n --> | <!-- list --> |
+| Data Jobs  | <!-- n --> | <!-- list --> |
+| Charts     | <!-- n --> | <!-- list --> |
 
 ### By Platform
 
-| Platform | Count |
-| --- | --- |
+| Platform          | Count      |
+| ----------------- | ---------- |
 | <!-- platform --> | <!-- n --> |
 
 ## Critical Paths
 
 <!-- Entities with single upstream dependency on target -->
 
-| Entity | Type | Risk |
-| --- | --- | --- |
+| Entity        | Type          | Risk                                      |
+| ------------- | ------------- | ----------------------------------------- |
 | <!-- name --> | <!-- type --> | Single dependency — no alternative source |
 
 ## Lineage Graph
@@ -46,8 +46,8 @@
 
 ## Affected Owners
 
-| Owner | Entities Affected |
-| --- | --- |
+| Owner          | Entities Affected       |
+| -------------- | ----------------------- |
 | <!-- owner --> | <!-- count and list --> |
 
 ## Recommendations

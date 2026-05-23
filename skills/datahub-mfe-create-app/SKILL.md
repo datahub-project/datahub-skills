@@ -16,12 +16,12 @@ user through building and verifying.
 
 Use the **AskQuestion** tool to collect the following in a single call.
 
-| Question | ID | Options |
-|---|---|---|
-| App name (kebab-case, e.g. `team-dashboard`) | `app_name` | `test-app` / `N/A - I'll fill it in later` |
-| Brief description of what the app does | `app_desc` | `test-description` / `N/A - I'll fill it in later` |
-| Dev server port | `port` | `3002` / `3003` / `3004` / `3005` / `3006` |
-| Does the app need to call the DataHub GraphQL API? | `needs_graphql` | `Yes` / `No` |
+| Question                                           | ID              | Options                                            |
+| -------------------------------------------------- | --------------- | -------------------------------------------------- |
+| App name (kebab-case, e.g. `team-dashboard`)       | `app_name`      | `test-app` / `N/A - I'll fill it in later`         |
+| Brief description of what the app does             | `app_desc`      | `test-description` / `N/A - I'll fill it in later` |
+| Dev server port                                    | `port`          | `3002` / `3003` / `3004` / `3005` / `3006`         |
+| Does the app need to call the DataHub GraphQL API? | `needs_graphql` | `Yes` / `No`                                       |
 
 For `app_name` and `app_desc`, present only the `N/A - I'll fill it in later`
 option — do NOT suggest values from the workspace. The user will type their own.
@@ -42,15 +42,15 @@ Generate **all 7 files** using the templates in [templates.md](assets/templates.
 
 Apply these substitutions to every template:
 
-| Placeholder | Value |
-|---|---|
-| `__APP_DIR__` | Directory name |
-| `__PACKAGE_NAME__` | Package name |
-| `__APP_DESCRIPTION__` | User's description |
-| `__PORT__` | Dev server port |
-| `__MF_NAME__` | Module Federation name (camelCase + MFE) |
-| `__DISPLAY_LABEL__` | Title-cased label |
-| `__PUBLIC_PATH_DEV__` | `http://localhost:<PORT>/` |
+| Placeholder           | Value                                    |
+| --------------------- | ---------------------------------------- |
+| `__APP_DIR__`         | Directory name                           |
+| `__PACKAGE_NAME__`    | Package name                             |
+| `__APP_DESCRIPTION__` | User's description                       |
+| `__PORT__`            | Dev server port                          |
+| `__MF_NAME__`         | Module Federation name (camelCase + MFE) |
+| `__DISPLAY_LABEL__`   | Title-cased label                        |
+| `__PUBLIC_PATH_DEV__` | `http://localhost:<PORT>/`               |
 
 If `needs_graphql` is **Yes**, include the GraphQL proxy block in `webpack.config.js`
 (marked with `{{GRAPHQL_PROXY}}` in the template). If **No**, omit it entirely.

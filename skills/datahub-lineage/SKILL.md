@@ -34,12 +34,12 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 
 ## Not This Skill
 
-| If the user wants to... | Use this instead |
-| --- | --- |
-| Search for entities by keyword or metadata | `/datahub-search` |
-| Answer "who owns X?" or "what is X?" | `/datahub-search` (metadata lookup, not lineage) |
-| Add or update metadata (descriptions, tags, owners) | `/datahub-enrich` |
-| Create assertions, run quality checks, manage incidents | `/datahub-quality` |
+| If the user wants to...                                 | Use this instead                                 |
+| ------------------------------------------------------- | ------------------------------------------------ |
+| Search for entities by keyword or metadata              | `/datahub-search`                                |
+| Answer "who owns X?" or "what is X?"                    | `/datahub-search` (metadata lookup, not lineage) |
+| Add or update metadata (descriptions, tags, owners)     | `/datahub-enrich`                                |
+| Create assertions, run quality checks, manage incidents | `/datahub-quality`                               |
 
 **Key boundary:** Lineage handles **lineage and dependency questions** ("what feeds into X?", "what breaks if I change X?"). Search handles **metadata questions** ("who owns X?"). Enrich handles **metadata updates** ("set owner", "tag this").
 
@@ -62,21 +62,21 @@ Find the entity the user wants to trace.
 
 ### Traversal modes
 
-| Mode | Direction | Use Case | User Says |
-| --- | --- | --- | --- |
-| **Impact analysis** | Downstream | "What breaks if I change this?" | "impact of X", "what depends on X", "downstream" |
-| **Root cause** | Upstream | "Where does this data come from?" | "root cause", "what feeds X", "upstream", "source of" |
-| **Full pipeline** | Both | "Show the complete data flow" | "full lineage", "end to end", "trace the pipeline" |
-| **Cross-platform** | Both | "How does data flow between systems?" | "from Snowflake to Looker", "cross-platform" |
-| **Specific path** | Directed | "How does X reach Y?" | "path from X to Y", "how does X connect to Y" |
+| Mode                | Direction  | Use Case                              | User Says                                             |
+| ------------------- | ---------- | ------------------------------------- | ----------------------------------------------------- |
+| **Impact analysis** | Downstream | "What breaks if I change this?"       | "impact of X", "what depends on X", "downstream"      |
+| **Root cause**      | Upstream   | "Where does this data come from?"     | "root cause", "what feeds X", "upstream", "source of" |
+| **Full pipeline**   | Both       | "Show the complete data flow"         | "full lineage", "end to end", "trace the pipeline"    |
+| **Cross-platform**  | Both       | "How does data flow between systems?" | "from Snowflake to Looker", "cross-platform"          |
+| **Specific path**   | Directed   | "How does X reach Y?"                 | "path from X to Y", "how does X connect to Y"         |
 
 ### Depth configuration
 
-| Depth | When to Use |
-| --- | --- |
-| 1 hop | Default — immediate upstream/downstream |
-| 2-3 hops | User asks for "full" lineage or cross-platform tracing |
-| 3+ hops | Only with user confirmation — results grow exponentially |
+| Depth    | When to Use                                              |
+| -------- | -------------------------------------------------------- |
+| 1 hop    | Default — immediate upstream/downstream                  |
+| 2-3 hops | User asks for "full" lineage or cross-platform tracing   |
+| 3+ hops  | Only with user confirmation — results grow exponentially |
 
 Ask about depth if the user doesn't specify: "How many hops should I trace? (default: 1, or specify 'full')"
 
@@ -86,11 +86,11 @@ Ask about depth if the user doesn't specify: "How many hops should I trace? (def
 
 ### Choosing your tool: MCP vs. CLI
 
-| | MCP tools | DataHub CLI |
-| --- | --- | --- |
-| **When available** | Preferred for simple traversals | Use for `path`, column-level lineage, `--format json` metadata |
-| **Lineage** | `get_lineage(urn=..., direction=..., depth=...)` | `datahub lineage --urn "..." --direction upstream` |
-| **Enrich results** | `get_entities(urns=[...])` | `datahub search "*" --where 'urn IN (...)'` with `--projection` |
+|                    | MCP tools                                        | DataHub CLI                                                     |
+| ------------------ | ------------------------------------------------ | --------------------------------------------------------------- |
+| **When available** | Preferred for simple traversals                  | Use for `path`, column-level lineage, `--format json` metadata  |
+| **Lineage**        | `get_lineage(urn=..., direction=..., depth=...)` | `datahub lineage --urn "..." --direction upstream`              |
+| **Enrich results** | `get_entities(urns=[...])`                       | `datahub search "*" --where 'urn IN (...)'` with `--projection` |
 
 MCP provides structured lineage graphs without shell overhead — MCP tools are self-documenting, so check their schemas for parameter details. Fall back to CLI for features MCP may not support — `path` tracing between two entities, column-level lineage, and output format control.
 
@@ -177,18 +177,18 @@ For larger or more complex lineage:
 ```markdown
 ### Upstream (sources for analytics_table)
 
-| Hop | Entity | Type | Platform | Relationship |
-| --- | --- | --- | --- | --- |
-| 1 | staging_table | dataset | Snowflake | TRANSFORMED |
-| 2 | source_table_1 | dataset | PostgreSQL | TRANSFORMED |
-| 2 | source_table_2 | dataset | PostgreSQL | TRANSFORMED |
+| Hop | Entity         | Type    | Platform   | Relationship |
+| --- | -------------- | ------- | ---------- | ------------ |
+| 1   | staging_table  | dataset | Snowflake  | TRANSFORMED  |
+| 2   | source_table_1 | dataset | PostgreSQL | TRANSFORMED  |
+| 2   | source_table_2 | dataset | PostgreSQL | TRANSFORMED  |
 
 ### Downstream (consumers of analytics_table)
 
-| Hop | Entity | Type | Platform | Relationship |
-| --- | --- | --- | --- | --- |
-| 1 | Revenue Dashboard | dashboard | Looker | — |
-| 1 | daily_export | dataset | S3 | TRANSFORMED |
+| Hop | Entity            | Type      | Platform | Relationship |
+| --- | ----------------- | --------- | -------- | ------------ |
+| 1   | Revenue Dashboard | dashboard | Looker   | —            |
+| 1   | daily_export      | dataset   | S3       | TRANSFORMED  |
 ```
 
 ### Impact analysis format
@@ -220,12 +220,13 @@ After presenting lineage:
 
 ## Reference Documents
 
-| Document | Path | Purpose |
-| --- | --- | --- |
-| Lineage patterns reference | `references/lineage-patterns-reference.md` | Traversal strategies and patterns |
-| Impact analysis template | `templates/impact-analysis.template.md` | Impact analysis report template |
-| Lineage map template | `templates/lineage-map.template.md` | Lineage visualization template |
-| CLI reference (shared) | `../shared-references/datahub-cli-reference.md` | CLI commands |
+| Document                   | Path                                            | Purpose                           |
+| -------------------------- | ----------------------------------------------- | --------------------------------- |
+| Lineage patterns reference | `references/lineage-patterns-reference.md`      | Traversal strategies and patterns |
+| Impact analysis template   | `templates/impact-analysis.template.md`         | Impact analysis report template   |
+| Lineage map template       | `templates/lineage-map.template.md`             | Lineage visualization template    |
+| CLI reference (shared)     | `../shared-references/datahub-cli-reference.md` | CLI commands                      |
+
 ---
 
 ## Common Mistakes

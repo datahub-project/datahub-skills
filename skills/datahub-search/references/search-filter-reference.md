@@ -2,20 +2,20 @@
 
 ## Available Filters
 
-| Filter | Description | Example Values |
-| --- | --- | --- |
-| `platform` | Data platform | `snowflake`, `bigquery`, `redshift`, `postgres`, `looker`, `tableau`, `airflow` |
-| `env` | Environment | `PROD`, `DEV`, `STAGING`, `TEST` |
-| `entity_type` | Entity type | `dataset`, `dashboard`, `chart`, `dataFlow`, `dataJob`, `container` |
-| `domain` | Business domain | Domain URN |
-| `tag` | Tags applied | Tag URN (e.g., `urn:li:tag:pii`) |
-| `glossary_term` | Glossary terms | Term URN |
-| `owners` | Entity owners | User/group URN |
-| `container` | Parent container | Container URN |
-| `fieldPaths` | Column/field names (datasets) | Field name (e.g., `customer_id`, `email`) |
-| `hasActiveIncidents` | Has active incidents | `true` |
-| `hasFailingAssertions` | Has failing assertions | `true` |
-| `hasErroringAssertions` | Has erroring assertions | `true` |
+| Filter                  | Description                   | Example Values                                                                  |
+| ----------------------- | ----------------------------- | ------------------------------------------------------------------------------- |
+| `platform`              | Data platform                 | `snowflake`, `bigquery`, `redshift`, `postgres`, `looker`, `tableau`, `airflow` |
+| `env`                   | Environment                   | `PROD`, `DEV`, `STAGING`, `TEST`                                                |
+| `entity_type`           | Entity type                   | `dataset`, `dashboard`, `chart`, `dataFlow`, `dataJob`, `container`             |
+| `domain`                | Business domain               | Domain URN                                                                      |
+| `tag`                   | Tags applied                  | Tag URN (e.g., `urn:li:tag:pii`)                                                |
+| `glossary_term`         | Glossary terms                | Term URN                                                                        |
+| `owners`                | Entity owners                 | User/group URN                                                                  |
+| `container`             | Parent container              | Container URN                                                                   |
+| `fieldPaths`            | Column/field names (datasets) | Field name (e.g., `customer_id`, `email`)                                       |
+| `hasActiveIncidents`    | Has active incidents          | `true`                                                                          |
+| `hasFailingAssertions`  | Has failing assertions        | `true`                                                                          |
+| `hasErroringAssertions` | Has erroring assertions       | `true`                                                                          |
 
 Use `datahub search list-filters` to discover all available filters.
 Use `datahub search describe-filter <name>` for details on a specific filter.
@@ -60,7 +60,7 @@ datahub search "*" --where "entity_type = dataset AND platform = snowflake AND e
 For AND/OR/NOT logic that's hard to express in `--where`:
 
 ```json
-{"and": [{"platform": ["snowflake"]}, {"env": ["PROD"]}]}
+{ "and": [{ "platform": ["snowflake"] }, { "env": ["PROD"] }] }
 ```
 
 ## Field-Level Search (`fieldPaths`)

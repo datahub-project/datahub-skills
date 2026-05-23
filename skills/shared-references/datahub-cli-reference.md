@@ -16,14 +16,14 @@ Before running any DataHub commands, determine which tools are available:
 
 ### CLI ↔ MCP Equivalents
 
-| Operation | CLI Command | MCP Tool |
-| --- | --- | --- |
-| Search | `datahub search "query" --where "..."` | `search(query="...", filter="...")` |
-| Get entity | `datahub get --urn "..." --aspect ownership` | `get_entities(urns=["..."])` |
-| Upstream lineage | `datahub lineage --urn "..." --direction upstream` | `get_lineage(urn="...", upstream=true)` |
+| Operation          | CLI Command                                          | MCP Tool                                 |
+| ------------------ | ---------------------------------------------------- | ---------------------------------------- |
+| Search             | `datahub search "query" --where "..."`               | `search(query="...", filter="...")`      |
+| Get entity         | `datahub get --urn "..." --aspect ownership`         | `get_entities(urns=["..."])`             |
+| Upstream lineage   | `datahub lineage --urn "..." --direction upstream`   | `get_lineage(urn="...", upstream=true)`  |
 | Downstream lineage | `datahub lineage --urn "..." --direction downstream` | `get_lineage(urn="...", upstream=false)` |
-| GraphQL | `datahub graphql --query '...'` | `execute_graphql(query="...")` |
-| Server config | `datahub check server-config` | Not needed (MCP server handles config) |
+| GraphQL            | `datahub graphql --query '...'`                      | `execute_graphql(query="...")`           |
+| Server config      | `datahub check server-config`                        | Not needed (MCP server handles config)   |
 
 MCP tool names may be prefixed (e.g. `mcp__datahub-cloud__search`). Match by the function name suffix, not the full prefixed name. MCP tools are self-documenting — check their schemas for parameter details rather than relying on static documentation.
 

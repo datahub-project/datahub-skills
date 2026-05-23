@@ -40,12 +40,12 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 
 ## Not This Skill
 
-| If the user wants to... | Use this instead |
-| --- | --- |
-| Explore lineage, upstream/downstream, impact analysis | `/datahub-lineage` |
+| If the user wants to...                                        | Use this instead   |
+| -------------------------------------------------------------- | ------------------ |
+| Explore lineage, upstream/downstream, impact analysis          | `/datahub-lineage` |
 | Create assertions, run quality checks, raise/resolve incidents | `/datahub-quality` |
-| Update metadata (descriptions, tags, ownership) | `/datahub-enrich` |
-| Install CLI, authenticate, configure defaults | `/datahub-setup` |
+| Update metadata (descriptions, tags, ownership)                | `/datahub-enrich`  |
+| Install CLI, authenticate, configure defaults                  | `/datahub-setup`   |
 
 **Key boundary:** Search answers **ad-hoc questions** ("who owns X?"). Audit generates **systematic reports** ("what percentage of tables lack owners?"). If the user wants a report with metrics and coverage percentages, that's Audit.
 
@@ -57,26 +57,26 @@ Determine whether the user wants to **discover** (find things) or **ask a questi
 
 ### Discovery intents
 
-| Intent | Examples | Primary Operation |
-| --- | --- | --- |
-| Keyword search | "find revenue tables", "search for customer data" | `search` with query |
-| Browse hierarchy | "show me Snowflake databases", "browse production" | `browse` by path |
-| Filter by metadata | "datasets tagged PII", "tables owned by data-eng" | `search` with filters |
+| Intent             | Examples                                                             | Primary Operation                       |
+| ------------------ | -------------------------------------------------------------------- | --------------------------------------- |
+| Keyword search     | "find revenue tables", "search for customer data"                    | `search` with query                     |
+| Browse hierarchy   | "show me Snowflake databases", "browse production"                   | `browse` by path                        |
+| Filter by metadata | "datasets tagged PII", "tables owned by data-eng"                    | `search` with filters                   |
 | Column name search | "tables with a customer_id column", "find datasets containing email" | `search` with `fieldPaths` query prefix |
-| Entity lookup | "get details for urn:li:dataset:..." | `get` by URN |
+| Entity lookup      | "get details for urn:li:dataset:..."                                 | `get` by URN                            |
 
 ### Question intents
 
-| Category | Examples | Query Strategy |
-| --- | --- | --- |
-| Ownership | "Who owns X?", "What does team Y own?" | Search + get `ownership` aspect |
-| Governance | "What has PII tags?", "What's in the Finance domain?" | Search with tag/domain/term filters |
-| Coverage | "What's undocumented?", "How many tables lack owners?" | Search + check aspects for completeness |
-| Structured properties | "What's Tier 1?", "Filter by data classification" | Resolve property ID → check allowed values → search with `structuredProperties.<id>` filter |
-| Topology | "How many datasets per platform?" | Broad search + aggregate |
-| Schema | "What columns does X have?", "Where is column Y used?" | Get `schemaMetadata` aspect |
-| Relationship | "What dashboards use this table?" | Lineage + relationship traversal |
-| Popularity | "Most queried datasets?", "Top used tables?" | Sort by usage **(Cloud only)** |
+| Category              | Examples                                               | Query Strategy                                                                              |
+| --------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| Ownership             | "Who owns X?", "What does team Y own?"                 | Search + get `ownership` aspect                                                             |
+| Governance            | "What has PII tags?", "What's in the Finance domain?"  | Search with tag/domain/term filters                                                         |
+| Coverage              | "What's undocumented?", "How many tables lack owners?" | Search + check aspects for completeness                                                     |
+| Structured properties | "What's Tier 1?", "Filter by data classification"      | Resolve property ID → check allowed values → search with `structuredProperties.<id>` filter |
+| Topology              | "How many datasets per platform?"                      | Broad search + aggregate                                                                    |
+| Schema                | "What columns does X have?", "Where is column Y used?" | Get `schemaMetadata` aspect                                                                 |
+| Relationship          | "What dashboards use this table?"                      | Lineage + relationship traversal                                                            |
+| Popularity            | "Most queried datasets?", "Top used tables?"           | Sort by usage **(Cloud only)**                                                              |
 
 ### Popularity intents → check server type
 
@@ -125,26 +125,26 @@ datahub search "*" --where "platform = snowflake AND entity_type = dataset AND e
 
 ### For discovery
 
-| User says | Query | Filters | Entity Type |
-| --- | --- | --- | --- |
-| "find revenue tables" | `revenue` | — | `dataset` |
-| "Snowflake datasets tagged PII" | `*` | `platform=snowflake`, `tags=pii` | `dataset` |
-| "dashboards owned by jdoe" | `*` | `owners=jdoe` | `dashboard` |
-| "production BigQuery tables" | `*` | `platform=bigquery`, `env=PROD` | `dataset` |
-| "tables with a customer_id column" | `*` | `fieldPaths=customer_id` | `dataset` |
-| "Snowflake tables containing an email column" | `*` | `platform=snowflake`, `fieldPaths=email` | `dataset` |
+| User says                                     | Query     | Filters                                  | Entity Type |
+| --------------------------------------------- | --------- | ---------------------------------------- | ----------- |
+| "find revenue tables"                         | `revenue` | —                                        | `dataset`   |
+| "Snowflake datasets tagged PII"               | `*`       | `platform=snowflake`, `tags=pii`         | `dataset`   |
+| "dashboards owned by jdoe"                    | `*`       | `owners=jdoe`                            | `dashboard` |
+| "production BigQuery tables"                  | `*`       | `platform=bigquery`, `env=PROD`          | `dataset`   |
+| "tables with a customer_id column"            | `*`       | `fieldPaths=customer_id`                 | `dataset`   |
+| "Snowflake tables containing an email column" | `*`       | `platform=snowflake`, `fieldPaths=email` | `dataset`   |
 
 ### For questions
 
-| Question Pattern | Operations |
-| --- | --- |
-| "Who owns X?" | 1. Search for X → 2. Get `ownership` aspect |
-| "What tables have PII tags?" | 1. Search with `tags=pii` filter, entity=dataset |
-| "How many datasets lack descriptions?" | 1. Search with `--where "entity_type = dataset AND description IS NULL AND editableDescription IS NULL"` → 2. Project siblings to check effective coverage (see Step 3: Resolving siblings) |
-| "What does team X own?" | 1. Search with `owners=team-x` filter |
-| "What columns does X have?" | 1. Search for X → 2. Get `schemaMetadata` aspect |
-| "Which tables contain a `customer_id` column?" | 1. Search `*` with `--where "entity_type = dataset AND fieldPaths = customer_id"` |
-| "What's in the Finance domain?" | 1. Search with `domain=finance` filter |
+| Question Pattern                               | Operations                                                                                                                                                                                  |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "Who owns X?"                                  | 1. Search for X → 2. Get `ownership` aspect                                                                                                                                                 |
+| "What tables have PII tags?"                   | 1. Search with `tags=pii` filter, entity=dataset                                                                                                                                            |
+| "How many datasets lack descriptions?"         | 1. Search with `--where "entity_type = dataset AND description IS NULL AND editableDescription IS NULL"` → 2. Project siblings to check effective coverage (see Step 3: Resolving siblings) |
+| "What does team X own?"                        | 1. Search with `owners=team-x` filter                                                                                                                                                       |
+| "What columns does X have?"                    | 1. Search for X → 2. Get `schemaMetadata` aspect                                                                                                                                            |
+| "Which tables contain a `customer_id` column?" | 1. Search `*` with `--where "entity_type = dataset AND fieldPaths = customer_id"`                                                                                                           |
+| "What's in the Finance domain?"                | 1. Search with `domain=finance` filter                                                                                                                                                      |
 
 ### Structured property filters (special case)
 
@@ -177,11 +177,11 @@ datahub search "*" --where "entity_type = dataset AND structuredProperties.io.ac
 
 The filter field is always `structuredProperties.<qualifiedName>` and requires an exact value match.
 
-| User says | Steps |
-| --- | --- |
-| "find Tier 1 datasets" | 1. Search `entity_type=structuredProperty` for "tier" → 2. Get allowed values → 3. Filter `structuredProperties.<id>=Tier 1` |
-| "what structured properties exist?" | Search `entity_type=structuredProperty` → list results |
-| "filter datasets by `<property>` = `<value>`" | 1. Resolve property ID → 2. Validate value against allowed values if present → 3. Filter |
+| User says                                     | Steps                                                                                                                        |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| "find Tier 1 datasets"                        | 1. Search `entity_type=structuredProperty` for "tier" → 2. Get allowed values → 3. Filter `structuredProperties.<id>=Tier 1` |
+| "what structured properties exist?"           | Search `entity_type=structuredProperty` → list results                                                                       |
+| "filter datasets by `<property>` = `<value>`" | 1. Resolve property ID → 2. Validate value against allowed values if present → 3. Filter                                     |
 
 ### Optimization rules
 
@@ -195,12 +195,12 @@ The filter field is always `structuredProperties.<qualifiedName>` and requires a
 
 ### Choosing your tool: MCP vs. CLI
 
-| | MCP tools | DataHub CLI |
-| --- | --- | --- |
+|                    | MCP tools                                     | DataHub CLI                                                              |
+| ------------------ | --------------------------------------------- | ------------------------------------------------------------------------ |
 | **When available** | Preferred — structured I/O, no shell overhead | Fallback, or when you need `--projection`, `--dry-run`, advanced filters |
-| **Search** | `search(query=..., filter=...)` | `datahub search "..." --where "..."` |
-| **Get entity** | `get_entities(urns=[...])` | `datahub get --urn "..."` |
-| **Browse** | `browse(path=...)` | Not available via CLI |
+| **Search**         | `search(query=..., filter=...)`               | `datahub search "..." --where "..."`                                     |
+| **Get entity**     | `get_entities(urns=[...])`                    | `datahub get --urn "..."`                                                |
+| **Browse**         | `browse(path=...)`                            | Not available via CLI                                                    |
 
 MCP tool names vary by server (e.g., `mcp__datahub__search`). Match by function suffix — MCP tools are self-documenting, so check their schemas for parameter details. See `../shared-references/datahub-cli-reference.md` for CLI syntax.
 
@@ -214,27 +214,27 @@ MCP tool names vary by server (e.g., `mcp__datahub__search`). Match by function 
 
 - Use `datahub search "X" --dry-run` to preview the generated GraphQL query and see how projections are applied
 - Use `datahub graphql --describe searchAcrossEntities --recurse --format json` to inspect the full return type schema
-**Common GraphQL types for `... on` fragments:**
+  **Common GraphQL types for `... on` fragments:**
 
-| Entity Type | GraphQL Type | Key Fields |
-| --- | --- | --- |
-| dataset | `Dataset` | `properties { name description }`, `platform { name }`, `ownership`, `schemaMetadata`, `siblings`, `editableProperties`, `subTypes`, `domain` |
-| dashboard | `Dashboard` | `properties { name description }`, `platform { name }`, `ownership` |
-| chart | `Chart` | `properties { name description }`, `platform { name }` |
-| dataFlow | `DataFlow` | `properties { name description }`, `platform { name }` |
-| dataJob | `DataJob` | `properties { name description }` |
-| container | `Container` | `properties { name description }`, `platform { name }`, `subTypes` |
+| Entity Type | GraphQL Type | Key Fields                                                                                                                                    |
+| ----------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| dataset     | `Dataset`    | `properties { name description }`, `platform { name }`, `ownership`, `schemaMetadata`, `siblings`, `editableProperties`, `subTypes`, `domain` |
+| dashboard   | `Dashboard`  | `properties { name description }`, `platform { name }`, `ownership`                                                                           |
+| chart       | `Chart`      | `properties { name description }`, `platform { name }`                                                                                        |
+| dataFlow    | `DataFlow`   | `properties { name description }`, `platform { name }`                                                                                        |
+| dataJob     | `DataJob`    | `properties { name description }`                                                                                                             |
+| container   | `Container`  | `properties { name description }`, `platform { name }`, `subTypes`                                                                            |
 
 Note: GraphQL field names differ from aspect names — e.g., the `datasetProperties` aspect is `properties` in GraphQL, and `dataPlatform` is `platform`. When in doubt, use `--dry-run` to validate.
 
 **Editable vs. non-editable fields:** Some metadata fields exist in two places — an ingestion-provided version and a user-edited version. Both can hold values. Always project **both** when checking coverage:
 
-| Field | Ingestion-provided | User-edited |
-| --- | --- | --- |
-| Asset description | `properties { description }` | `editableProperties { description }` |
-| Column descriptions | `schemaMetadata { fields { fieldPath description } }` | `editableSchemaMetadata { editableSchemaFieldInfo { fieldPath description } }` |
-| Column tags | `schemaMetadata { fields { fieldPath globalTags { tags { tag { urn } } } } }` | `editableSchemaMetadata { editableSchemaFieldInfo { fieldPath globalTags { tags { tag { urn } } } } }` |
-| Column terms | `schemaMetadata { fields { fieldPath glossaryTerms { terms { term { urn } } } } }` | `editableSchemaMetadata { editableSchemaFieldInfo { fieldPath glossaryTerms { terms { term { urn } } } } }` |
+| Field               | Ingestion-provided                                                                 | User-edited                                                                                                 |
+| ------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Asset description   | `properties { description }`                                                       | `editableProperties { description }`                                                                        |
+| Column descriptions | `schemaMetadata { fields { fieldPath description } }`                              | `editableSchemaMetadata { editableSchemaFieldInfo { fieldPath description } }`                              |
+| Column tags         | `schemaMetadata { fields { fieldPath globalTags { tags { tag { urn } } } } }`      | `editableSchemaMetadata { editableSchemaFieldInfo { fieldPath globalTags { tags { tag { urn } } } } }`      |
+| Column terms        | `schemaMetadata { fields { fieldPath glossaryTerms { terms { term { urn } } } } }` | `editableSchemaMetadata { editableSchemaFieldInfo { fieldPath glossaryTerms { terms { term { urn } } } } }` |
 
 A value in either version means the metadata exists. When answering "does this table have a description?" or "which columns are tagged PII?", check both.
 
@@ -314,10 +314,10 @@ Note what was found and what's missing. Never fabricate metadata that wasn't ret
 ### Discovery mode — Entity list
 
 ```markdown
-| # | Name | Type | Platform | Domain | Owner |
-| --- | --- | --- | --- | --- | --- |
-| 1 | mydb.schema.revenue_daily | dataset | Snowflake | Finance | @jdoe |
-| 2 | Revenue Dashboard | dashboard | Looker | Finance | @analyst1 |
+| #   | Name                      | Type      | Platform  | Domain  | Owner     |
+| --- | ------------------------- | --------- | --------- | ------- | --------- |
+| 1   | mydb.schema.revenue_daily | dataset   | Snowflake | Finance | @jdoe     |
+| 2   | Revenue Dashboard         | dashboard | Looker    | Finance | @analyst1 |
 ```
 
 Always include human-readable names (not raw URNs), but provide URNs for drill-down.
@@ -329,20 +329,20 @@ When showing a single entity:
 ```markdown
 ## <Entity Name>
 
-| Property | Value |
-| --- | --- |
-| URN | `urn:li:dataset:(...)` |
-| Type | dataset (table) |
-| Platform | Snowflake |
-| Owner | @jdoe (Technical Owner) |
-| Tags | `pii`, `revenue` |
+| Property    | Value                           |
+| ----------- | ------------------------------- |
+| URN         | `urn:li:dataset:(...)`          |
+| Type        | dataset (table)                 |
+| Platform    | Snowflake                       |
+| Owner       | @jdoe (Technical Owner)         |
+| Tags        | `pii`, `revenue`                |
 | Description | Daily revenue aggregation table |
 
 ### Schema (top fields)
 
-| Field | Type | Description |
-| --- | --- | --- |
-| date | DATE | Revenue date |
+| Field  | Type    | Description    |
+| ------ | ------- | -------------- |
+| date   | DATE    | Revenue date   |
 | amount | DECIMAL | Revenue amount |
 ```
 
@@ -355,8 +355,8 @@ When showing a single entity:
 
 ## Evidence
 
-| Entity | Detail | Source |
-| --- | --- | --- |
+| Entity | Detail              | Source         |
+| ------ | ------------------- | -------------- |
 | <name> | <relevant metadata> | <query/aspect> |
 
 ## Methodology
@@ -384,11 +384,12 @@ When showing a single entity:
 
 ## Reference Documents
 
-| Document | Path | Purpose |
-| --- | --- | --- |
-| Entity type reference | `references/entity-type-reference.md` | Entity types, URN formats, platforms |
-| Search filter reference | `references/search-filter-reference.md` | Filters, facets, search syntax |
-| CLI reference (shared) | `../shared-references/datahub-cli-reference.md` | CLI command syntax |
+| Document                | Path                                            | Purpose                              |
+| ----------------------- | ----------------------------------------------- | ------------------------------------ |
+| Entity type reference   | `references/entity-type-reference.md`           | Entity types, URN formats, platforms |
+| Search filter reference | `references/search-filter-reference.md`         | Filters, facets, search syntax       |
+| CLI reference (shared)  | `../shared-references/datahub-cli-reference.md` | CLI command syntax                   |
+
 ---
 
 ## Common Mistakes

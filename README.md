@@ -251,30 +251,30 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                          | What it does                                    |
-| -------------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`        | Search the catalog and answer questions          |
-| `/catalog-enrich [entity]`       | Add or update metadata                           |
-| `/catalog-lineage [entity]`      | Explore lineage and trace dependencies           |
-| `/catalog-quality [entity]`      | Manage assertions, incidents, and subscriptions  |
-| `/catalog-setup [task]`          | Set up connection and configure defaults         |
+| Command                     | What it does                                    |
+| --------------------------- | ----------------------------------------------- |
+| `/catalog-search [query]`   | Search the catalog and answer questions         |
+| `/catalog-enrich [entity]`  | Add or update metadata                          |
+| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
+| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
+| `/catalog-setup [task]`     | Set up connection and configure defaults        |
 
 ### Connector development
 
-| Command                             | What it does                            |
-| ----------------------------------- | --------------------------------------- |
-| `/connector-planning [source]`      | Plan a new connector                    |
-| `/connector-review [connector]`     | Review connector code against standards |
-| `/load-standards`                   | Load all 22 standards into context      |
+| Command                         | What it does                            |
+| ------------------------------- | --------------------------------------- |
+| `/connector-planning [source]`  | Plan a new connector                    |
+| `/connector-review [connector]` | Review connector code against standards |
+| `/load-standards`               | Load all 22 standards into context      |
 
 ## Agents
 
-| Agent                        | What it does                                              |
-| ---------------------------- | --------------------------------------------------------- |
-| `metadata-searcher`          | Fast sub-agent for executing catalog queries (Claude Code)|
-| `connector-researcher`       | Researches source systems before you write a connector    |
-| `connector-validator`        | Runs validation scripts and reports results               |
-| `comment-resolution-checker` | Checks whether PR review comments were actually addressed |
+| Agent                        | What it does                                               |
+| ---------------------------- | ---------------------------------------------------------- |
+| `metadata-searcher`          | Fast sub-agent for executing catalog queries (Claude Code) |
+| `connector-researcher`       | Researches source systems before you write a connector     |
+| `connector-validator`        | Runs validation scripts and reports results                |
+| `comment-resolution-checker` | Checks whether PR review comments were actually addressed  |
 
 ## Standards
 

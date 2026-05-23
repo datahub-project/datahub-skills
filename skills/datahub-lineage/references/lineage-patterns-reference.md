@@ -65,32 +65,32 @@ Common lineage traversal strategies and patterns.
 
 ## Lineage Edge Types
 
-| Type | Meaning |
-| --- | --- |
+| Type          | Meaning                                           |
+| ------------- | ------------------------------------------------- |
 | `TRANSFORMED` | Data was transformed (e.g., SQL query, dbt model) |
-| `VIEW` | Entity is a view over the source |
-| `COPY` | Data was copied without transformation |
+| `VIEW`        | Entity is a view over the source                  |
+| `COPY`        | Data was copied without transformation            |
 
 ## Platform-Specific Lineage Notes
 
-| Platform | Lineage Source | Notes |
-| --- | --- | --- |
-| dbt | dbt manifest | Model-level lineage, often the richest |
-| Airflow | Task dependencies | Job-level lineage |
-| Snowflake | Query logs | Column-level lineage possible |
-| BigQuery | Audit logs | Table-level lineage |
-| Looker | LookML explores | Dashboard → dataset lineage |
-| Tableau | Workbook metadata | Dashboard → dataset lineage |
+| Platform  | Lineage Source    | Notes                                  |
+| --------- | ----------------- | -------------------------------------- |
+| dbt       | dbt manifest      | Model-level lineage, often the richest |
+| Airflow   | Task dependencies | Job-level lineage                      |
+| Snowflake | Query logs        | Column-level lineage possible          |
+| BigQuery  | Audit logs        | Table-level lineage                    |
+| Looker    | LookML explores   | Dashboard → dataset lineage            |
+| Tableau   | Workbook metadata | Dashboard → dataset lineage            |
 
 ## Choosing the Right Command
 
-| Need | Command | Why |
-| --- | --- | --- |
-| Unfiltered upstream/downstream | `datahub lineage` | Simple, returns names and platforms |
-| Column-level lineage | `datahub lineage --column <field>` | Only command that supports column tracing |
+| Need                           | Command                                     | Why                                              |
+| ------------------------------ | ------------------------------------------- | ------------------------------------------------ |
+| Unfiltered upstream/downstream | `datahub lineage`                           | Simple, returns names and platforms              |
+| Column-level lineage           | `datahub lineage --column <field>`          | Only command that supports column tracing        |
 | Filter by type, platform, tags | `searchAcrossLineage` via `datahub graphql` | Server-side filtering avoids fetching full graph |
-| Time-windowed lineage | `searchAcrossLineage` with `lineageFlags` | Only way to scope by edge update time |
-| Large result sets (300+) | `scrollAcrossLineage` via `datahub graphql` | Cursor-based pagination for large graphs |
+| Time-windowed lineage          | `searchAcrossLineage` with `lineageFlags`   | Only way to scope by edge update time            |
+| Large result sets (300+)       | `scrollAcrossLineage` via `datahub graphql` | Cursor-based pagination for large graphs         |
 
 ## Lineage Limitations
 

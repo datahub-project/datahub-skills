@@ -35,12 +35,12 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 
 ## Not This Skill
 
-| If the user wants to... | Use this instead |
-| --- | --- |
-| Search or discover entities | `/datahub-search` |
-| Update entity metadata | `/datahub-enrich` |
+| If the user wants to...                        | Use this instead   |
+| ---------------------------------------------- | ------------------ |
+| Search or discover entities                    | `/datahub-search`  |
+| Update entity metadata                         | `/datahub-enrich`  |
 | Manage assertions, incidents, or subscriptions | `/datahub-quality` |
-| Explore lineage or dependencies | `/datahub-lineage` |
+| Explore lineage or dependencies                | `/datahub-lineage` |
 
 **Key boundary:** Setup handles **environment setup** (CLI install, auth, connectivity) and **agent configuration** (default scopes, profiles). If the user says "focus on Finance domain", that's Setup (configuring scope). If they say "assign these tables to Finance domain", that's Enrich.
 
@@ -72,14 +72,14 @@ Assess what's already configured before making changes.
 
 Present a status table:
 
-| Component | Status | Details |
-| --- | --- | --- |
-| Python | installed / missing | version |
-| Virtual env | active / found / missing | path |
-| DataHub CLI | installed / missing | version |
-| GMS URL | configured / not set | URL value |
-| GMS Token | configured / not set | (never show value) |
-| MCP Server | configured / not found | — |
+| Component   | Status                   | Details            |
+| ----------- | ------------------------ | ------------------ |
+| Python      | installed / missing      | version            |
+| Virtual env | active / found / missing | path               |
+| DataHub CLI | installed / missing      | version            |
+| GMS URL     | configured / not set     | URL value          |
+| GMS Token   | configured / not set     | (never show value) |
+| MCP Server  | configured / not found   | —                  |
 
 ### MCP Detected → Skip to Verification
 
@@ -102,11 +102,11 @@ Skip if already installed and up to date. Also skip if MCP tools are available (
 
 **Troubleshooting:**
 
-| Problem | Solution |
-| --- | --- |
-| `pip install` fails with dependency conflicts | Try `pip install --upgrade pip` first |
-| `datahub` not found after install | Ensure venv is activated |
-| Permission denied | Use a virtual environment, never `sudo pip` |
+| Problem                                       | Solution                                    |
+| --------------------------------------------- | ------------------------------------------- |
+| `pip install` fails with dependency conflicts | Try `pip install --upgrade pip` first       |
+| `datahub` not found after install             | Ensure venv is activated                    |
+| Permission denied                             | Use a virtual environment, never `sudo pip` |
 
 ### Step 3: Configure Authentication
 
@@ -120,12 +120,12 @@ gms:
 
 Ask the user for their GMS URL and personal access token. Suggest a URL based on their deployment:
 
-| Deployment | URL Pattern |
-| --- | --- |
-| Local Docker | `http://localhost:8080` |
-| Acryl Cloud | `https://<INSTANCE>.acryl.io/gms` |
-| Kubernetes | `http://datahub-gms.<NAMESPACE>:8080` |
-| Remote server | `http://<HOST>:<PORT>` |
+| Deployment    | URL Pattern                           |
+| ------------- | ------------------------------------- |
+| Local Docker  | `http://localhost:8080`               |
+| Acryl Cloud   | `https://<INSTANCE>.acryl.io/gms`     |
+| Kubernetes    | `http://datahub-gms.<NAMESPACE>:8080` |
+| Remote server | `http://<HOST>:<PORT>`                |
 
 Set permissions: `chmod 600 ~/.datahubenv`.
 
@@ -150,13 +150,13 @@ Run these checks in order, stopping at first failure:
 
 **Troubleshooting:**
 
-| Error | Likely Cause | Solution |
-| --- | --- | --- |
-| Connection refused | Wrong URL or GMS not running | Verify URL and server status |
-| 401 Unauthorized | Invalid or expired token | Regenerate token in DataHub UI |
-| 403 Forbidden | Insufficient permissions | Check token scope |
-| SSL certificate error | Self-signed cert | May need `--disable-ssl-verification` |
-| Search returns empty | No metadata ingested yet | Normal for new instances |
+| Error                 | Likely Cause                 | Solution                              |
+| --------------------- | ---------------------------- | ------------------------------------- |
+| Connection refused    | Wrong URL or GMS not running | Verify URL and server status          |
+| 401 Unauthorized      | Invalid or expired token     | Regenerate token in DataHub UI        |
+| 403 Forbidden         | Insufficient permissions     | Check token scope                     |
+| SSL certificate error | Self-signed cert             | May need `--disable-ssl-verification` |
+| Search returns empty  | No metadata ingested yet     | Normal for new instances              |
 
 ---
 
@@ -168,17 +168,17 @@ Skip this phase if the user only needed setup. Proceed if they want to configure
 
 Ask about relevant options only — don't ask about everything:
 
-| Option | Type | Default | Description |
-| --- | --- | --- | --- |
-| `name` | string | `default` | Profile name |
-| `description` | string | — | What this profile is for |
-| `platforms` | string[] | (all) | Limit to these platforms |
-| `domains` | string[] | (all) | Limit to these domains |
-| `entity_types` | string[] | (all) | Default entity types |
-| `environment` | string | (all) | Default environment (PROD, DEV) |
-| `default_count` | integer | 10 | Default results per query |
-| `exclude_deprecated` | boolean | false | Hide deprecated entities |
-| `owner_filter` | string | — | Filter by owner URN |
+| Option               | Type     | Default   | Description                     |
+| -------------------- | -------- | --------- | ------------------------------- |
+| `name`               | string   | `default` | Profile name                    |
+| `description`        | string   | —         | What this profile is for        |
+| `platforms`          | string[] | (all)     | Limit to these platforms        |
+| `domains`            | string[] | (all)     | Limit to these domains          |
+| `entity_types`       | string[] | (all)     | Default entity types            |
+| `environment`        | string   | (all)     | Default environment (PROD, DEV) |
+| `default_count`      | integer  | 10        | Default results per query       |
+| `exclude_deprecated` | boolean  | false     | Hide deprecated entities        |
+| `owner_filter`       | string   | —         | Filter by owner URN             |
 
 ### Step 6: Create Configuration Profile
 
@@ -187,12 +187,12 @@ Generate a `.datahub-agent-config.yml` file. Show the configuration to the user 
 ```markdown
 ## Configuration Profile: <name>
 
-| Setting | Value |
-| --- | --- |
-| Platforms | Snowflake, BigQuery |
-| Domains | Finance |
-| Entity Types | dataset, dashboard |
-| Environment | PROD |
+| Setting      | Value               |
+| ------------ | ------------------- |
+| Platforms    | Snowflake, BigQuery |
+| Domains      | Finance             |
+| Entity Types | dataset, dashboard  |
+| Environment  | PROD                |
 
 Shall I save this to `.datahub-agent-config.yml`?
 ```
@@ -218,15 +218,16 @@ Present the complete status:
 ```markdown
 ## DataHub Connection Ready
 
-| Component | Status |
-| --- | --- |
-| CLI version | X.Y.Z |
-| GMS URL | <url> |
-| Authentication | Verified |
-| Search | Working |
-| Profile | <name> (if configured) |
+| Component      | Status                 |
+| -------------- | ---------------------- |
+| CLI version    | X.Y.Z                  |
+| GMS URL        | <url>                  |
+| Authentication | Verified               |
+| Search         | Working                |
+| Profile        | <name> (if configured) |
 
 Available interaction skills:
+
 - `/datahub-search` — Search the catalog and answer questions
 - `/datahub-enrich` — Update metadata
 - `/datahub-lineage` — Explore lineage
@@ -238,12 +239,13 @@ Available interaction skills:
 
 ## Reference Documents
 
-| Document | Path | Purpose |
-| --- | --- | --- |
-| Configuration schema | `references/configuration-schema.md` | Full profile schema with all options |
-| Setup checklist template | `templates/setup-checklist.template.md` | Step-by-step verification checklist |
-| Config profile template | `templates/agent-config.template.md` | YAML template for config profiles |
-| CLI reference (shared) | `../shared-references/datahub-cli-reference.md` | Full CLI command reference |
+| Document                 | Path                                            | Purpose                              |
+| ------------------------ | ----------------------------------------------- | ------------------------------------ |
+| Configuration schema     | `references/configuration-schema.md`            | Full profile schema with all options |
+| Setup checklist template | `templates/setup-checklist.template.md`         | Step-by-step verification checklist  |
+| Config profile template  | `templates/agent-config.template.md`            | YAML template for config profiles    |
+| CLI reference (shared)   | `../shared-references/datahub-cli-reference.md` | Full CLI command reference           |
+
 ---
 
 ## Common Mistakes

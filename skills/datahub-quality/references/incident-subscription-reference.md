@@ -8,15 +8,17 @@
 
 ```graphql
 mutation {
-  raiseIncident(input: {
-    type: FRESHNESS
-    title: "Orders table is stale"
-    description: "Last update was 12 hours ago, expected every 6 hours"
-    resourceUrn: "<DATASET_URN>"
-    priority: HIGH
-    status: { state: ACTIVE, stage: TRIAGE }
-    assigneeUrns: ["urn:li:corpuser:oncall"]
-  })
+  raiseIncident(
+    input: {
+      type: FRESHNESS
+      title: "Orders table is stale"
+      description: "Last update was 12 hours ago, expected every 6 hours"
+      resourceUrn: "<DATASET_URN>"
+      priority: HIGH
+      status: { state: ACTIVE, stage: TRIAGE }
+      assigneeUrns: ["urn:li:corpuser:oncall"]
+    }
+  )
 }
 ```
 
@@ -57,17 +59,17 @@ mutation {
 
 ### Incident types (`IncidentType`)
 
-| Type | Use case |
-| --- | --- |
-| `FRESHNESS` | Data is stale |
-| `VOLUME` | Row count anomaly |
-| `FIELD` | Column-level quality issue |
-| `SQL` | Custom SQL check failure |
-| `DATA_SCHEMA` | Unexpected schema change |
-| `OPERATIONAL` | Pipeline or infrastructure failure |
-| `CUSTOM` | Anything else (set `customType` string) |
-| `DATASET_COLUMN` | Issue with a specific column |
-| `DATASET_ROWS` | Issue with specific rows |
+| Type             | Use case                                |
+| ---------------- | --------------------------------------- |
+| `FRESHNESS`      | Data is stale                           |
+| `VOLUME`         | Row count anomaly                       |
+| `FIELD`          | Column-level quality issue              |
+| `SQL`            | Custom SQL check failure                |
+| `DATA_SCHEMA`    | Unexpected schema change                |
+| `OPERATIONAL`    | Pipeline or infrastructure failure      |
+| `CUSTOM`         | Anything else (set `customType` string) |
+| `DATASET_COLUMN` | Issue with a specific column            |
+| `DATASET_ROWS`   | Issue with specific rows                |
 
 ### Incident priorities (`IncidentPriority`)
 
@@ -75,26 +77,26 @@ mutation {
 
 ### Incident states (`IncidentState`)
 
-| State | Meaning |
-| --- | --- |
-| `ACTIVE` | Incident is open and needs attention |
-| `RESOLVED` | Incident has been closed |
+| State      | Meaning                              |
+| ---------- | ------------------------------------ |
+| `ACTIVE`   | Incident is open and needs attention |
+| `RESOLVED` | Incident has been closed             |
 
 ### Incident stages (`IncidentStage`)
 
-| Stage | Meaning |
-| --- | --- |
-| `TRIAGE` | Just raised, needs assessment |
-| `INVESTIGATION` | Being investigated |
-| `WORK_IN_PROGRESS` | Fix is underway |
-| `FIXED` | Root cause addressed |
-| `NO_ACTION_REQUIRED` | Determined to not need a fix |
+| Stage                | Meaning                       |
+| -------------------- | ----------------------------- |
+| `TRIAGE`             | Just raised, needs assessment |
+| `INVESTIGATION`      | Being investigated            |
+| `WORK_IN_PROGRESS`   | Fix is underway               |
+| `FIXED`              | Root cause addressed          |
+| `NO_ACTION_REQUIRED` | Determined to not need a fix  |
 
 ### Incident source types (`IncidentSourceType`)
 
-| Type | Meaning |
-| --- | --- |
-| `MANUAL` | Raised by a user |
+| Type                | Meaning                            |
+| ------------------- | ---------------------------------- |
+| `MANUAL`            | Raised by a user                   |
 | `ASSERTION_FAILURE` | Auto-raised by a failing assertion |
 
 ---
@@ -114,10 +116,32 @@ query {
         title
         description
         priority
-        incidentStatus { state stage message lastUpdated { time } }
-        source { type source { urn } }
-        created { time actor }
-        assignees { ... on CorpUser { username } ... on CorpGroup { name } }
+        incidentStatus {
+          state
+          stage
+          message
+          lastUpdated {
+            time
+          }
+        }
+        source {
+          type
+          source {
+            urn
+          }
+        }
+        created {
+          time
+          actor
+        }
+        assignees {
+          ... on CorpUser {
+            username
+          }
+          ... on CorpGroup {
+            name
+          }
+        }
       }
     }
   }
@@ -126,14 +150,14 @@ query {
 
 Filter parameters on `incidents()`:
 
-| Parameter | Type | Notes |
-| --- | --- | --- |
-| `state` | `IncidentState` | `ACTIVE` or `RESOLVED` |
-| `stage` | `IncidentStage` | Filter by stage |
-| `priority` | `IncidentPriority` | Filter by priority |
-| `assigneeUrns` | `[String!]` | Filter by assignees |
-| `start` | `Int` | Pagination offset |
-| `count` | `Int` | Page size (default 20) |
+| Parameter      | Type               | Notes                  |
+| -------------- | ------------------ | ---------------------- |
+| `state`        | `IncidentState`    | `ACTIVE` or `RESOLVED` |
+| `stage`        | `IncidentStage`    | Filter by stage        |
+| `priority`     | `IncidentPriority` | Filter by priority     |
+| `assigneeUrns` | `[String!]`        | Filter by assignees    |
+| `start`        | `Int`              | Pagination offset      |
+| `count`        | `Int`              | Page size (default 20) |
 
 ### By URN
 
@@ -146,10 +170,30 @@ query {
       title
       description
       priority
-      incidentStatus { state stage message }
-      entity { urn type ... on Dataset { properties { name } platform { name } } }
-      source { type }
-      created { time actor }
+      incidentStatus {
+        state
+        stage
+        message
+      }
+      entity {
+        urn
+        type
+        ... on Dataset {
+          properties {
+            name
+          }
+          platform {
+            name
+          }
+        }
+      }
+      source {
+        type
+      }
+      created {
+        time
+        actor
+      }
     }
   }
 }
@@ -163,39 +207,43 @@ query {
 
 ```graphql
 mutation {
-  createSubscription(input: {
-    entityUrn: "<ENTITY_URN>"
-    subscriptionTypes: [ENTITY_CHANGE]
-    entityChangeTypes: [
-      { entityChangeType: ASSERTION_FAILED }
-      { entityChangeType: INCIDENT_RAISED }
-    ]
-    notificationConfig: {
-      notificationSettings: {
-        sinkTypes: [SLACK]
-        slackSettings: { channels: ["#data-quality"] }
+  createSubscription(
+    input: {
+      entityUrn: "<ENTITY_URN>"
+      subscriptionTypes: [ENTITY_CHANGE]
+      entityChangeTypes: [
+        { entityChangeType: ASSERTION_FAILED }
+        { entityChangeType: INCIDENT_RAISED }
+      ]
+      notificationConfig: {
+        notificationSettings: {
+          sinkTypes: [SLACK]
+          slackSettings: { channels: ["#data-quality"] }
+        }
       }
     }
-  }) { subscriptionUrn }
+  ) {
+    subscriptionUrn
+  }
 }
 ```
 
 ### Subscription types (`SubscriptionType`)
 
-| Type | Scope |
-| --- | --- |
-| `ENTITY_CHANGE` | Direct changes on the entity |
+| Type                     | Scope                            |
+| ------------------------ | -------------------------------- |
+| `ENTITY_CHANGE`          | Direct changes on the entity     |
 | `UPSTREAM_ENTITY_CHANGE` | Changes on upstream dependencies |
 
 ### Quality-relevant change types (`EntityChangeType`)
 
-| Change type | Trigger |
-| --- | --- |
-| `ASSERTION_PASSED` | Assertion succeeded |
-| `ASSERTION_FAILED` | Assertion failed |
-| `ASSERTION_ERROR` | Assertion errored |
-| `INCIDENT_RAISED` | Incident opened |
-| `INCIDENT_RESOLVED` | Incident closed |
+| Change type         | Trigger             |
+| ------------------- | ------------------- |
+| `ASSERTION_PASSED`  | Assertion succeeded |
+| `ASSERTION_FAILED`  | Assertion failed    |
+| `ASSERTION_ERROR`   | Assertion errored   |
+| `INCIDENT_RAISED`   | Incident opened     |
+| `INCIDENT_RESOLVED` | Incident closed     |
 
 ### Filtering to specific assertions
 
@@ -211,6 +259,7 @@ entityChangeTypes: [
 ### Notification channels
 
 **Slack:**
+
 ```graphql
 notificationConfig: {
   notificationSettings: {
@@ -224,6 +273,7 @@ notificationConfig: {
 ```
 
 **Email:**
+
 ```graphql
 notificationConfig: {
   notificationSettings: {
@@ -234,6 +284,7 @@ notificationConfig: {
 ```
 
 **Microsoft Teams:**
+
 ```graphql
 notificationConfig: {
   notificationSettings: {
@@ -246,6 +297,7 @@ notificationConfig: {
 ```
 
 **Multiple channels simultaneously:**
+
 ```graphql
 notificationConfig: {
   notificationSettings: {
@@ -262,21 +314,25 @@ Subscribe a group (all members get notified):
 
 ```graphql
 mutation {
-  createSubscription(input: {
-    entityUrn: "<ENTITY_URN>"
-    groupUrn: "urn:li:corpGroup:data-engineering"
-    subscriptionTypes: [ENTITY_CHANGE]
-    entityChangeTypes: [
-      { entityChangeType: ASSERTION_FAILED }
-      { entityChangeType: INCIDENT_RAISED }
-    ]
-    notificationConfig: {
-      notificationSettings: {
-        sinkTypes: [SLACK]
-        slackSettings: { channels: ["#data-eng-alerts"] }
+  createSubscription(
+    input: {
+      entityUrn: "<ENTITY_URN>"
+      groupUrn: "urn:li:corpGroup:data-engineering"
+      subscriptionTypes: [ENTITY_CHANGE]
+      entityChangeTypes: [
+        { entityChangeType: ASSERTION_FAILED }
+        { entityChangeType: INCIDENT_RAISED }
+      ]
+      notificationConfig: {
+        notificationSettings: {
+          sinkTypes: [SLACK]
+          slackSettings: { channels: ["#data-eng-alerts"] }
+        }
       }
     }
-  }) { subscriptionUrn }
+  ) {
+    subscriptionUrn
+  }
 }
 ```
 
@@ -284,22 +340,26 @@ mutation {
 
 ```graphql
 mutation {
-  updateSubscription(input: {
-    subscriptionUrn: "<SUBSCRIPTION_URN>"
-    entityChangeTypes: [
-      { entityChangeType: ASSERTION_FAILED }
-      { entityChangeType: ASSERTION_ERROR }
-      { entityChangeType: INCIDENT_RAISED }
-      { entityChangeType: INCIDENT_RESOLVED }
-    ]
-    notificationConfig: {
-      notificationSettings: {
-        sinkTypes: [SLACK, EMAIL]
-        slackSettings: { channels: ["#data-quality"] }
-        emailSettings: { email: "team@company.com" }
+  updateSubscription(
+    input: {
+      subscriptionUrn: "<SUBSCRIPTION_URN>"
+      entityChangeTypes: [
+        { entityChangeType: ASSERTION_FAILED }
+        { entityChangeType: ASSERTION_ERROR }
+        { entityChangeType: INCIDENT_RAISED }
+        { entityChangeType: INCIDENT_RESOLVED }
+      ]
+      notificationConfig: {
+        notificationSettings: {
+          sinkTypes: [SLACK, EMAIL]
+          slackSettings: { channels: ["#data-quality"] }
+          emailSettings: { email: "team@company.com" }
+        }
       }
     }
-  }) { subscriptionUrn }
+  ) {
+    subscriptionUrn
+  }
 }
 ```
 
@@ -307,9 +367,7 @@ mutation {
 
 ```graphql
 mutation {
-  deleteSubscription(input: {
-    subscriptionUrn: "<SUBSCRIPTION_URN>"
-  })
+  deleteSubscription(input: { subscriptionUrn: "<SUBSCRIPTION_URN>" })
 }
 ```
 
@@ -322,14 +380,34 @@ query {
     total
     subscriptions {
       subscriptionUrn
-      entity { urn type ... on Dataset { properties { name } platform { name } } }
+      entity {
+        urn
+        type
+        ... on Dataset {
+          properties {
+            name
+          }
+          platform {
+            name
+          }
+        }
+      }
       subscriptionTypes
-      entityChangeTypes { entityChangeType filter { includeAssertions } }
+      entityChangeTypes {
+        entityChangeType
+        filter {
+          includeAssertions
+        }
+      }
       notificationConfig {
         notificationSettings {
           sinkTypes
-          slackSettings { channels }
-          emailSettings { email }
+          slackSettings {
+            channels
+          }
+          emailSettings {
+            email
+          }
         }
       }
     }
@@ -343,8 +421,12 @@ query {
     isUserSubscribedViaGroup
     userSubscriptionCount
     groupSubscriptionCount
-    subscribedUsers { username }
-    subscribedGroups { name }
+    subscribedUsers {
+      username
+    }
+    subscribedGroups {
+      name
+    }
   }
 }
 
@@ -354,7 +436,9 @@ query {
     subscription {
       subscriptionUrn
       subscriptionTypes
-      entityChangeTypes { entityChangeType }
+      entityChangeTypes {
+        entityChangeType
+      }
     }
   }
 }

@@ -364,12 +364,12 @@ When creating tags, glossary terms, or domains, you choose between two ID strate
 
 **GUID-based (omit `id`):** `createTag(input: { name: "PII" })` → `urn:li:tag:a1b2c3d4-...`. Display name can change freely, but URNs are opaque.
 
-| Situation | Recommended |
-| --- | --- |
-| Industry-standard label (PII, deprecated) | Name-based |
-| Name may evolve as org matures | GUID-based |
-| User explicitly requests a specific ID | Name-based |
-| Unsure | Ask the user |
+| Situation                                 | Recommended  |
+| ----------------------------------------- | ------------ |
+| Industry-standard label (PII, deprecated) | Name-based   |
+| Name may evolve as org matures            | GUID-based   |
+| User explicitly requests a specific ID    | Name-based   |
+| Unsure                                    | Ask the user |
 
 ---
 

@@ -109,13 +109,14 @@ Extract the key fields from each result and format as the output template below.
 **Total results:** <count>
 **Returned:** <number shown>
 
-| # | URN | Name | Type | Platform | Owner | Tags |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | <urn> | <name> | <type> | <platform> | <owner> | <tags> |
+| #   | URN   | Name   | Type   | Platform   | Owner   | Tags   |
+| --- | ----- | ------ | ------ | ---------- | ------- | ------ |
+| 1   | <urn> | <name> | <type> | <platform> | <owner> | <tags> |
 
 ## Entity Details (if requested)
 
 ### <Entity Name>
+
 - **URN:** <urn>
 - **Description:** <description>
 - **Owner:** <owner>
@@ -129,14 +130,16 @@ Extract the key fields from each result and format as the output template below.
 ## Lineage (if requested)
 
 ### Upstream
-| Hop | Entity | Type | Platform |
-| --- | --- | --- | --- |
-| 1 | <name> | <type> | <platform> |
+
+| Hop | Entity | Type   | Platform   |
+| --- | ------ | ------ | ---------- |
+| 1   | <name> | <type> | <platform> |
 
 ### Downstream
-| Hop | Entity | Type | Platform |
-| --- | --- | --- | --- |
-| 1 | <name> | <type> | <platform> |
+
+| Hop | Entity | Type   | Platform   |
+| --- | ------ | ------ | ---------- |
+| 1   | <name> | <type> | <platform> |
 
 ## Errors (if any)
 

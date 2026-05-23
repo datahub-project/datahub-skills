@@ -17,21 +17,21 @@ local development, production/k8s deployment, and troubleshooting.
 
 Use the **AskQuestion** tool to collect the following in a single call.
 
-| Question | ID | Options |
-|---|---|---|
-| Are you configuring for local development or production/k8s? | `env_target` | `Local development` / `Production / Kubernetes` |
-| MFE app name — the `name` field inside `new ModuleFederationPlugin({ name: '...' })` in the MFE's `webpack.config.js`. **Must match exactly.** | `mf_name` | `testAppMFE` / `N/A - I'll fill it in later` |
-| URL path where the MFE should be accessible, e.g. `/dashboard` (must start with `/`) | `mfe_path` | `/test_page` / `N/A - I'll fill it in later` |
-| `remoteEntry.js` URL, e.g. `http://localhost:3002/remoteEntry.js` | `remote_entry_url` | `http://localhost:3002/remoteEntry.js` / `N/A - I'll fill it in later` |
-| Display label for navigation, e.g. `Team Dashboard` | `display_label` | `Test Dashboard` / `N/A - I'll fill it in later` |
-| Should the MFE appear in the left nav sidebar? | `show_in_nav` | `Yes` / `No` |
-| Nav icon | `nav_icon` | `ChartBar` / `Trophy` / `Gear` / `HandWaving` / `Lightning` / `MagnifyingGlass` / `Database` / `Users` / `Shield` / `Bell` / `Flag` / `Star` / `Heart` / `Cube` / `Table` / `Code` / `Globe` / `Rocket` |
+| Question                                                                                                                                       | ID                 | Options                                                                                                                                                                                                 |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Are you configuring for local development or production/k8s?                                                                                   | `env_target`       | `Local development` / `Production / Kubernetes`                                                                                                                                                         |
+| MFE app name — the `name` field inside `new ModuleFederationPlugin({ name: '...' })` in the MFE's `webpack.config.js`. **Must match exactly.** | `mf_name`          | `testAppMFE` / `N/A - I'll fill it in later`                                                                                                                                                            |
+| URL path where the MFE should be accessible, e.g. `/dashboard` (must start with `/`)                                                           | `mfe_path`         | `/test_page` / `N/A - I'll fill it in later`                                                                                                                                                            |
+| `remoteEntry.js` URL, e.g. `http://localhost:3002/remoteEntry.js`                                                                              | `remote_entry_url` | `http://localhost:3002/remoteEntry.js` / `N/A - I'll fill it in later`                                                                                                                                  |
+| Display label for navigation, e.g. `Team Dashboard`                                                                                            | `display_label`    | `Test Dashboard` / `N/A - I'll fill it in later`                                                                                                                                                        |
+| Should the MFE appear in the left nav sidebar?                                                                                                 | `show_in_nav`      | `Yes` / `No`                                                                                                                                                                                            |
+| Nav icon                                                                                                                                       | `nav_icon`         | `ChartBar` / `Trophy` / `Gear` / `HandWaving` / `Lightning` / `MagnifyingGlass` / `Database` / `Users` / `Shield` / `Bell` / `Flag` / `Star` / `Heart` / `Cube` / `Table` / `Code` / `Globe` / `Rocket` |
 
 If `env_target` is **Local development**, ask one follow-up question using
 **AskQuestion** before proceeding:
 
-| Question | ID | Options |
-|---|---|---|
+| Question                             | ID           | Options                                                                        |
+| ------------------------------------ | ------------ | ------------------------------------------------------------------------------ |
 | How are you running DataHub locally? | `local_mode` | `Docker / datahub-dev.sh (standard)` / `Play server directly (sbt / IntelliJ)` |
 
 For the `N/A - I'll fill it in later` fields (`mf_name`, `mfe_path`,
@@ -40,10 +40,12 @@ workspace. The user will type their own.
 
 > **Finding the MFE app name**: Open the MFE's `webpack.config.js` and look for
 > the `ModuleFederationPlugin` block. The `name` property is what goes here:
+>
 > ```js
 > new ModuleFederationPlugin({ name: 'teamDashboardMFE', ... })
 > //                                   ^^^^^^^^^^^^^^^^^  ← this value
 > ```
+>
 > If the name in the YAML config doesn't match this exactly, the MFE will
 > fail to load. If you used the `datahub-mfe-create-app` skill, the name was printed
 > in the summary as "Module Federation name".
@@ -53,15 +55,15 @@ workspace. The user will type their own.
 Build the config entry from the gathered values:
 
 ```yaml
-  - id: __MFE_ID__
-    label: __DISPLAY_LABEL__
-    path: __MFE_PATH__
-    remoteEntry: __REMOTE_ENTRY_URL__
-    module: __MF_NAME__/mount
-    flags:
-      enabled: true
-      showInNav: __SHOW_IN_NAV__
-    navIcon: __NAV_ICON__
+- id: __MFE_ID__
+  label: __DISPLAY_LABEL__
+  path: __MFE_PATH__
+  remoteEntry: __REMOTE_ENTRY_URL__
+  module: __MF_NAME__/mount
+  flags:
+    enabled: true
+    showInNav: __SHOW_IN_NAV__
+  navIcon: __NAV_ICON__
 ```
 
 Where `__MFE_ID__` is derived from the path (strip leading `/`, replace `/`
@@ -85,7 +87,7 @@ microFrontends:
     ...
 ```
 
-3. Rebuild the frontend container so the updated file is baked into the image:
+1. Rebuild the frontend container so the updated file is baked into the image:
 
 ```bash
 scripts/dev/datahub-dev.sh rebuild --wait
@@ -122,6 +124,7 @@ Tell the user:
 > When deploying your MFE to a CDN or static host, set the `MFE_PUBLIC_PATH`
 > env var during the MFE's production build so webpack knows the correct
 > public URL for chunk loading.
+>
 > ```bash
 > MFE_PUBLIC_PATH=https://cdn.example.com/my-mfe/ npm run build
 > ```
@@ -148,6 +151,7 @@ Provide the user with a summary. Show only the config file relevant to their
 `env_target` — do not mention local config files if they selected Production.
 
 If **local development**:
+
 ```
 MFE registered in DataHub:
   Path:            /mfe__MFE_PATH__
@@ -159,6 +163,7 @@ MFE registered in DataHub:
 ```
 
 If **Production / Kubernetes**:
+
 ```
 MFE registered in DataHub:
   Path:            /mfe__MFE_PATH__

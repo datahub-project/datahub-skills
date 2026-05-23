@@ -13,18 +13,18 @@
 
 ## Upstream (Sources)
 
-| Hop | Entity | Type | Platform | Relationship |
-| --- | --- | --- | --- | --- |
-| 1 | <!-- name --> | <!-- type --> | <!-- platform --> | <!-- TRANSFORMED/VIEW/COPY --> |
+| Hop | Entity        | Type          | Platform          | Relationship                   |
+| --- | ------------- | ------------- | ----------------- | ------------------------------ |
+| 1   | <!-- name --> | <!-- type --> | <!-- platform --> | <!-- TRANSFORMED/VIEW/COPY --> |
 
 ## Downstream (Consumers)
 
-| Hop | Entity | Type | Platform | Relationship |
-| --- | --- | --- | --- | --- |
-| 1 | <!-- name --> | <!-- type --> | <!-- platform --> | <!-- type --> |
+| Hop | Entity        | Type          | Platform          | Relationship  |
+| --- | ------------- | ------------- | ----------------- | ------------- |
+| 1   | <!-- name --> | <!-- type --> | <!-- platform --> | <!-- type --> |
 
 ## Cross-Platform Boundaries
 
-| From | To | Edge |
-| --- | --- | --- |
+| From                | To                  | Edge                         |
+| ------------------- | ------------------- | ---------------------------- |
 | <!-- platform A --> | <!-- platform B --> | <!-- entity A → entity B --> |
