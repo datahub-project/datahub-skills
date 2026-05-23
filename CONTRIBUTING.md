@@ -1,5 +1,22 @@
 # Contributing
 
+## Local development setup
+
+Install [pre-commit](https://pre-commit.com/) so the same hooks CI runs also run on every `git commit`:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+This wires up `prettier` (markdown formatting), `markdownlint-cli2`, `ruff`, and a handful of basic file checks. The exact set lives in `.pre-commit-config.yaml`. CI re-runs them via `.github/workflows/lint.yml` — installing locally just saves you a push round-trip when a hook would have rejected the change.
+
+To run every hook against the whole repo without committing:
+
+```bash
+pre-commit run --all-files
+```
+
 ## Commit conventions
 
 We use [Conventional Commits](https://www.conventionalcommits.org/). Your PR title becomes
