@@ -106,6 +106,29 @@ class MyDocSource(StatefulIngestionSourceBase, TestableSource):
   `DELETION_DETECTION` and `PLATFORM_INSTANCE` when supported. (The reference
   connectors under-declare these — do better.)
 
+### Platform registration (icon + branding)
+
+Document sources register a data platform (`urn:li:dataPlatform:{platform}`) and emit
+`dataPlatformInstance`, exactly like structured sources — so they need the **same
+platform registration and icon**, and it is **not optional**.
+
+→ **See [Platform Registration Guide](../platform_registration.md)** for the full
+checklist (the `DataPlatform` enum, `data-platforms.yaml` entry, and a
+transparent-background logo in `datahub-web-react/src/images/{platform}logo.png`).
+
+Register the platform **consistently** — the reference connectors don't, which is a
+trap to avoid:
+
+- Confluence emits `DataPlatformInfo` (with `displayName` + `logoUrl`) **inline at
+  ingestion time**, so branding appears even without the seeded registry entry.
+- Notion does **not** emit `DataPlatformInfo`; it relies entirely on the frontend logo
+  asset / seeded registry — so branding silently fails if that step is skipped.
+
+Prefer the seeded registration (`data-platforms.yaml` + bundled logo) so branding does
+not depend on a connector having run; emitting `DataPlatformInfo` inline is a fine
+belt-and-suspenders addition. Complete platform registration **before** the connector
+PR merges, so users see the icon immediately.
+
 ### Hierarchy without containers
 
 Document hierarchy is expressed through the `parentDocument` aspect and
