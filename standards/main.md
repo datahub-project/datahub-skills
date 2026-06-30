@@ -184,20 +184,21 @@ Map your source system's concepts to DataHub entity types.
 
 **Core Entity Types in DataHub**:
 
-| DataHub Entity     | Use For                                        | Standard Subtypes                                                     |
-| ------------------ | ---------------------------------------------- | --------------------------------------------------------------------- |
-| **Dataset**        | Tables, views, topics, files, collections      | `TABLE`, `VIEW`, `TOPIC`, `EXTERNAL_TABLE`, `SHARDED_TABLE`, `STREAM` |
-| **Container**      | Databases, schemas, projects, folders, buckets | `DATABASE`, `SCHEMA`, `PROJECT`, `FOLDER`, `CATALOG`, `BUCKET`        |
-| **Dashboard**      | BI dashboards, reports                         | `DASHBOARD`                                                           |
-| **Chart**          | Individual visualizations                      | `CHART`, `LOOKER_LOOK`                                                |
-| **DataFlow**       | Pipelines, DAGs, workflows                     | `AIRFLOW_DAG`, `DAGSTER_PIPELINE`                                     |
-| **DataJob**        | Tasks, pipeline steps                          | `AIRFLOW_TASK`, `DAGSTER_OP`                                          |
-| **MLModel**        | ML model versions                              | `ML_MODEL`                                                            |
-| **MLModelGroup**   | Model registries                               | `MODEL_GROUP`                                                         |
-| **MLFeatureTable** | Feature store tables                           | `FEATURE_TABLE`                                                       |
-| **MLFeature**      | Individual features                            | `FEATURE`                                                             |
-| **CorpUser**       | User accounts                                  | N/A                                                                   |
-| **CorpGroup**      | Teams, roles, groups                           | N/A                                                                   |
+| DataHub Entity     | Use For                                                  | Standard Subtypes                                                     |
+| ------------------ | -------------------------------------------------------- | --------------------------------------------------------------------- |
+| **Dataset**        | Tables, views, topics, files, collections                | `TABLE`, `VIEW`, `TOPIC`, `EXTERNAL_TABLE`, `SHARDED_TABLE`, `STREAM` |
+| **Container**      | Databases, schemas, projects, folders, buckets           | `DATABASE`, `SCHEMA`, `PROJECT`, `FOLDER`, `CATALOG`, `BUCKET`        |
+| **Dashboard**      | BI dashboards, reports                                   | `DASHBOARD`                                                           |
+| **Chart**          | Individual visualizations                                | `CHART`, `LOOKER_LOOK`                                                |
+| **DataFlow**       | Pipelines, DAGs, workflows                               | `AIRFLOW_DAG`, `DAGSTER_PIPELINE`                                     |
+| **DataJob**        | Tasks, pipeline steps                                    | `AIRFLOW_TASK`, `DAGSTER_OP`                                          |
+| **MLModel**        | ML model versions                                        | `ML_MODEL`                                                            |
+| **MLModelGroup**   | Model registries                                         | `MODEL_GROUP`                                                         |
+| **MLFeatureTable** | Feature store tables                                     | `FEATURE_TABLE`                                                       |
+| **MLFeature**      | Individual features                                      | `FEATURE`                                                             |
+| **Document**       | Wiki pages, docs, notes, articles (unstructured content) | `Folder` (others optional, e.g. `FAQ`)                                |
+| **CorpUser**       | User accounts                                            | N/A                                                                   |
+| **CorpGroup**      | Teams, roles, groups                                     | N/A                                                                   |
 
 #### 4.2 Map Your Source Concepts to Entity Types
 
@@ -1335,6 +1336,10 @@ These sources expose metadata through REST/GraphQL APIs:
 
 - **[NoSQL Databases](source_types/nosql_databases.md)** - MongoDB, Cassandra, DynamoDB, Redis, Elasticsearch
   - Extract: Collections/tables, Keyspaces/databases (when using REST APIs)
+
+- **[Document / Knowledge-Base Sources](source_types/document_sources.md)** - Confluence, Notion, GitHub Documents, DataHub Documents
+  - Extract: Documents (unstructured content), document hierarchy, optional embeddings for RAG
+  - Entity model: the **`document` entity** (NOT Dataset/Container); hierarchy via `parentDocument` + `browsePathsV2`
 
 ### SQL-Based Sources
 
