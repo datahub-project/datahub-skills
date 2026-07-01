@@ -54,6 +54,22 @@ Page tree (parent)      → parentDocument aspect (IsChildOf relationship)
 **stable across runs** — derive it from the source system's immutable id, never from a
 local cache path or row order.
 
+**The instance component must be stable too.** When the URN embeds a
+`platform_instance` (Confluence's `confluence-{instance}-{page_id}`), that instance id
+must be derived **only from immutable properties** — never from anything that can be
+rotated, renamed, or reconfigured:
+
+- ❌ Do **not** derive it from an API token/credential, a hostname/subdomain that can
+  be re-pointed (e.g. an `.atlassian.net` URL that changes on migration or vanity-domain
+  setup), or any mutable config value. Confluence's fallback of hashing the URL
+  (`SHA256(url)[:8]`) is a **cautionary example**: if the URL ever changes, every
+  document URN changes with it, producing duplicate entities and breaking stale-entity
+  removal.
+- ✅ Prefer an explicit, user-supplied `platform_instance` (recommended), or a stable
+  immutable identifier the source system guarantees won't change (e.g. a tenant/site GUID).
+- Once chosen, the instance id is effectively permanent — changing it re-keys every URN.
+  Document this clearly in the connector's config help.
+
 **Import mode** — every Shape A connector exposes a `document_import_mode`:
 
 - `EXTERNAL` (default) → `Document.create_external_document(...)` — a read-only
@@ -221,7 +237,9 @@ Distinctive patterns to follow if you build one:
   to client libraries (`atlassian-python-api`, `notion-client`) with no configurable
   backoff. If your source has strict limits (Notion: 1–3 req/s), add explicit rate-limiting
   rather than inheriting this gap. Use `datahub.utilities.ratelimiter.RateLimiter`.
-- **Stable URNs.** Derive document ids from immutable source ids. A URN that changes between
+- **Stable URNs — id _and_ instance.** Derive both the document id and the
+  `platform_instance` component from immutable source ids, never from rotatable/mutable
+  properties (tokens, hostnames/subdomains, renamable config). A URN that changes between
   runs produces duplicate entities and breaks stale-entity removal.
 - **Bounded error collections.** Use `LossyList`/`LossyDict` for per-document error tracking
   to avoid unbounded memory growth on large workspaces.
