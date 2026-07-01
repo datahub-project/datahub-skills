@@ -1534,6 +1534,7 @@ yield container.as_workunit()
 - ✅ Use consistent naming
 - ✅ Match upstream source URNs for lineage
 - ✅ Include platform instance for multi-tenant
+- ✅ Derive URN ids from **immutable** source identifiers — never from mutable/rotatable properties (API tokens, hostnames/subdomains, renamable config). A URN that changes between runs produces duplicate entities and breaks stale-entity removal.
 - ✅ Use typed urn where possible -> https://github.com/datahub-project/datahub/tree/master/metadata-ingestion/src/datahub/utilities/urns
 
 ### Performance

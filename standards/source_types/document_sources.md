@@ -72,9 +72,14 @@ rotated, renamed, or reconfigured:
 
 **Import mode** — every Shape A connector exposes a `document_import_mode`:
 
-- `EXTERNAL` (default) → `Document.create_external_document(...)` — a read-only
+- `EXTERNAL` → `Document.create_external_document(...)` — a read-only
   reference with `externalUrl` / `externalId` pointing back to the source system.
 - `NATIVE` → `Document.create_document(...)` — a DataHub-native, editable document.
+
+The default is **per-connector**: connectors mirroring an external system default to
+`EXTERNAL` (Confluence, Notion), while sources whose content is effectively owned by the
+pipeline default to `NATIVE` (GitHub Documents). Pick the default that matches whether the
+source of truth stays external.
 
 ## Required Aspects
 
@@ -224,7 +229,8 @@ Distinctive patterns to follow if you build one:
   On lock-miss, skip cleanly (report a non-fatal warning), don't fail.
 - **Mode duality** — optionally support a Kafka MCL event-driven mode in addition to the
   GraphQL scroll batch mode, with automatic fallback to batch when offsets/state aren't
-  available.
+  available. See `DataHubDocumentsSource` in
+  `src/datahub/ingestion/source/datahub_documents/` for a working implementation.
 - **Ownership deferral** — skip EXTERNAL documents that another pipeline already self-embeds
   (check for an existing `semanticContent` model key), unless you already own that
   document's incremental state.
@@ -233,14 +239,18 @@ Distinctive patterns to follow if you build one:
 
 - **No `Dataset`, no `Container`.** This is the single biggest difference from every other
   archetype. Reach for the `document` entity and `parentDocument`/`browsePathsV2`.
-- **Rate limiting is a known gap.** The reference connectors delegate rate-limiting entirely
-  to client libraries (`atlassian-python-api`, `notion-client`) with no configurable
-  backoff. If your source has strict limits (Notion: 1–3 req/s), add explicit rate-limiting
-  rather than inheriting this gap. Use `datahub.utilities.ratelimiter.RateLimiter`.
-- **Stable URNs — id _and_ instance.** Derive both the document id and the
-  `platform_instance` component from immutable source ids, never from rotatable/mutable
-  properties (tokens, hostnames/subdomains, renamable config). A URN that changes between
-  runs produces duplicate entities and breaks stale-entity removal.
+- **Rate limiting is unconfigured in the reference connectors.** Rate limiting is a general
+  API-source concern — see the [Rate Limiting Pattern](../api.md) in the API-Based Sources
+  Guide. It is called out here only because the reference document connectors delegate it
+  entirely to their client libraries (`atlassian-python-api`, `notion-client`) with no
+  configurable backoff; if your source has strict limits (Notion: 1–3 req/s), wire in
+  `datahub.utilities.ratelimiter.RateLimiter` rather than inheriting that gap.
+- **Stable URNs — the instance component too.** URN-id stability is a general rule (see the
+  [URNs checklist](../main.md)); document sources add a wrinkle worth calling out — the
+  `platform_instance` component must be derived from immutable source ids as well, never from
+  rotatable/mutable properties. Confluence's `SHA256(url)` instance fallback is the cautionary
+  example: a URL change re-keys every document URN, producing duplicates and breaking
+  stale-entity removal.
 - **Bounded error collections.** Use `LossyList`/`LossyDict` for per-document error tracking
   to avoid unbounded memory growth on large workspaces.
 - **No lineage.** Document connectors don't emit table/column lineage. The nearest concept is
