@@ -47,6 +47,16 @@ Manage data quality — create and run assertions (freshness, volume, SQL, field
 > Subscribe me to assertion failures via Slack
 ```
 
+#### ML root-cause analysis
+
+Investigate silent ML failures: walk a model's upstream lineage, compile governance metadata (SLA terms, cadence tags, column constraints) into read-only SQL probes, diagnose the first broken ancestor, and write the incident plus an RCA case document back to DataHub.
+
+```
+> Why is my demand forecaster degrading?
+> Audit the health of all production models
+> /datahub-ml-rca readmission_risk
+```
+
 #### Setup
 
 Install the DataHub CLI, configure authentication, verify connectivity, and set up default scopes and profiles for the other interaction skills.
