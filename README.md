@@ -1,6 +1,6 @@
 # datahub-skills
 
-Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, manage data quality, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
+Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, manage data quality, triage incidents to their root cause, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
 
 ## What's in here
 
@@ -45,6 +45,16 @@ Manage data quality — create and run assertions (freshness, volume, SQL, field
 > Create a freshness assertion on the orders table
 > /datahub-quality raise an incident on the customer pipeline
 > Subscribe me to assertion failures via Slack
+```
+
+#### Triage
+
+Take a symptom on a downstream asset — a stale report, wrong numbers, unexpected nulls — and localize it to the upstream stage where it broke, then open an incident. Walks the lineage and compares health signals stage by stage, so it blames the stage that caused the problem, not the one that surfaced it.
+
+```
+> Why is the revenue dashboard stale?
+> Triage the nulls in the billing mart
+> /datahub-triage the daily summary is empty — find where it broke
 ```
 
 #### Setup
