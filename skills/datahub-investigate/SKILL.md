@@ -9,7 +9,7 @@ description: |
   suspicious", "run a forensic analysis", "chain of custody", or any request
   where conclusions must be traceable back to source data.
 user-invocable: true
-min-cli-version: 1.5.0.1rc1
+min-cli-version: 1.5.0.1
 allowed-tools: Bash(datahub *)
 ---
 
