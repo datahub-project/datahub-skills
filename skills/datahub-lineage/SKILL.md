@@ -39,9 +39,10 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 | Search for entities by keyword or metadata              | `/datahub-search`                                |
 | Answer "who owns X?" or "what is X?"                    | `/datahub-search` (metadata lookup, not lineage) |
 | Add or update metadata (descriptions, tags, owners)     | `/datahub-enrich`                                |
+| Certify a risky field rename, drop, or type change      | `/datahub-schema-change-certification`           |
 | Create assertions, run quality checks, manage incidents | `/datahub-quality`                               |
 
-**Key boundary:** Lineage handles **lineage and dependency questions** ("what feeds into X?", "what breaks if I change X?"). Search handles **metadata questions** ("who owns X?"). Enrich handles **metadata updates** ("set owner", "tag this").
+**Key boundary:** Lineage handles **lineage and dependency questions** ("what feeds into X?", "what breaks if I change X?"). Schema Change Certification owns an explicit request for a safe package, scope-bound approval, or change passport. Search handles **metadata questions** ("who owns X?"). Enrich handles **ordinary metadata updates** ("set owner", "tag this").
 
 ---
 
@@ -214,6 +215,7 @@ After presenting lineage:
 
 - "Want to see metadata details for any of these?" → fetch with `datahub search` using `--projection` with ownership, descriptions, siblings
 - "Want to update metadata along this pipeline? Use `/datahub-enrich`"
+- "Want to turn this impact result into a scope-bound schema-change decision? Use `/datahub-schema-change-certification`"
 - "Want to run an impact audit? Use `/datahub-audit`"
 
 ---
@@ -241,6 +243,7 @@ After presenting lineage:
 - **Traversal depth > 3 hops** → confirm with user before proceeding.
 - **Lineage returns 0 edges** → entity may not have lineage ingested. Note this rather than saying "no dependencies."
 - **User asks about metadata, not lineage** ("who owns X?", "add a tag") → redirect to `/datahub-search` or `/datahub-enrich`.
+- **User explicitly asks to certify a field change or create a change passport** → redirect to `/datahub-schema-change-certification`.
 
 ---
 

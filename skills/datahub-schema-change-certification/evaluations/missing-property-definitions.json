@@ -1,0 +1,10 @@
+{
+  "skills": ["datahub-schema-change-certification"],
+  "query": "Certify the rename and write the result back, but this DataHub tenant has no schema-change structured property definitions.",
+  "expected_behavior": [
+    "Does not assume or silently create structured-property definitions",
+    "Records a preflight warning and omits add_structured_properties from the approved plan",
+    "Uses only the schema-verified core document and description operations when their tools are available",
+    "Shows the exact reduced ordered mutation plan before requesting scope-hash approval"
+  ]
+}

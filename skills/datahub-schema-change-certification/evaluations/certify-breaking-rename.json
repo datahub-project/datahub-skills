@@ -1,0 +1,19 @@
+{
+  "skills": ["datahub-schema-change-certification"],
+  "query": "Certify renaming customer_email to contact_email on our gold customer dataset. Show what breaks, prepare a safe migration, and do not mutate DataHub until I approve the exact scope.",
+  "expected_behavior": [
+    "Creates and validates a typed rename change contract",
+    "Uses get_entities for the exact target and paginated list_schema_fields for source and destination validation",
+    "Uses get_lineage and get_lineage_paths_between to preserve exact downstream paths",
+    "Treats an empty get_dataset_queries result as zero usage rather than a transport failure",
+    "Requires raw PASS query calls, explicit totals and returned counts, complete pagination, and a matching raw-evidence hash",
+    "Runs the bundled helper to calculate policy-versioned deterministic findings before explanatory prose",
+    "Generates an expand-migrate-contract model, matching tests, rollback, and owner briefing, then validates their structure",
+    "Captures current MCP tool schemas and keeps fixture, unavailable, and unknown-boundary mutation operations NOT_RUN",
+    "Recomputes preflight and artifact results from tool schemas, descriptor, and current file bytes before scope construction",
+    "Presents and requires approval of the exact scope hash after artifacts and the write-back plan are fixed",
+    "Hash-binds live evidence, artifacts, preflight, mutation plan, policy, and approval into the passport",
+    "Uses verify-then-skip idempotency and exact durable read-back before outer write-back PASS",
+    "Reports every remaining NOT_RUN, STALE, WARN, FAIL, or FIXTURE claim"
+  ]
+}

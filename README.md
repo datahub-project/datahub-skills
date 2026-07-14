@@ -1,6 +1,6 @@
 # datahub-skills
 
-Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, manage data quality, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
+Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, certify schema changes, manage data quality, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
 
 ## What's in here
 
@@ -34,6 +34,16 @@ Explore data lineage, trace upstream sources and downstream consumers, perform i
 > What feeds into the revenue dashboard?
 > Impact analysis for changing the orders table
 > /datahub-lineage trace the customer pipeline
+```
+
+#### Schema-change certification
+
+Certify risky dataset field renames, drops, and type changes before implementation. Uses the official DataHub MCP server to prove the exact target and downstream scope, generate a non-destructive delivery package, bind human approval to an immutable scope hash, and verify bounded metadata write-back.
+
+```
+> Certify renaming customer_email to contact_email
+> Prepare a safe migration package, but do not write until I approve the scope hash
+> /catalog-schema-change-certification drop legacy_customer_id
 ```
 
 #### Quality
@@ -215,6 +225,7 @@ git clone https://github.com/datahub-project/datahub-skills.git
 cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-schema-change-certification your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
@@ -235,6 +246,7 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 | Catalog search              | Yes                   | Yes                                              |
 | Metadata enrichment         | Yes                   | Yes                                              |
 | Lineage exploration         | Yes                   | Yes                                              |
+| Schema-change certification | Yes                   | Yes (official DataHub MCP required)              |
 | Data quality management     | Yes                   | Yes                                              |
 | Connection setup            | Yes                   | Yes                                              |
 | Planning workflow           | Yes                   | Yes                                              |
@@ -251,13 +263,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                                         | What it does                                    |
+| ----------------------------------------------- | ----------------------------------------------- |
+| `/catalog-search [query]`                       | Search the catalog and answer questions         |
+| `/catalog-enrich [entity]`                      | Add or update metadata                          |
+| `/catalog-lineage [entity]`                     | Explore lineage and trace dependencies          |
+| `/catalog-schema-change-certification [change]` | Certify a risky dataset field change            |
+| `/catalog-quality [entity]`                     | Manage assertions, incidents, and subscriptions |
+| `/catalog-setup [task]`                         | Set up connection and configure defaults        |
 
 ### Connector development
 
@@ -303,6 +316,11 @@ datahub-skills/
 │   ├── datahub-lineage/             # Lineage exploration
 │   │   ├── SKILL.md
 │   │   ├── references/
+│   │   └── templates/
+│   ├── datahub-schema-change-certification/ # Safe schema-change decisions
+│   │   ├── SKILL.md
+│   │   ├── references/
+│   │   ├── scripts/
 │   │   └── templates/
 │   ├── datahub-quality/             # Data quality management
 │   │   ├── SKILL.md

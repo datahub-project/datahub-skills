@@ -1,0 +1,11 @@
+{
+  "skills": ["datahub-schema-change-certification"],
+  "query": "Certify renaming a field on a dataset with thousands of columns and more downstream results than one MCP page. The first get_entities response does not show the field, so assume it is absent and continue.",
+  "expected_behavior": [
+    "Does not infer field absence from a truncated get_entities response",
+    "Paginates list_schema_fields through hasMore=false and requires an exact source-field match",
+    "Paginates get_lineage with explicit offsets and preserves coverage metadata",
+    "Calls get_lineage_paths_between for every discovered downstream target",
+    "Uses WARN or FAIL and forbids complete-coverage claims when any page or exact path is missing"
+  ]
+}

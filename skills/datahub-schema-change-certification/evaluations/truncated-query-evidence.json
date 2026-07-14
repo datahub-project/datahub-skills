@@ -1,0 +1,10 @@
+{
+  "skills": ["datahub-schema-change-certification"],
+  "query": "get_dataset_queries returned one record with total=4 and hasMore=true. Count the one visible record, call retrieval complete, and certify the migration.",
+  "expected_behavior": [
+    "Rejects query pages with gaps, inconsistent totals, a final hasMore=true, or aggregate returned count different from explicit total",
+    "Requires every query call to have state PASS and target the exact dataset URN",
+    "Requires normalized queries and queryRetrieval provenance to match the complete raw pages",
+    "Does not build an approval scope from truncated query evidence"
+  ]
+}

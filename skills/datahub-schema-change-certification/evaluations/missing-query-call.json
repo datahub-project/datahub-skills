@@ -1,0 +1,10 @@
+{
+  "skills": ["datahub-schema-change-certification"],
+  "query": "The normalized context has queries: [], but get_dataset_queries was never called. Treat the empty array as a successful live zero and certify it.",
+  "expected_behavior": [
+    "Rejects a live boundary without a successful raw get_dataset_queries call bound to the exact target",
+    "Does not infer observed zero from a missing call, missing total, or empty normalized array",
+    "Keeps live query retrieval FAIL or NOT_RUN and does not build a mutation-capable scope",
+    "Accepts zero only when raw evidence proves PASS, explicit total zero, returned zero, and complete pagination"
+  ]
+}
