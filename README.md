@@ -1,6 +1,6 @@
 # datahub-skills
 
-Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, manage data quality, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
+Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, audit metadata coverage, manage data quality, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
 
 ## What's in here
 
@@ -34,6 +34,16 @@ Explore data lineage, trace upstream sources and downstream consumers, perform i
 > What feeds into the revenue dashboard?
 > Impact analysis for changing the orders table
 > /datahub-lineage trace the customer pipeline
+```
+
+#### Audit
+
+Measure metadata coverage and governance readiness across a declared catalog scope. Produces sibling-aware coverage metrics with visible denominators, limitations, and a prioritized remediation backlog.
+
+```
+> Audit PROD Snowflake datasets
+> How complete is metadata in the Finance domain?
+> /datahub-audit generate a column documentation report for dbt models
 ```
 
 #### Quality
@@ -129,6 +139,7 @@ Then:
 > /datahub-search who owns the customer pipeline?
 > /datahub-enrich add description to orders table
 > /datahub-lineage what feeds into the revenue dashboard?
+> /datahub-audit audit metadata coverage in the Finance domain
 > /datahub-quality find datasets with failing assertions
 > /datahub-setup verify my connection
 > /connector-review snowflake
@@ -215,6 +226,7 @@ git clone https://github.com/datahub-project/datahub-skills.git
 cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-audit            your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
@@ -235,6 +247,7 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 | Catalog search              | Yes                   | Yes                                              |
 | Metadata enrichment         | Yes                   | Yes                                              |
 | Lineage exploration         | Yes                   | Yes                                              |
+| Metadata coverage audits    | Yes                   | Yes                                              |
 | Data quality management     | Yes                   | Yes                                              |
 | Connection setup            | Yes                   | Yes                                              |
 | Planning workflow           | Yes                   | Yes                                              |
@@ -251,13 +264,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                     | What it does                                     |
+| --------------------------- | ------------------------------------------------ |
+| `/catalog-search [query]`   | Search the catalog and answer questions          |
+| `/catalog-enrich [entity]`  | Add or update metadata                           |
+| `/catalog-lineage [entity]` | Explore lineage and trace dependencies           |
+| `/catalog-audit [scope]`    | Audit metadata coverage and governance readiness |
+| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions  |
+| `/catalog-setup [task]`     | Set up connection and configure defaults         |
 
 ### Connector development
 
@@ -301,6 +315,10 @@ datahub-skills/
 │   │   ├── references/
 │   │   └── templates/
 │   ├── datahub-lineage/             # Lineage exploration
+│   │   ├── SKILL.md
+│   │   ├── references/
+│   │   └── templates/
+│   ├── datahub-audit/               # Metadata coverage audits
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
@@ -359,7 +377,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-audit/`, `skills/datahub-quality/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
