@@ -41,14 +41,28 @@ This skill assumes MCP tool access to a DataHub instance (`get_lineage`,
    common case. See `references/lineage-shapes.md` for the exact response
    shape and field paths.
 
-3. **Check for leakage risk.** Look for glossary terms or tags on upstream
-   datasets that signal "this data reflects the outcome, not a predictor of
-   it" -- e.g. a term like `PostOutcomeEvent`, or naming/description hints
-   ("refund", "cancellation", "resolved_at"). If your DataHub instance
-   doesn't yet have such a term, propose creating one (see
-   `templates/leakage-glossary-term.md`) rather than inventing an ad hoc tag
-   per project -- a shared term lets every future audit reuse the same
-   signal.
+3. **Check for leakage risk -- and discover it, don't just read it.** Look
+   for glossary terms or tags on upstream datasets that signal "this data
+   reflects the outcome, not a predictor of it" -- e.g. a term like
+   `PostOutcomeEvent`. If your DataHub instance doesn't yet have such a term,
+   propose creating one (see `templates/leakage-glossary-term.md`) rather
+   than inventing an ad hoc tag per project -- a shared term lets every
+   future audit reuse the same signal.
+
+   The stronger version of this step: don't wait for someone to have
+   pre-tagged the risky tables. Run a **semantic triage pass** first --
+   `search(query="*", filter="entity_type = dataset")` for every dataset not
+   already carrying the term, read its real `properties.description` via
+   `get_entities`, and ask an LLM to judge from that prose alone whether the
+   data is causally downstream of a business outcome (a refund filed because
+   someone is leaving, a survey completed because a subscription was
+   cancelled). If so, attach the term yourself with `add_terms`. This turns
+   "check if someone already flagged it" into "flag it if nobody has,"
+   and it composes: once one audit tags an upstream table, every other
+   model sharing that table benefits without re-deriving the judgment.
+   Validate this kind of classifier against known-clean data too (ordinary
+   reference/dimension tables) -- a detector that flags everything is as
+   useless as one that flags nothing.
 
 4. **Check for blast radius / staleness.** Compare `lastModified` /
    freshness signals (or `customProperties` freshness fields, or DataHub
@@ -101,6 +115,19 @@ This skill assumes MCP tool access to a DataHub instance (`get_lineage`,
   `add_tags`/`add_terms` fails with "Urn does not exist", the tag/term
   entity itself needs to be created first (via ingestion or the DataHub UI)
   -- MCP mutation tools apply labels, they don't invent the taxonomy.
+  `mcp-server-datahub` has no `create_glossary_term` tool, only attachment.
+- **`search`'s `filter` argument uses `field = value` syntax, not
+  `field:value`.** `filter="entity_type = dataset"` works;
+  `filter="_entityType:DATASET"` raises a parse error ("Expected =, !=, >,
+  ... after field name"). The tool's own docstring documents this but it's
+  easy to guess wrong from familiarity with DataHub's `/q` search syntax,
+  which uses a different grammar for a different parameter.
+- **`get_entities` is heavier than it looks.** Beyond the requested entity
+  fields, it also fetches `relatedDocuments` and, for some entity types, a
+  lineage-adjacent query -- each call can be 2-3 GraphQL round-trips, not
+  one. Calling it twice per entity (once to check existing state, once for
+  detail) roughly doubles an audit's wall-clock time for no reason; fetch
+  once and reuse the result.
 
 ## References
 
