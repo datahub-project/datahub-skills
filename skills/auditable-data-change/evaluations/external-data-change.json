@@ -1,0 +1,13 @@
+{
+  "skills": ["auditable-data-change"],
+  "query": "We plan to expose a controlled research dataset to an external partner. Trace every downstream dependency, test the policy exception, and apply the approved DataHub governance record.",
+  "expected_behavior": [
+    "Resolves exact DataHub URNs before assessing the change",
+    "Uses read-only search, lineage, and entity context before proposing mutations",
+    "Separates exposure from evidence confidence and surfaces counter-evidence",
+    "Treats missing or truncated lineage as unknown and never silently allows",
+    "Shows exact mutation payloads and a canonical digest before requesting approval",
+    "Re-reads DataHub and refuses stale approval when the digest changes",
+    "Stops on the first mutation error and verifies successful writes"
+  ]
+}
