@@ -1277,7 +1277,7 @@ class MyPlatformSource(Source):
             except requests.HTTPError as e:
                 # API-specific errors
                 self.report.report_api_error()
-                self.report.report_warning(
+                self.report.warning(
                     f"Failed to fetch dataset {dataset_id}",
                     context=str(e)
                 )
@@ -1285,7 +1285,7 @@ class MyPlatformSource(Source):
             except Exception as e:
                 # Unexpected errors
                 self.report.report_dataset_failed()
-                self.report.report_failure(
+                self.report.failure(
                     f"Unexpected error processing {dataset_id}",
                     exc=e
                 )
@@ -1297,7 +1297,7 @@ class MyPlatformSource(Source):
 
    ```python
    # ✅ GOOD: Structured with context
-   self.report.report_warning(
+   self.report.warning(
        "Dataset missing required field",
        context=f"dataset_id={dataset.id}, field=description"
    )
@@ -1314,7 +1314,7 @@ class MyPlatformSource(Source):
        try:
            yield process_dataset(dataset)
        except Exception as e:
-           self.report.report_warning(f"Failed: {dataset.id}", exc=e)
+           self.report.warning(f"Failed: {dataset.id}", exc=e)
            continue  # Keep going
 
    # ❌ BAD: Fail entire ingestion
@@ -1648,7 +1648,7 @@ class MySourceReport(StaleEntityRemovalSourceReport):
     def report_dataset_failed(self, dataset_id: str, error: str) -> None:
         """Record dataset processing failure."""
         self.datasets_failed += 1
-        self.report_warning(
+        self.warning(
             f"Failed to process dataset {dataset_id}",
             context=error
         )
@@ -1857,7 +1857,7 @@ class GrafanaSourceReport(StaleEntityRemovalSourceReport):
 
     def report_lineage_failed(self, panel_id: str, error: str) -> None:
         self.lineage_extraction_failures += 1
-        self.report_warning(
+        self.warning(
             f"Failed to extract lineage for panel {panel_id}",
             context=error
         )
@@ -1975,16 +1975,7 @@ There are three structured log levels:
 #### Warning Methods
 
 ```python
-# Does NOT log to console by default (will be deprecated)
-def report_warning(
-    self,
-    message: LiteralString,           # ⚠️ MUST be constant string
-    context: Optional[str] = None,    # Can be dynamic (f-strings OK)
-    title: Optional[LiteralString] = None,  # ⚠️ MUST be constant string
-    exc: Optional[BaseException] = None,
-) -> None
-
-# DOES log to console by default (PREFERRED - use this one)
+# PREFERRED - logs to console by default
 def warning(
     self,
     message: LiteralString,           # ⚠️ MUST be constant string
@@ -2008,15 +1999,6 @@ def failure(
     log: bool = True,
 ) -> None
 
-# Alias (same as failure)
-def report_failure(
-    self,
-    message: LiteralString,           # ⚠️ MUST be constant string
-    context: Optional[str] = None,    # Can be dynamic (f-strings OK)
-    title: Optional[LiteralString] = None,  # ⚠️ MUST be constant string
-    exc: Optional[BaseException] = None,
-    log: bool = True,
-) -> None
 ```
 
 #### Context Manager for Exception Handling
@@ -2034,9 +2016,8 @@ with self.report.report_exc(
 
 **Key Differences:**
 
-- `warning()` / `report_warning()` - Issue logged, processing continues
-- `failure()` / `report_failure()` - Critical error, usually stops processing
-- **Prefer `warning()` over `report_warning()`** - `warning()` also prints a log line that mirrors the warning information. `report_warning()` will eventually be deprecated.
+- `warning()` - Issue logged, processing continues. Defaults to `log=True` (logs to console); pass `log=False` for silent behavior.
+- `failure()` - Critical error, usually stops processing. Defaults to `log=True`.
 
 ---
 
@@ -2518,10 +2499,9 @@ except ConnectionError as e:
    - Inside exception handlers, always pass the exception
    - Provides stack trace for debugging
 
-5. **Use `warning()` over `report_warning()`**
-   - `warning()` logs to console (visible to user)
-   - `report_warning()` only adds to report (not visible)
-   - Most cases should use `warning()`
+5. **Use `warning()` and `failure()`**
+   - `warning()` logs to console by default (pass `log=False` for silent)
+   - `failure()` logs to console by default
 
 6. **Continue on warnings, stop on failures**
    - Warnings: Process remaining items
