@@ -1,0 +1,3 @@
+# Known unresolved skill references already present on main.
+# Remove an entry as soon as its target skill exists.
+datahub-audit # https://github.com/datahub-project/datahub-skills/issues/24
