@@ -1,0 +1,12 @@
+{
+  "skills": ["datahub-impact-gate"],
+  "query": "Should I merge this? I'm dropping the airport_fee column from postgres trip_features.",
+  "expected_behavior": [
+    "Resolves trip_features to a dataset URN and confirms the airport_fee field via schemaMetadata",
+    "Classifies the column drop as a breaking change",
+    "Runs searchAcrossLineage DOWNSTREAM with searchFlags skipCache true (not datahub lineage) to compute the blast radius",
+    "Walks dataset to mlFeature (sources) to mlModel (mlFeatures) and does not attempt to traverse through mlFeatureTable",
+    "Identifies a production ML model that consumes a feature sourced from the dataset and resolves its owner",
+    "Returns a BLOCK verdict with the impacted model, its owner, and a recommendation to route any write-back to /datahub-quality"
+  ]
+}

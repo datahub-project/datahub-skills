@@ -1,0 +1,11 @@
+{
+  "skills": ["datahub-impact-gate"],
+  "query": "Should I merge this rename of pickup_ts to pickup_time? Lineage shows nothing downstream.",
+  "expected_behavior": [
+    "Classifies a column rename as a breaking change (old name disappears)",
+    "Confirms the searchAcrossLineage query used searchFlags skipCache true, since GMS caches empty lineage answers",
+    "Does not PASS the change on the strength of an empty downstream result",
+    "Returns a REVIEW verdict with an explicit caveat that lineage may be incomplete or not yet ingested",
+    "Explains that for a breaking change, an empty downstream set means prove freshness, not safe to merge"
+  ]
+}
