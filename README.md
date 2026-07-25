@@ -36,6 +36,16 @@ Explore data lineage, trace upstream sources and downstream consumers, perform i
 > /datahub-lineage trace the customer pipeline
 ```
 
+#### Schema breakage
+
+Issue a Query-Aware Breakage Certificate for a proposed schema or dbt change. Classifies known DataHub queries as BREAKS/SAFE/UNKNOWN, emits consumer patches, and decides whether merge is allowed — beyond lineage Impact Analysis.
+
+```
+> Will dropping orders.amount break known queries?
+> Issue a breakage certificate for this rename
+> /datahub-schema-breakage certify DROP COLUMN amount on ecommerce.public.orders
+```
+
 #### Quality
 
 Manage data quality — create and run assertions (freshness, volume, SQL, field, schema), set up smart AI-inferred assertions, raise and resolve incidents, and configure notification subscriptions. Separates Open Source (diagnostic) from Cloud (full management) capabilities.
@@ -212,11 +222,12 @@ npx skills add datahub-project/datahub-skills -a windsurf
 git clone https://github.com/datahub-project/datahub-skills.git
 
 # Catalog interaction skills
-cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
-cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
-cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
-cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
-cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-search             your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-enrich              your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-lineage             your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-schema-breakage     your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-quality             your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-setup               your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
 
