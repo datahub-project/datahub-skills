@@ -1,0 +1,10 @@
+{
+  "skills": ["datahub-contract-author"],
+  "query": "Create a contract for staging.new_events — it was just created and hasn't been profiled yet.",
+  "expected_behavior": [
+    "Reads the live schema and attempts to read datasetProfiles",
+    "Detects that no profile exists and does not fabricate any volume band or null/unique thresholds",
+    "Proposes a schema and freshness contract, or asks the user for expected row-count bounds before adding volume checks",
+    "Still drafts the contract declaratively and gets approval before emitting through the native entity API"
+  ]
+}
