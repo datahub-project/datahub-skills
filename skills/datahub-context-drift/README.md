@@ -4,11 +4,15 @@ Find documentation that has stopped being true — not documentation that is mis
 
 ## What it does
 
-1. Reads the description a human actually sees (editableProperties first, then properties)
-2. Compares what it claims against the schema and lineage
-3. Reports drift with the evidence, and abstains when it cannot substantiate a claim
-4. Drafts a correction and waits for your approval
-5. Writes back, then reads back to confirm the value landed
+1. Asks DataHub what changed — `datahub timeline --category technical_schema`
+   is a semantic diff of successive schema versions, so nothing has to be
+   inferred from how a token is spelled
+2. Reads the description a human actually sees (editable first, then ingested)
+3. Reports two kinds of drift: prose naming a departed field, and documentation
+   still attached to a field that is gone
+4. Abstains whenever it cannot point at a schema entry or a change-log event
+5. Drafts a correction, waits for your approval, writes back, then reads back to
+   confirm the value landed
 
 ```
 > /datahub-context-drift check the descriptions in the finance domain
@@ -27,3 +31,10 @@ was and quietly stopped being true.
 Coverage tooling scores that table perfectly: the description exists, the columns
 are documented, nothing is missing. For "what has not been written yet", use
 `/datahub-audit`. This skill reads what _has_ been written.
+
+There is a quieter version. When a pipeline stops producing a column, DataHub
+rewrites `schemaMetadata` and leaves `editableSchemaMetadata` alone — so a
+description someone wrote in the UI stays behind, attached to a field that no
+longer exists. The UI cannot show it, because there is no column left to render
+it on. It is still in the graph, and still served to anything reading the catalog
+through the API.

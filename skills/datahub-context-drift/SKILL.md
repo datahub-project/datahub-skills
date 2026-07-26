@@ -63,30 +63,64 @@ with different text. Read `editableProperties` first and fall back to
 
 ---
 
+## Ask DataHub what changed. Do not judge the prose.
+
+The tempting approach is to read a description, pull out anything that looks
+like a column name, and flag the ones the schema does not have. **It does not
+work, and it fails in a way that gets worse the more catalogs you see.**
+Descriptions enumerate values (`Possible values include \`broken\`,
+\`deleted\``), name neighbouring tables ("foreign key referencing the
+\`account\`"), cite entity types ("Array of \`DEAL\` ids") and carry
+unexpanded Jinja (`{{ doc("history_source") }}`). None of those are columns, and
+every corpus writes a form the last one did not. You cannot enumerate your way
+out.
+
+DataHub already computes what you need:
+
+```bash
+datahub timeline --urn "<URN>" --category technical_schema
+```
+
+It serves a semantic diff of successive schema versions:
+
+```
+TECHNICAL_SCHEMA REMOVE airport_fee
+  "A backwards incompatible change due to removal of field: 'airport_fee'."
+```
+
+**One caveat, and it matters.** DataHub matches schema versions *positionally*.
+When one version changes several things at once — drops a column, renames
+another, changes a datatype — the matcher mis-pairs and reports renames that
+never happened. The claims are self-correcting: a field claimed to have been
+renamed away is still in the schema. Filter every claimed departure against the
+current field list and only the genuine ones survive.
+
 ## What counts as drift
 
-For each dataset in scope:
-
-1. **Broken field reference.** The description names an identifier the schema
-   does not have. Look for a near-match first: a case variant (`airport_fee` →
-   `Airport_fee`) or the same letters with underscores moved. A near-match is a
-   rename, and it is the strongest signal available — assert it.
-2. **Undocumented column on a documented table.** The table has a description
-   but some columns have none. Only counts when the table itself is documented;
-   a table with no documentation anywhere never started, it did not drift.
-3. **Claimed source not in the lineage.** The description says "derived from X"
-   or "sourced from X" and X is not among the actual upstreams.
+1. **The prose names a departed field.** Assert only with evidence the token was
+   a field here: a near-match in the current schema (a rename, e.g.
+   `airport_fee` → `Airport_fee`), or a departure in the change log (a deletion).
+   Anything else abstains — including identifiers that look exactly like column
+   names.
+2. **Documentation attached to a field that is gone.** When a pipeline stops
+   producing a column, DataHub rewrites `schemaMetadata` and leaves
+   `editableSchemaMetadata` alone, so a description someone wrote in the UI stays
+   behind keyed to a field that no longer exists. Nothing displays it: the UI has
+   no column left to render it on. Compare the two aspects directly — no prose
+   involved.
+3. **Undocumented column on a documented table.** Only when the table itself is
+   documented; a table with no documentation anywhere never started.
+4. **Claimed source not in the lineage.** "derived from X" where X is not among
+   the actual upstreams.
 
 ## What does not count
 
-Real descriptions are prose. They cite other tables, DataHub entity types,
-placeholders like `table_name`, and domain jargon. If an unresolved identifier
-has **no near-match in the schema**, do not call it drift — report it as
-insufficient evidence and move on.
+Anything you inferred from how a token is spelled. If you cannot point at a
+schema entry or a change-log event, the honest verdict is insufficient evidence.
 
-This costs you something: a column that was genuinely deleted, with no similarly
-named replacement, reads as insufficient evidence rather than drift. Take that
-trade. A report with false positives stops being read.
+This costs you something: a column deleted before the catalog had any history,
+with no similarly named replacement, reads as insufficient evidence rather than
+drift. Take that trade. A report with false positives stops being read.
 
 **Three verdicts, and the third one is not a failure:**
 
@@ -144,6 +178,9 @@ Report the outcome plainly, including a re-scan showing the finding is gone.
 
 | Mistake                                                             | Why it is wrong                                                                                      |
 | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Deciding from the prose whether a token is a column name            | Open-world problem. Values, table names, entity types and Jinja all look like columns; ask the change log instead |
+| Trusting `renaming of the field 'X to Y'` as-is                     | The differ is positional and mis-pairs on busy versions; filter claimed departures against the current schema |
+| Ignoring `editableSchemaMetadata` when a column disappears          | Its description stays behind and nothing renders it — that is the quietest form of this problem      |
 | Lowercasing both sides before comparing field names                 | Erases the exact difference that constitutes a case-only rename — the most common silent drift       |
 | Reading only `properties.description`                               | The UI shows `editableProperties`; you audit text nobody reads                                       |
 | Reporting every unresolved identifier as drift                      | Descriptions cite other tables and placeholders; false positives make the whole report untrustworthy |
