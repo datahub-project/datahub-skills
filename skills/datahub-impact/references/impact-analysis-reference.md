@@ -99,9 +99,10 @@ Non-breaking change (`ADD COLUMN`). No downstream migration steps required. Safe
 
 ## 4. Multi-Tier DataHub Write-Back Specifications
 
-1. **GraphQL Incidents:** Raise `DATA_SCHEMA` incidents on HIGH and CRITICAL assets via GMS GraphQL endpoint (`raiseIncident`).
-2. **MCP Structured Properties:** Set `breakingChange.severity` and `breakingChange.reportUrn` via `add_structured_properties`.
-3. **MCP Insight Document:** Persist full Markdown report as a searchable Insight document via `save_document`.
+1. **MCP Insight Document:** Persist full Markdown report as a searchable Insight document via `save_document`.
+   _Ordering Reason:_ `save_document` generates and returns the document URN (`summary["document_urn"]`). The document MUST be created first so subsequent structured properties can reference its URN in `breakingChange.reportUrn`.
+2. **GraphQL Incidents:** Raise `DATA_SCHEMA` incidents on HIGH and CRITICAL assets via GMS GraphQL endpoint (`raiseIncident`).
+3. **MCP Structured Properties:** Set `breakingChange.severity` and `breakingChange.reportUrn` (referencing the URN created in step 1) via `add_structured_properties`.
 4. **MCP Tags:** Attach `urn:li:tag:BreakingChangeImpact` to all downstream assets via `add_tags`.
 
 ---
@@ -113,3 +114,5 @@ Non-breaking change (`ADD COLUMN`). No downstream migration steps required. Safe
 3. **Structured Property Prerequisites:** `breakingChange.severity` and `breakingChange.reportUrn` must be created via GraphQL `createStructuredProperty` before setting values.
 4. **Tag Prerequisites:** Tags must exist in DataHub before `add_tags` can assign them.
 5. **Absence of Fine-Grained Lineage:** Empty column-level lineage means lineage was not ingested, NOT zero impact. Always fall back to dataset-level lineage with explicit `Dataset-level inferred` labels.
+6. **`mlFeature` Name Resolution:** `mlFeature` entities return the platform name in the `name` field on detail responses, so naive parsing renders every feature as its platform (for example, three distinct features all displaying as `sagemaker`). The feature's own name must be parsed from the first element of the URN tuple `(feature_name, platform_name)`.
+7. **`dataJob` and `mlFeature` Platform Resolution:** For both entity types, `platform` is `None` on the entity detail response, producing `unknown`. For `dataJob`, the platform resolves from `dataFlow.platform.name` or `dataFlow.orchestrator`. For `mlFeature`, it resolves from the second element of the URN tuple.

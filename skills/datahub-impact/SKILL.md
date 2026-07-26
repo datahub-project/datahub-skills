@@ -165,14 +165,15 @@ Group remediation items by asset owner (highest severity assets first), providin
 
 Persist analysis results back into DataHub to inform team members and downstream agents:
 
-1. **Raise GraphQL Incidents (HIGH & CRITICAL Assets):**
-   Use DataHub GraphQL API `raiseIncident` mutation to open `DATA_SCHEMA` incidents on HIGH and CRITICAL assets.
-   _Note:_ Incidents require GraphQL GMS endpoint (`/api/graphql`) as they are not exposed in stock MCP toolsets.
-2. **Apply Structured Properties (MCP Tool):**
-   Call `add_structured_properties` to attach `breakingChange.severity` (e.g., `HIGH`) and `breakingChange.reportUrn` to all impacted assets.
-   _Prerequisite:_ Structured properties must be pre-created in DataHub catalog.
-3. **Persist Insight Document (MCP Tool):**
+1. **Persist Insight Document (MCP Tool):**
    Call `save_document` with `document_type="Insight"`, title `Impact Report: <change_details>`, markdown content, and related asset URNs.
+   _Ordering Reason:_ `save_document` generates and returns the document URN (`summary["document_urn"]`). The document MUST exist first so subsequent steps can reference its URN.
+2. **Raise GraphQL Incidents (HIGH & CRITICAL Assets):**
+   Use DataHub GraphQL API `raiseIncident` mutation to open `DATA_SCHEMA` incidents on HIGH and CRITICAL assets for active alerting.
+   _Note:_ Incidents require GraphQL GMS endpoint (`/api/graphql`) as they are not exposed in stock MCP toolsets.
+3. **Apply Structured Properties (MCP Tool):**
+   Call `add_structured_properties` to attach `breakingChange.severity` (e.g., `HIGH`) and `breakingChange.reportUrn` (referencing the document URN created in step 1) to all impacted assets.
+   _Prerequisite:_ Structured properties must be pre-created in DataHub catalog.
 4. **Tag Impacted Assets (MCP Tool):**
    Call `add_tags` to attach `urn:li:tag:BreakingChangeImpact` to all downstream assets.
    _Prerequisite:_ Tag definition must exist in DataHub catalog.
@@ -188,6 +189,8 @@ These hard-won implementation details ensure reliable interaction with DataHub:
 3. **Structured Properties Pre-definition:** Structured properties (`breakingChange.severity`, `breakingChange.reportUrn`) must be registered as entities via `createStructuredProperty` GraphQL mutation before `add_structured_properties` can set values on assets.
 4. **Tag Pre-creation:** Tags (e.g. `urn:li:tag:BreakingChangeImpact`) must exist in the DataHub catalog before `add_tags` can apply them to entities.
 5. **Absence of Column Lineage Means Unknown:** If fine-grained column lineage was omitted during metadata ingestion, column-level lineage queries return empty lists. Silence indicates "lineage unavailable", NOT "zero impact". Always fall back to dataset-level lineage with clear `Dataset-level inferred` confidence labeling.
+6. **`mlFeature` Name Resolution:** `mlFeature` entities return the platform name in the `name` field on detail responses, so naive parsing renders every feature as its platform (for example, three distinct features all displaying as `sagemaker`). The feature's own name must be parsed from the first element of the URN tuple `(feature_name, platform_name)`.
+7. **`dataJob` and `mlFeature` Platform Resolution:** For both entity types, `platform` is `None` on the entity detail response, producing `unknown`. For `dataJob`, the platform resolves from `dataFlow.platform.name` or `dataFlow.orchestrator`. For `mlFeature`, it resolves from the second element of the URN tuple.
 
 ---
 
