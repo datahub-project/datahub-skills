@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                      | Skill         | Command              |
+| -------------------------------------------------------------------------------- | ------------- | -------------------- |
+| **Find or discover entities** (search, browse, filter, list)                     | **Search**    | `/datahub-search`    |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**    | `/datahub-search`    |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**    | `/datahub-enrich`    |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage**   | `/datahub-lineage`   |
+| **Data quality** (assertions, incidents, health checks)                          | **Quality**   | `/datahub-quality`   |
+| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality**   | `/datahub-quality`   |
+| **ML impact** (does a column reach a deployed model, why did a model change)     | **ML Impact** | `/datahub-ml-impact` |
+| **Install CLI, authenticate, verify connection**                                 | **Setup**     | `/datahub-setup`     |
+| **Configure default scopes and profiles**                                        | **Setup**     | `/datahub-setup`     |
 
 ---
 
@@ -45,6 +46,17 @@ When the intent is ambiguous, use these rules:
 - **Subscribe to assertion failures or incidents** → **Quality**
 - **Metadata quality/documentation/ownership coverage** → Use **Search** to gather the data and synthesize the answer
 
+### Lineage vs. ML Impact
+
+- **Table to table** ("what feeds into X", "what breaks if I change X") → **Lineage**
+- **A model is on one end** ("does this column reach a deployed model", "why did
+  this model change", "did a protected attribute get into the model") → **ML Impact**
+
+ML lineage needs extra care that generic lineage does not: sibling resolution for
+tags, crossing the table-level edge into the model, and reading deployment stage
+from the registry rather than from the URN environment. If nothing downstream is
+a model, prefer **Lineage**, which is simpler.
+
 ### Lineage vs. Search
 
 - **"What feeds into X" / "what depends on X" / "impact of changing X"** → **Lineage**
@@ -67,6 +79,7 @@ When running `datahub` CLI commands, pass `-C skill=<name>` on the root command 
 datahub -C skill=datahub-search search "revenue"
 datahub -C skill=datahub-enrich graphql --query '...'
 datahub -C skill=datahub-lineage lineage --urn "..."
+datahub -C skill=datahub-ml-impact lineage --urn "..." --direction downstream
 ```
 
 Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it — the command works the same without it.
