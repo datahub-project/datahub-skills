@@ -423,7 +423,7 @@ class MyDatabaseSource(SQLAlchemySource):
                     "location": result.location,
                 }
         except Exception as e:
-            self.report.report_warning(
+            self.report.warning(
                 f"{schema}.{table}", f"Failed to get extra properties: {e}"
             )
         return None
@@ -476,7 +476,7 @@ class MyDatabaseSource(SQLAlchemySource):
                 yield lineage_mce.as_workunit()
 
         except Exception as e:
-            self.report.report_warning(
+            self.report.warning(
                 f"{schema}.{view}",
                 f"Failed to extract view lineage: {e}"
             )

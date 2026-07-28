@@ -354,7 +354,7 @@ class MyBISource(StatefulIngestionSourceBase):
                     ).as_workunit()
 
         except Exception as e:
-            self.report.report_warning(
+            self.report.warning(
                 f"dashboard:{dashboard_urn}",
                 f"Failed to parse SQL for lineage: {e}"
             )
@@ -467,7 +467,7 @@ def _process_custom_sql_datasource(
             ).as_workunit()
 
     except Exception as e:
-        self.report.report_warning(
+        self.report.warning(
             f"datasource:{datasource.get('id')}",
             f"Failed to extract lineage from SQL: {e}"
         )
@@ -604,7 +604,7 @@ def _get_view_lineage_workunits(
             ).as_workunit()
 
     except Exception as e:
-        self.report.report_warning(
+        self.report.warning(
             f"{schema}.{view}",
             f"Failed to extract view lineage: {e}"
         )
