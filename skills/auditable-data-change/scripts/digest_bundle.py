@@ -9,7 +9,9 @@ from pathlib import Path
 
 def bundle_digest(path: Path) -> str:
     payload = json.loads(path.read_text(encoding="utf-8"))
-    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    canonical = json.dumps(
+        payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    )
     return f"sha256:{hashlib.sha256(canonical.encode('utf-8')).hexdigest()}"
 
 
