@@ -57,6 +57,16 @@ Install the DataHub CLI, configure authentication, verify connectivity, and set 
 > Create a profile for the data-eng team
 ```
 
+#### Memory
+
+Check whether something was already figured out before investigating again, using DataHub's own documents as the memory store — recalls first, investigates only the gap, and persists new conclusions back as documents (never deleting a stale one, only superseding it).
+
+```
+> Did we already look into why orders_daily's row count dropped?
+> /datahub-memory what do we already know about the revenue dashboard discrepancy?
+> Remember that customer_ltv's definition comes from the finance glossary term
+```
+
 ### Connector development skills
 
 #### Connector planning
@@ -131,6 +141,7 @@ Then:
 > /datahub-lineage what feeds into the revenue dashboard?
 > /datahub-quality find datasets with failing assertions
 > /datahub-setup verify my connection
+> /datahub-memory did we already look into the revenue dashboard discrepancy?
 > /connector-review snowflake
 > /connector-planning duckdb
 ```
@@ -217,6 +228,7 @@ cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-memory           your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
 
@@ -230,20 +242,21 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 
 ### What works where
 
-| Feature                     | Claude Code           | Cursor / Copilot / Codex / Gemini CLI / Windsurf |
-| --------------------------- | --------------------- | ------------------------------------------------ |
-| Catalog search              | Yes                   | Yes                                              |
-| Metadata enrichment         | Yes                   | Yes                                              |
-| Lineage exploration         | Yes                   | Yes                                              |
-| Data quality management     | Yes                   | Yes                                              |
-| Connection setup            | Yes                   | Yes                                              |
-| Planning workflow           | Yes                   | Yes                                              |
-| Load standards              | Yes                   | Yes                                              |
-| Review against standards    | Yes                   | Yes                                              |
-| Parallel multi-agent review | Yes (5 sub-agents)    | No (runs sequentially)                           |
-| Research agent delegation   | Yes (dedicated agent) | No (inline fallback)                             |
-| Slash commands              | Yes                   | No (use natural language instead)                |
-| SessionStart hooks          | Yes (via plugin)      | No                                               |
+| Feature                          | Claude Code           | Cursor / Copilot / Codex / Gemini CLI / Windsurf |
+| -------------------------------- | --------------------- | ------------------------------------------------ |
+| Catalog search                   | Yes                   | Yes                                              |
+| Metadata enrichment              | Yes                   | Yes                                              |
+| Lineage exploration              | Yes                   | Yes                                              |
+| Data quality management          | Yes                   | Yes                                              |
+| Connection setup                 | Yes                   | Yes                                              |
+| Memory (document recall/persist) | Yes                   | Yes                                              |
+| Planning workflow                | Yes                   | Yes                                              |
+| Load standards                   | Yes                   | Yes                                              |
+| Review against standards         | Yes                   | Yes                                              |
+| Parallel multi-agent review      | Yes (5 sub-agents)    | No (runs sequentially)                           |
+| Research agent delegation        | Yes (dedicated agent) | No (inline fallback)                             |
+| Slash commands                   | Yes                   | No (use natural language instead)                |
+| SessionStart hooks               | Yes (via plugin)      | No                                               |
 
 ## Commands (Claude Code only)
 
@@ -251,13 +264,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                      | What it does                                                                 |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| `/catalog-search [query]`    | Search the catalog and answer questions                                      |
+| `/catalog-enrich [entity]`   | Add or update metadata                                                       |
+| `/catalog-lineage [entity]`  | Explore lineage and trace dependencies                                       |
+| `/catalog-quality [entity]`  | Manage assertions, incidents, and subscriptions                              |
+| `/catalog-setup [task]`      | Set up connection and configure defaults                                     |
+| `/catalog-memory [question]` | Recall from existing documents first, investigate only the gap, then persist |
 
 ### Connector development
 
@@ -312,6 +326,10 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-memory/              # Recall-first document memory
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   └── templates/
 │   ├── datahub-connector-planning/  # Connector planning
 │   │   ├── SKILL.md
 │   │   ├── standards -> ../../standards
@@ -341,6 +359,7 @@ datahub-skills/
 │   ├── catalog-lineage.md
 │   ├── catalog-quality.md
 │   ├── catalog-setup.md
+│   ├── catalog-memory.md
 │   ├── connector-planning.md
 │   ├── connector-review.md
 │   └── load-standards.md
@@ -359,7 +378,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`, `skills/datahub-memory/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
