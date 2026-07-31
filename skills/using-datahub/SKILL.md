@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                                               | Skill         | Command              |
+| --------------------------------------------------------------------------------------------------------- | ------------- | -------------------- |
+| **Find or discover entities** (search, browse, filter, list)                                              | **Search**    | `/datahub-search`    |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")                                    | **Search**    | `/datahub-search`    |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation)                          | **Enrich**    | `/datahub-enrich`    |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)                              | **Lineage**   | `/datahub-lineage`   |
+| **Data quality** (assertions, incidents, health checks)                                                   | **Quality**   | `/datahub-quality`   |
+| **Notifications** (subscribe to assertion failures, incidents)                                            | **Quality**   | `/datahub-quality`   |
+| **Install CLI, authenticate, verify connection**                                                          | **Setup**     | `/datahub-setup`     |
+| **Configure default scopes and profiles**                                                                 | **Setup**     | `/datahub-setup`     |
+| **Work with a dataset's data** (query, transform, analyze), or record/retrieve tribal knowledge about one | **Learnings** | `/datahub-learnings` |
 
 ---
 
@@ -56,6 +57,13 @@ When the intent is ambiguous, use these rules:
 - **"Set up" / "install" / "authenticate" / "verify connection"** → **Setup**
 - **"Configure defaults" / "set default platform" / "create profile"** → **Setup**
 - **"Check if DataHub is working"** → **Setup** (connectivity verification)
+
+### Learnings vs. other skills
+
+- **The task touches a dataset's actual data** (writing SQL against it, analyzing it, computing a metric) → **Learnings** wraps the task: recall before the first query, retain after the answer. Search/Lineage still handle the metadata lookups inside it.
+- **"What do we already know about table X" / "remember that amount is in cents" / "save this finding"** → **Learnings** (recall or retain directly)
+- **Metadata-only questions** ("who owns X", "what columns does X have") with no data access → **Search**, as always
+- **Editing descriptions, tags, or terms as ordinary documentation** → **Enrich**. Learnings only writes typed, evidence-backed learning records via its own protocol
 
 ---
 
