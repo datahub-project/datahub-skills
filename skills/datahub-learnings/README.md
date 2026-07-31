@@ -1,4 +1,4 @@
-# DataHub Memory
+# DataHub Learnings
 
 Give agents shared long-term memory over the DataHub metadata graph: recall what previous agents learned about a dataset before acting on it, retain what you learned after.
 
