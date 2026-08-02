@@ -1,0 +1,14 @@
+# One-time setup: the structured property that holds incident memory records.
+#   datahub properties upsert -f incident-memory-property.yaml
+- id: io.datahub.incidentMemory
+  qualified_name: io.datahub.incidentMemory
+  display_name: Incident Memory
+  type: string
+  cardinality: MULTIPLE
+  entity_types:
+    - dataset
+  description: >-
+    Institutional memory for incident response: one JSON record per resolved
+    incident (fingerprint, root cause, fix, blast radius, MTTR). Written on
+    resolution; recalled before diagnosing new incidents. Schema:
+    references/memory-record-schema.md in the datahub-incident-memory skill.
