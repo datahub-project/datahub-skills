@@ -8,6 +8,9 @@ description: |
   incidents resolve in seconds instead of minutes. Use when the user says
   "remember this incident", "have we seen this before?", "file this diagnosis",
   or wants incident response that gets faster over time.
+user-invocable: true
+min-cli-version: 1.4.0
+allowed-tools: Bash(datahub *)
 ---
 
 # DataHub Incident Memory
@@ -35,12 +38,6 @@ skills — the payoff is recall speed on the next infection, not a record trail.
 - One-time: the memory structured property must exist (Step 0).
 
 ## Step 0: Ensure the memory property exists (one-time)
-
-```graphql
-mutation {
-  upsertStructuredProperties(...)  # or via CLI / SDK:
-}
-```
 
 ```bash
 datahub properties upsert -f incident-memory-property.yaml
