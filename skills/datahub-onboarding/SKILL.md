@@ -5,7 +5,9 @@ description: |
   DataHub catalog. Builds orientation guides and week-one learning paths, captures task
   runbooks with per-step context (dataset URN, action, why), writes them back to DataHub as
   documents, and re-validates saved documents against the live catalog before anyone
-  follows them. Triggers on: "onboard", "onboarding", "new hire", "new team member",
+  follows them — pinning each claim to the catalog version it was checked against, writing
+  the staleness back as tags, properties, assertions and assigned incidents, and proposing
+  the correction the catalog supports. Triggers on: "onboard", "onboarding", "new hire", "new team member",
   "ramp up", "learning path", "week one", "handoff", "offboarding", "knowledge transfer",
   "runbook", "capture what X knows", "is this runbook still accurate". For lineage tracing,
   use `/datahub-lineage`. For general entity search and discovery, use `/datahub-search`.
@@ -65,8 +67,14 @@ Copilot, Gemini CLI, Windsurf, and others).
 | Install the CLI, authenticate, or verify a connection      | `/datahub-setup`   |
 
 **Key boundary:** this skill produces and validates onboarding and handoff **documents**
-grounded in the catalog. It does not perform open-ended catalog exploration, and it never
-edits metadata other than saving documents.
+grounded in the catalog. It does not perform open-ended catalog exploration.
+
+It writes metadata in exactly one situation: recording the result of validating a document
+it is responsible for (Step 9) — a `StaleRunbook` tag, a runbook-status structured property,
+a runbook-validity assertion, and an incident on a dataset whose runbook step would now
+fail. Every one of those is scoped to a named runbook and carries it in the value. General
+tagging, ownership and domain edits still belong to `/datahub-enrich`; data-quality
+assertions and incident management in the ordinary sense belong to `/datahub-quality`.
 
 ---
 
@@ -291,6 +299,84 @@ follow this step as written." Offer to update the saved document with the correc
 Never silently present stale steps as current, and never substitute an LLM guess ("this
 probably still works") for a check you can run.
 
+### Pin each check to what it was checked against
+
+A check is only auditable if a reader can tell what it ran against. When you validate,
+record for each claim: the dataset URN, the aspect the claim depends on (`schemaMetadata`,
+`ownership`, `deprecation`, `health`), and the state of that aspect at the time. A short
+content hash of the aspect's facts — the sorted field list, the sorted owner list, the
+deprecation flag and note, the health counters — is enough, and it is recomputable by
+anyone else holding the document and a catalog connection:
+
+```text
+step 2 claims column `net_amount_usd` exists
+  → validated 2026-07-01 against schema@a41f9c02e7b1
+  → schema@8d3e17ba4409 today
+  → BROKEN
+```
+
+Report the count too: "18 of 19 claims still hold" tells a reader the document is
+followable apart from one named thing. "Stale" does not.
+
+---
+
+## Step 9: Write the staleness back as state, not just prose
+
+A warning delivered in chat helps the person who asked. Write it where the next person
+will hit it without asking.
+
+**Tag the drifted datasets** so staleness becomes a search rather than an audit:
+
+```text
+add_tags(tag_urns=["urn:li:tag:StaleRunbook"], entity_urns=[...])
+```
+
+Create the tag entity first if it does not exist, or the UI renders a bare URN with no
+description. Then, where the deployment's API allows it and the user agrees:
+
+- **A structured property per dataset** carrying the runbook id, its current status, the
+  specific change that broke it, and the validated-against pins from Step 8. Prefix every
+  value with the runbook id so several runbooks on one dataset do not overwrite each other,
+  and read the existing values before upserting — the mutation replaces the whole list.
+- **An assertion** that fails while the runbook is stale and passes when it validates clean,
+  reported against a stable assertion URN per (runbook, dataset) so the dataset gets a
+  staleness _timeline_ rather than a new assertion every night.
+- **An incident** on any dataset where a step would now fail, assigned to whoever owns that
+  dataset _today_. In the owner-drift case that is exactly the person the runbook has never
+  heard of, and DataHub's own subscriptions take it from there.
+
+Two rules, both learned the hard way:
+
+- **Write the clean result too.** A dataset that only gets written to when something breaks
+  cannot distinguish "fine" from "nobody checked".
+- **Discount your own writes on the next pass.** An incident you raised and an assertion you
+  failed both show up in `health` on the next validation. Recognise them (a title
+  convention, a URN prefix) and subtract them, or the tool flags itself forever.
+
+---
+
+## Step 10: Propose the correction, don't just report the breakage
+
+Detection that stops at a warning leaves the work exactly where it was. Where the catalog
+says what the fix is, propose it — and where it doesn't, say so instead of guessing:
+
+| Finding            | Correction the catalog supports                                                                                                        |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Column gone        | Match it against columns that appeared since. Propose a rename only when one candidate is clearly closest; if two are comparable, ask. |
+| Dataset deprecated | Repoint at the replacement named in the deprecation note.                                                                              |
+| Owner moved on     | Substitute whoever DataHub lists as the owner now.                                                                                     |
+| Health failing     | Nothing. This is a live problem, not a wrong instruction — the table needs looking at, the runbook does not need editing.              |
+| Entity gone        | Nothing. There is nothing left to read a replacement from.                                                                             |
+
+Present it as a diff against the saved document, with the catalog evidence for each edit,
+and **get explicit approval before saving**. Two details that matter:
+
+- When you replace a person's name, check for pronouns referring to them in the same step.
+  "ping Mike — he owns the dbt job" must not become "ping Priya — he owns the dbt job";
+  that is a new false statement about a real person, which is worse than the staleness.
+- Mark any edit that touched prose as needing a human read. Column names and owner names are
+  catalog facts; the sentences around them are not.
+
 ---
 
 ## Reference Documents
@@ -330,6 +416,17 @@ probably still works") for a check you can run.
 - **Using LLM judgment for staleness.** "This looks current" is not a check. Column
   existence, deprecation status, health state and ownership are all mechanically
   verifiable, so verify them.
+- **Reporting a check without saying what it ran against.** "Validated today" is not
+  auditable. "Validated against `schema@a41f9c02e7b1`, which now reads `schema@8d3e17ba4409`"
+  is, and it costs one line.
+- **Leaving the staleness in the chat.** A tag, a property, a failing assertion and an
+  assigned incident all reach somebody who never asked the question. A paragraph does not.
+- **Flagging your own write-back as drift.** The incident you raised last night is an open
+  incident tonight. Discount it, or the sweep reports itself forever.
+- **Auto-applying a correction.** Propose it as a diff and let a person accept it. The value
+  of a runbook is that a colleague vouched for it.
+- **Swapping a name and leaving the pronoun.** "ping Priya — he owns the dbt job" is a new
+  false statement about a real person, introduced by the fix.
 
 ---
 
@@ -347,8 +444,10 @@ Stop and reconsider if you find yourself:
 - About to call `save_document` without showing the user the final document first.
 - Presenting a read-back runbook without having run the Step 8 checks, or hedging a
   staleness answer ("probably fine") where a deterministic check exists.
-- Editing any metadata beyond saving a document. Ownership, tags and deprecation changes
-  belong to `/datahub-enrich`, and incidents to `/datahub-quality`.
+- Saving a corrected runbook, or applying any Step 10 edit, without explicit approval.
+- Writing metadata that is not the recorded result of validating a document you are
+  responsible for. Ownership, general tags and deprecation changes belong to
+  `/datahub-enrich`; ordinary data-quality assertions and incidents to `/datahub-quality`.
 
 ---
 
@@ -366,3 +465,9 @@ Stop and reconsider if you find yourself:
   document URN.
 - Captured knowledge rots. Re-validate deterministically on every read-back, and warn
   before anyone follows a stale step.
+- Pin every claim to the aspect version it was checked against. A verdict nobody can
+  reproduce is an opinion.
+- Write staleness back as state a person will walk into — a tag, a property, a failing
+  assertion, an incident assigned to whoever owns the data now — not only as prose.
+- Propose the correction the catalog supports, name what it doesn't support, and let a human
+  accept it.

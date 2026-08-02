@@ -18,7 +18,14 @@ catalog-validated documents in DataHub.
    SQL and lineage, then saved back to DataHub.
 4. Re-validates any runbook or onboarding document on read-back with deterministic checks
    (columns still exist, dataset not deprecated since, health not failing, owners unchanged)
-   and warns before anyone follows a stale step.
+   and warns before anyone follows a stale step. Each claim is pinned to the version of the
+   catalog aspect it was checked against, so a verdict can be reproduced rather than trusted.
+5. Writes the staleness back as state a person will walk into: a `StaleRunbook` tag, the
+   status and the specific breaking change as structured properties, an assertion that fails
+   while the runbook is stale, and an incident assigned to whoever owns the dataset today.
+6. Proposes the correction the catalog supports — the renamed column, the replacement named
+   in a deprecation note, the current owner — as a diff for a human to approve, and names
+   what it deliberately did not correct.
 
 ## Capabilities
 
@@ -34,7 +41,12 @@ catalog-validated documents in DataHub.
 - Runbook enrichment with schema, ownership, and one-hop lineage (`get_lineage`)
 - Write-back to the catalog (`save_document`) linked to referenced datasets, reporting the
   document URN
-- Deterministic staleness detection on every document read-back
+- Deterministic staleness detection on every document read-back, per claim rather than per
+  document, each pinned to a recomputable fingerprint of the aspect it depends on
+- Staleness written back as catalog state: tag, structured properties, a runbook-validity
+  assertion, and an incident assigned to the dataset's current owner
+- Catalog-derived corrections proposed as a reviewable diff, with the evidence for each edit
+  and an explicit list of what needs a person instead
 - `datahub` CLI fallback when the MCP server is unavailable, including
   `datasetUsageStatistics` for raw query volume, which no MCP tool currently exposes
 
@@ -45,4 +57,5 @@ catalog-validated documents in DataHub.
 /catalog-onboarding build a week-one learning path for a data scientist on the growth team
 /catalog-onboarding capture Dana's monthly revenue close process as a runbook before she leaves
 /catalog-onboarding is the "Monthly Revenue Close" runbook still accurate?
+/catalog-onboarding the revenue close runbook is stale — record it in the catalog and show me the fix
 ```
