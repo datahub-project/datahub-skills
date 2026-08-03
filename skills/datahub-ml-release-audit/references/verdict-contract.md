@@ -46,4 +46,6 @@ The bundled validator accepts a JSON object with:
 - `point_in_time`: object with `performed`, `advantage_retained`, and `collapse_threshold`;
 - `safe_control`: object with `performed` and `remained_safe`.
 
+`safe_control` is required whenever `confirmed` rests on the point-in-time route, not only for `clear_for_release`. A reconstruction that collapses a feature known to be legitimate is producing false positives, so its collapse of the suspect feature confirms nothing.
+
 The validator checks logical consistency. It does not determine truth and cannot replace DataHub rereads or human review.

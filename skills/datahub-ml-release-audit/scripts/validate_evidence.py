@@ -45,7 +45,13 @@ def validate(bundle: dict[str, Any]) -> list[str]:
             "deterministic proof requires directional lineage and an availability violation"
         )
 
-    pit_confirmed = False
+    control_held = (
+        isinstance(safe_control, dict)
+        and safe_control.get("performed") is True
+        and safe_control.get("remained_safe") is True
+    )
+
+    pit_collapsed = False
     if isinstance(point_in_time, dict) and point_in_time.get("performed") is True:
         retained = point_in_time.get("advantage_retained")
         threshold = point_in_time.get("collapse_threshold")
@@ -54,25 +60,31 @@ def validate(bundle: dict[str, Any]) -> list[str]:
                 "point-in-time retained advantage and threshold must be numbers from 0 to 1"
             )
         else:
-            pit_confirmed = retained <= threshold
+            pit_collapsed = retained <= threshold
+
+    # Route requirement 5: a reconstruction that also collapses a feature known to be
+    # legitimate is producing false positives, so its collapse of the suspect feature
+    # is not evidence of anything.
+    pit_confirmed = pit_collapsed and control_held
 
     if verdict == "confirmed" and not (deterministic or pit_confirmed):
-        errors.append(
-            "confirmed requires deterministic proof or policy-qualified PIT collapse"
-        )
-    if pit_confirmed and not (directional and violation):
+        if pit_collapsed and not control_held:
+            errors.append(
+                "PIT collapse cannot confirm without a predictive pre-cutoff control "
+                "that remained safe"
+            )
+        else:
+            errors.append(
+                "confirmed requires deterministic proof or policy-qualified PIT collapse"
+            )
+    if pit_collapsed and not (directional and violation):
         errors.append(
             "PIT collapse cannot confirm without directional lineage and a time violation"
         )
     if verdict == "clear_for_release":
         if violation:
             errors.append("clear_for_release cannot contain an availability violation")
-        safe = (
-            isinstance(safe_control, dict)
-            and safe_control.get("performed") is True
-            and safe_control.get("remained_safe") is True
-        )
-        if not safe:
+        if not control_held:
             errors.append(
                 "clear_for_release requires a predictive safe control that remained safe"
             )
