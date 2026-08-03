@@ -1,7 +1,7 @@
 ---
 name: datahub-lineage
 description: |
-  Use this skill when the user wants to explore lineage, trace data dependencies, perform impact analysis, find root causes, map data pipelines, or understand how data flows between systems. Triggers on: "what feeds into X", "what depends on X", "show lineage for X", "impact analysis", "trace the pipeline", "root cause", "upstream of X", "downstream of X", or any request involving data lineage and dependency tracking.
+  Use this skill when the user wants to explore lineage, trace data dependencies, perform impact analysis, find root causes, map data pipelines, or understand how data flows between systems. Triggers on: "what feeds into X", "what depends on X", "show lineage for X", "impact analysis", "which fields or paths are affected", "what can remain available", "trace the pipeline", "root cause", "upstream of X", "downstream of X", or any request involving data lineage and dependency tracking.
 user-invocable: true
 min-cli-version: 1.5.0.1rc1
 allowed-tools: Bash(datahub *)
@@ -65,6 +65,7 @@ Find the entity the user wants to trace.
 | Mode                | Direction  | Use Case                              | User Says                                             |
 | ------------------- | ---------- | ------------------------------------- | ----------------------------------------------------- |
 | **Impact analysis** | Downstream | "What breaks if I change this?"       | "impact of X", "what depends on X", "downstream"      |
+| **Field impact**    | Downstream | "Which paths does this field change?" | "affected fields", "safe paths", "preserved branches" |
 | **Root cause**      | Upstream   | "Where does this data come from?"     | "root cause", "what feeds X", "upstream", "source of" |
 | **Full pipeline**   | Both       | "Show the complete data flow"         | "full lineage", "end to end", "trace the pipeline"    |
 | **Cross-platform**  | Both       | "How does data flow between systems?" | "from Snowflake to Looker", "cross-platform"          |
@@ -157,6 +158,34 @@ datahub lineage path --from "<URN_A>" --to "<URN_B>"
 
 If `path` is unavailable, fall back to manual BFS: get downstream from A incrementing depth, check for B at each hop, and stop after 5 hops.
 
+### Field-specific impact classification
+
+When the user names one or more changed fields, do not present the dataset-level downstream
+graph as exact field impact. Use two scopes and preserve their provenance:
+
+1. Query dataset-level downstream lineage with JSON output to establish the conservative
+   review scope.
+2. Query downstream column lineage once for each changed field. Preserve full field paths,
+   not only the terminal assets.
+3. Inspect both responses for capped, truncated, stale, or missing results. Retry pagination
+   or increase `--count` before calling the scope complete.
+4. Classify every asset in the dataset-level review scope into exactly one state:
+   - **AFFECTED** — a directed fine-grained path from a changed field reaches the asset.
+   - **PRESERVED** — positive, complete field-level evidence shows the asset consumes only
+     unchanged fields and no changed-field path reaches it.
+   - **UNKNOWN** — field lineage is absent, mixed with table-level-only edges, truncated,
+     stale, or otherwise insufficient to prove either state.
+5. Identify the first consequential consumers on affected paths, such as dashboards,
+   reports, models, exports, or operational decisions. This is an evidence boundary, not a
+   policy verdict.
+6. Record the tool, direction, depth, result cap, query time, and any fallback used. Render
+   the result with `templates/field-impact-analysis.template.md`.
+
+**Fail-safe rules:** Never infer `PRESERVED` from an empty column-lineage response or name
+similarity. Keep affected and preserved sets disjoint. If DataHub is unavailable, return
+`UNKNOWN` rather than inventing a dependency graph. Lineage evidence can inform a policy,
+but this skill does not decide whether to halt, allow, or resume work.
+
 ---
 
 ## Step 4: Visualize Lineage
@@ -220,12 +249,13 @@ After presenting lineage:
 
 ## Reference Documents
 
-| Document                   | Path                                            | Purpose                           |
-| -------------------------- | ----------------------------------------------- | --------------------------------- |
-| Lineage patterns reference | `references/lineage-patterns-reference.md`      | Traversal strategies and patterns |
-| Impact analysis template   | `templates/impact-analysis.template.md`         | Impact analysis report template   |
-| Lineage map template       | `templates/lineage-map.template.md`             | Lineage visualization template    |
-| CLI reference (shared)     | `../shared-references/datahub-cli-reference.md` | CLI commands                      |
+| Document                   | Path                                            | Purpose                            |
+| -------------------------- | ----------------------------------------------- | ---------------------------------- |
+| Lineage patterns reference | `references/lineage-patterns-reference.md`      | Traversal strategies and patterns  |
+| Impact analysis template   | `templates/impact-analysis.template.md`         | Impact analysis report template    |
+| Field impact template      | `templates/field-impact-analysis.template.md`   | Exact field-path evidence contract |
+| Lineage map template       | `templates/lineage-map.template.md`             | Lineage visualization template     |
+| CLI reference (shared)     | `../shared-references/datahub-cli-reference.md` | CLI commands                       |
 
 ---
 
@@ -240,6 +270,7 @@ After presenting lineage:
 - **User input contains shell metacharacters** → reject, do not pass to CLI.
 - **Traversal depth > 3 hops** → confirm with user before proceeding.
 - **Lineage returns 0 edges** → entity may not have lineage ingested. Note this rather than saying "no dependencies."
+- **Field lineage is missing or incomplete** → classify the dataset-level consumer as `UNKNOWN`, never `PRESERVED`.
 - **User asks about metadata, not lineage** ("who owns X?", "add a tag") → redirect to `/datahub-search` or `/datahub-enrich`.
 
 ---

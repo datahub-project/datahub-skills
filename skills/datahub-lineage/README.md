@@ -12,6 +12,7 @@ Explore lineage, trace data dependencies, and perform impact analysis using Data
 ## Capabilities
 
 - **Impact analysis** — What breaks if I change this table?
+- **Field-specific impact** — Which paths are affected, preserved, or unknown if I change this column?
 - **Root cause** — Where does this data come from?
 - **Full pipeline** — End-to-end data flow mapping
 - **Cross-platform** — Trace data across Snowflake, dbt, Looker, etc.
@@ -21,6 +22,7 @@ Explore lineage, trace data dependencies, and perform impact analysis using Data
 
 ```
 /datahub-lineage impact analysis for customer_orders
+/datahub-lineage which paths remain safe if I change customer_orders.customer_id?
 /datahub-lineage what feeds into the Revenue Dashboard?
 /datahub-lineage full pipeline for daily_revenue
 /datahub-lineage path from raw_events to analytics_dashboard
