@@ -22,6 +22,7 @@ Before running any DataHub commands, determine which tools are available:
 | Get entity         | `datahub get --urn "..." --aspect ownership`         | `get_entities(urns=["..."])`             |
 | Upstream lineage   | `datahub lineage --urn "..." --direction upstream`   | `get_lineage(urn="...", upstream=true)`  |
 | Downstream lineage | `datahub lineage --urn "..." --direction downstream` | `get_lineage(urn="...", upstream=false)` |
+| Column lineage     | `datahub lineage --urn "..." --column "field"`       | `get_lineage(urn="...", column="field")` |
 | GraphQL            | `datahub graphql --query '...'`                      | `execute_graphql(query="...")`           |
 | Server config      | `datahub check server-config`                        | Not needed (MCP server handles config)   |
 

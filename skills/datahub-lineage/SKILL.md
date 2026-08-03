@@ -86,13 +86,13 @@ Ask about depth if the user doesn't specify: "How many hops should I trace? (def
 
 ### Choosing your tool: MCP vs. CLI
 
-|                    | MCP tools                                        | DataHub CLI                                                     |
-| ------------------ | ------------------------------------------------ | --------------------------------------------------------------- |
-| **When available** | Preferred for simple traversals                  | Use for `path`, column-level lineage, `--format json` metadata  |
-| **Lineage**        | `get_lineage(urn=..., direction=..., depth=...)` | `datahub lineage --urn "..." --direction upstream`              |
-| **Enrich results** | `get_entities(urns=[...])`                       | `datahub search "*" --where 'urn IN (...)'` with `--projection` |
+|                    | MCP tools                                                      | DataHub CLI                                                     |
+| ------------------ | -------------------------------------------------------------- | --------------------------------------------------------------- |
+| **When available** | Preferred for dataset and column traversals                    | Use for `path` and explicit output-format control               |
+| **Lineage**        | `get_lineage(urn=..., upstream=..., max_hops=..., column=...)` | `datahub lineage --urn "..." --direction upstream`              |
+| **Enrich results** | `get_entities(urns=[...])`                                     | `datahub search "*" --where 'urn IN (...)'` with `--projection` |
 
-MCP provides structured lineage graphs without shell overhead — MCP tools are self-documenting, so check their schemas for parameter details. Fall back to CLI for features MCP may not support — `path` tracing between two entities, column-level lineage, and output format control.
+MCP provides structured lineage graphs without shell overhead and supports column-level lineage through the optional `column` argument. Set `upstream=true` for upstream or `upstream=false` for downstream, and use `max_hops` for depth. Inspect `hasMore`, `returned`, and `truncatedDueToTokenBudget` before treating the result as complete. Fall back to the CLI for `path` tracing between two entities or explicit output-format control.
 
 ### Using the `datahub lineage` CLI command
 
