@@ -36,6 +36,18 @@ Explore data lineage, trace upstream sources and downstream consumers, perform i
 > /datahub-lineage trace the customer pipeline
 ```
 
+#### Drift Contract
+
+Predict which downstream report columns break when an upstream column is dropped, renamed, or
+retyped; classify severity (a retype is a silent break); draft a data contract that would have
+caught it; and write the finding back to the catalog.
+
+```
+> What breaks if I retype haircut_pct from percent to fraction?
+> Impact of dropping ledger.cash_balance on the margin report
+> /datahub-drift-contract propose a data contract for orders.currency_code
+```
+
 #### Quality
 
 Manage data quality — create and run assertions (freshness, volume, SQL, field, schema), set up smart AI-inferred assertions, raise and resolve incidents, and configure notification subscriptions. Separates Open Source (diagnostic) from Cloud (full management) capabilities.
@@ -129,6 +141,7 @@ Then:
 > /datahub-search who owns the customer pipeline?
 > /datahub-enrich add description to orders table
 > /datahub-lineage what feeds into the revenue dashboard?
+> /datahub-drift-contract what breaks if I retype haircut_pct?
 > /datahub-quality find datasets with failing assertions
 > /datahub-setup verify my connection
 > /connector-review snowflake
@@ -215,6 +228,7 @@ git clone https://github.com/datahub-project/datahub-skills.git
 cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-drift-contract   your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
@@ -301,6 +315,10 @@ datahub-skills/
 │   │   ├── references/
 │   │   └── templates/
 │   ├── datahub-lineage/             # Lineage exploration
+│   │   ├── SKILL.md
+│   │   ├── references/
+│   │   └── templates/
+│   ├── datahub-drift-contract/      # Column drift -> contract + write-back
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
