@@ -47,6 +47,16 @@ Manage data quality — create and run assertions (freshness, volume, SQL, field
 > Subscribe me to assertion failures via Slack
 ```
 
+#### Economics
+
+Price the catalog — what each asset costs (storage, read compute, and the rebuild compute nobody attributes), what it costs when it breaks, and whether it can be deprecated. Writes the verdict back as structured properties so other agents inherit it. Works on Open Source.
+
+```
+> What does the orders_daily table cost us?
+> Find deprecation candidates in Snowflake
+> /datahub-economics what is exposed if the revenue pipeline fails tonight?
+```
+
 #### Setup
 
 Install the DataHub CLI, configure authentication, verify connectivity, and set up default scopes and profiles for the other interaction skills.
@@ -216,6 +226,7 @@ cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-economics        your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
@@ -236,6 +247,7 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 | Metadata enrichment         | Yes                   | Yes                                              |
 | Lineage exploration         | Yes                   | Yes                                              |
 | Data quality management     | Yes                   | Yes                                              |
+| Cost and spend analysis     | Yes                   | Yes                                              |
 | Connection setup            | Yes                   | Yes                                              |
 | Planning workflow           | Yes                   | Yes                                              |
 | Load standards              | Yes                   | Yes                                              |
@@ -251,13 +263,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                       | What it does                                    |
+| ----------------------------- | ----------------------------------------------- |
+| `/catalog-search [query]`     | Search the catalog and answer questions         |
+| `/catalog-enrich [entity]`    | Add or update metadata                          |
+| `/catalog-lineage [entity]`   | Explore lineage and trace dependencies          |
+| `/catalog-quality [entity]`   | Manage assertions, incidents, and subscriptions |
+| `/catalog-economics [entity]` | Price assets and find recoverable spend         |
+| `/catalog-setup [task]`       | Set up connection and configure defaults        |
 
 ### Connector development
 
@@ -305,6 +318,10 @@ datahub-skills/
 │   │   ├── references/
 │   │   └── templates/
 │   ├── datahub-quality/             # Data quality management
+│   │   ├── SKILL.md
+│   │   ├── references/
+│   │   └── templates/
+│   ├── datahub-economics/           # Asset cost and value at risk
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
@@ -359,7 +376,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-economics/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
