@@ -57,6 +57,16 @@ Install the DataHub CLI, configure authentication, verify connectivity, and set 
 > Create a profile for the data-eng team
 ```
 
+#### Incident Gate
+
+Fail-closed incident response — score trust fitness and blast radius before offering any metadata write, require scoped human approval, then verify from a mutation-disabled session.
+
+```
+> Assertion failed on fct_users_created — can we tag it?
+> /datahub-incident-gate fail-closed review before write
+> Verify the incident document with mutations disabled
+```
+
 ### Connector development skills
 
 #### Connector planning
