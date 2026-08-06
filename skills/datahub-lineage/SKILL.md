@@ -38,10 +38,11 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 | ------------------------------------------------------- | ------------------------------------------------ |
 | Search for entities by keyword or metadata              | `/datahub-search`                                |
 | Answer "who owns X?" or "what is X?"                    | `/datahub-search` (metadata lookup, not lineage) |
+| Investigate a model, training run, or ML feature        | `/datahub-ml-lineage`                            |
 | Add or update metadata (descriptions, tags, owners)     | `/datahub-enrich`                                |
 | Create assertions, run quality checks, manage incidents | `/datahub-quality`                               |
 
-**Key boundary:** Lineage handles **lineage and dependency questions** ("what feeds into X?", "what breaks if I change X?"). Search handles **metadata questions** ("who owns X?"). Enrich handles **metadata updates** ("set owner", "tag this").
+**Key boundary:** Lineage handles **dataset, dashboard, and job dependency questions** ("what feeds into X?", "what breaks if I change X?"). Model, training-run, and feature questions go to `/datahub-ml-lineage`. Search handles **metadata questions** ("who owns X?"). Enrich handles **metadata updates** ("set owner", "tag this").
 
 ---
 
