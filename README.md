@@ -219,6 +219,7 @@ cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
+cp -r datahub-skills/skills/ml-dependency-fragility  your-project/.agents/skills/
 
 # Connector development skills
 cp -r datahub-skills/skills/datahub-connector-planning   your-project/.agents/skills/
