@@ -21,4 +21,4 @@ Add and update metadata in DataHub — descriptions, tags, glossary terms, owner
 
 All changes require your explicit approval before execution.
 
-For governance operations (PII tagging, domain assignment, data products), use `/datahub-govern`.
+This skill also handles governance metadata operations such as PII tagging, domain assignment, and data products.
