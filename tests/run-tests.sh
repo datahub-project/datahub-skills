@@ -50,7 +50,7 @@ for test_file in "${TESTS[@]}"; do
 
     if [ -n "$FILTER" ] && [[ "$test_name" != *"$FILTER"* ]]; then
         echo "SKIP $test_name"
-        ((skipped++))
+        skipped=$((skipped + 1))
         continue
     fi
 
@@ -59,18 +59,18 @@ for test_file in "${TESTS[@]}"; do
 
     if $VERBOSE; then
         if bash "$test_file"; then
-            ((passed++))
+            passed=$((passed + 1))
         else
-            ((failed++))
+            failed=$((failed + 1))
         fi
     else
         output=$(bash "$test_file" 2>&1) && exit_code=0 || exit_code=$?
         if [ "$exit_code" -ne 0 ] || echo "$output" | grep -q "\[FAIL\]"; then
             echo "$output"
-            ((failed++))
+            failed=$((failed + 1))
         else
             echo "$output" | grep -E "PASS|complete"
-            ((passed++))
+            passed=$((passed + 1))
         fi
     fi
     echo ""
