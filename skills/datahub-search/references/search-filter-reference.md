@@ -27,32 +27,32 @@ Use `datahub search describe-filter <name>` for details on a specific filter.
 datahub search "revenue" --filter platform=snowflake
 
 # Multiple values on same field (OR)
-datahub search "*" --filter platform=snowflake,bigquery
+datahub search --filter platform=snowflake,bigquery
 
 # Multiple filter fields (AND)
-datahub search "*" --filter platform=snowflake --filter env=PROD
+datahub search --filter platform=snowflake --filter env=PROD
 ```
 
 ## SQL-Like WHERE Syntax (`--where`) — Recommended for Agents
 
 ```bash
 # AND
-datahub search "*" --where "platform = snowflake AND env = PROD"
+datahub search --where "platform = snowflake AND env = PROD"
 
 # OR
-datahub search "*" --where "platform = snowflake OR platform = bigquery"
+datahub search --where "platform = snowflake OR platform = bigquery"
 
 # IN
-datahub search "*" --where "platform IN (snowflake, bigquery)"
+datahub search --where "platform IN (snowflake, bigquery)"
 
 # NOT
-datahub search "*" --where "NOT env = DEV"
+datahub search --where "NOT env = DEV"
 
 # IS NULL / IS NOT NULL
-datahub search "*" --where "glossary_term IS NOT NULL"
+datahub search --where "glossary_term IS NOT NULL"
 
 # Combined
-datahub search "*" --where "entity_type = dataset AND platform = snowflake AND env = PROD"
+datahub search --where "entity_type = dataset AND platform = snowflake AND env = PROD"
 ```
 
 ## Complex JSON Filters (`--filters`)
@@ -69,13 +69,13 @@ To find datasets that contain a column matching a given name, use `fieldPaths`. 
 
 ```bash
 # As a WHERE filter (recommended — combines cleanly with other filters)
-datahub search "*" --where "entity_type = dataset AND fieldPaths = customer_id"
+datahub search --where "entity_type = dataset AND fieldPaths = customer_id"
 
 # With platform filter
-datahub search "*" --where "entity_type = dataset AND platform = snowflake AND fieldPaths = email"
+datahub search --where "entity_type = dataset AND platform = snowflake AND fieldPaths = email"
 
 # With environment
-datahub search "*" --where "entity_type = dataset AND env = PROD AND fieldPaths = revenue"
+datahub search --where "entity_type = dataset AND env = PROD AND fieldPaths = revenue"
 
 # As a query prefix (also works)
 datahub search "fieldPaths:customer_id" --where "entity_type = dataset"
@@ -96,7 +96,7 @@ Search for the structured property definition by entity type:
 datahub search "data tier" --where "entity_type = structuredProperty" --format json --limit 5
 
 # Get all structured properties
-datahub search "*" --where "entity_type = structuredProperty" --format json --limit 50
+datahub search --where "entity_type = structuredProperty" --format json --limit 50
 ```
 
 The result gives you the property's qualified name (the field ID), e.g., `io.acryl.dataTier`.
@@ -115,13 +115,13 @@ Use the filter field `structuredProperties.<fieldId>` with an exact-match value:
 
 ```bash
 # Simple filter
-datahub search "*" --filter "structuredProperties.io.acryl.dataTier=Tier 1"
+datahub search --filter "structuredProperties.io.acryl.dataTier=Tier 1"
 
 # WHERE syntax
-datahub search "*" --where "entity_type = dataset AND structuredProperties.io.acryl.dataTier = 'Tier 1'"
+datahub search --where "entity_type = dataset AND structuredProperties.io.acryl.dataTier = 'Tier 1'"
 
 # Combine with other filters
-datahub search "*" --where "entity_type = dataset AND platform = snowflake AND structuredProperties.io.acryl.dataTier = 'Tier 1'"
+datahub search --where "entity_type = dataset AND platform = snowflake AND structuredProperties.io.acryl.dataTier = 'Tier 1'"
 ```
 
 **Important:** Structured property filter values must be exact matches — partial or fuzzy matching is not supported. If the property uses allowed values, the filter value must exactly match one of them.

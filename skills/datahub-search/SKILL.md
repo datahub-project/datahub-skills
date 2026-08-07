@@ -112,10 +112,10 @@ If the user wants lineage exploration ("what feeds into X", "what depends on X",
 datahub search "customers" --filter platform=snowflake --filter entity_type=dataset
 
 # Comma = OR within a filter
-datahub search "*" --filter platform=snowflake,bigquery
+datahub search --filter platform=snowflake,bigquery
 
 # SQL-like WHERE (recommended for complex filters)
-datahub search "*" --where "platform = snowflake AND entity_type = dataset AND env = PROD"
+datahub search --where "platform = snowflake AND entity_type = dataset AND env = PROD"
 
 # Common filter keys: platform, entity_type, env, tags, owners, domains, container, fieldPaths
 # Use: datahub search list-filters   to discover all available filter keys
@@ -143,7 +143,7 @@ datahub search "*" --where "platform = snowflake AND entity_type = dataset AND e
 | "How many datasets lack descriptions?"         | 1. Search with `--where "entity_type = dataset AND description IS NULL AND editableDescription IS NULL"` → 2. Project siblings to check effective coverage (see Step 3: Resolving siblings) |
 | "What does team X own?"                        | 1. Search with `owners=team-x` filter                                                                                                                                                       |
 | "What columns does X have?"                    | 1. Search for X → 2. Get `schemaMetadata` aspect                                                                                                                                            |
-| "Which tables contain a `customer_id` column?" | 1. Search `*` with `--where "entity_type = dataset AND fieldPaths = customer_id"`                                                                                                           |
+| "Which tables contain a `customer_id` column?" | 1. Search with `--where "entity_type = dataset AND fieldPaths = customer_id"` and no query argument                                                                                         |
 | "What's in the Finance domain?"                | 1. Search with `domain=finance` filter                                                                                                                                                      |
 
 ### Structured property filters (special case)
@@ -172,7 +172,7 @@ If `allowedValues` is present, the filter value must exactly match one of the li
 **Step 3 — Search with the structured property filter:**
 
 ```bash
-datahub search "*" --where "entity_type = dataset AND structuredProperties.io.acryl.dataTier = 'Tier 1'"
+datahub search --where "entity_type = dataset AND structuredProperties.io.acryl.dataTier = 'Tier 1'"
 ```
 
 The filter field is always `structuredProperties.<qualifiedName>` and requires an exact value match.

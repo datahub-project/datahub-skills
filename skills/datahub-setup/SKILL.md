@@ -145,7 +145,7 @@ Environment variables take precedence over `~/.datahubenv`.
 Run these checks in order, stopping at first failure:
 
 1. `datahub get --urn "urn:li:corpuser:datahub"` (this entity always exists)
-2. `datahub search "*" --limit 1` (confirms search index works)
+2. `datahub search --limit 1` (confirms search index works)
 3. `datahub check server-config` (confirms GMS is responding)
 
 **Troubleshooting:**
@@ -204,7 +204,7 @@ Users can have multiple named profiles (`.datahub-agent-config.<name>.yml`).
 Run a test query using the configured filters:
 
 ```bash
-datahub search "*" --where "entity_type = <type> AND platform = <platform>" --limit 5
+datahub search --where "entity_type = <type> AND platform = <platform>" --limit 5
 ```
 
 Confirm the configuration works as expected.
