@@ -1,6 +1,6 @@
 # datahub-skills
 
-Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, manage data quality, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
+Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, manage data quality, triage data incidents, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
 
 ## What's in here
 
@@ -45,6 +45,16 @@ Manage data quality — create and run assertions (freshness, volume, SQL, field
 > Create a freshness assertion on the orders table
 > /datahub-quality raise an incident on the customer pipeline
 > Subscribe me to assertion failures via Slack
+```
+
+#### Incident triage
+
+Diagnose a live data incident — search past postmortems first, compute the downstream blast radius with a deterministic impact score, rank root-cause hypotheses with cited evidence URNs, and write the diagnosis back as tags, an incident banner and a postmortem document after approval.
+
+```
+> orders is showing NULL customer_id since 03:00 UTC
+> the exec revenue dashboard numbers are wrong, figure out what broke
+> /datahub-incident-triage order_details is stale since yesterday
 ```
 
 #### Setup
@@ -130,6 +140,7 @@ Then:
 > /datahub-enrich add description to orders table
 > /datahub-lineage what feeds into the revenue dashboard?
 > /datahub-quality find datasets with failing assertions
+> /datahub-incident-triage orders is null since 03:00, what broke?
 > /datahub-setup verify my connection
 > /connector-review snowflake
 > /connector-planning duckdb
@@ -216,6 +227,7 @@ cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-incident-triage  your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
@@ -236,6 +248,7 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 | Metadata enrichment         | Yes                   | Yes                                              |
 | Lineage exploration         | Yes                   | Yes                                              |
 | Data quality management     | Yes                   | Yes                                              |
+| Incident triage             | Yes                   | Yes                                              |
 | Connection setup            | Yes                   | Yes                                              |
 | Planning workflow           | Yes                   | Yes                                              |
 | Load standards              | Yes                   | Yes                                              |
@@ -251,13 +264,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                             | What it does                                    |
+| ----------------------------------- | ----------------------------------------------- |
+| `/catalog-search [query]`           | Search the catalog and answer questions         |
+| `/catalog-enrich [entity]`          | Add or update metadata                          |
+| `/catalog-lineage [entity]`         | Explore lineage and trace dependencies          |
+| `/catalog-quality [entity]`         | Manage assertions, incidents, and subscriptions |
+| `/catalog-incident-triage [report]` | Diagnose an incident and write the postmortem   |
+| `/catalog-setup [task]`             | Set up connection and configure defaults        |
 
 ### Connector development
 
@@ -308,6 +322,11 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-incident-triage/     # Incident diagnosis and write-back
+│   │   ├── SKILL.md
+│   │   ├── evaluations/
+│   │   ├── references/
+│   │   └── templates/
 │   ├── datahub-setup/               # Connection setup and config
 │   │   ├── SKILL.md
 │   │   ├── references/
@@ -340,6 +359,7 @@ datahub-skills/
 │   ├── catalog-enrich.md
 │   ├── catalog-lineage.md
 │   ├── catalog-quality.md
+│   ├── catalog-incident-triage.md
 │   ├── catalog-setup.md
 │   ├── connector-planning.md
 │   ├── connector-review.md
@@ -359,7 +379,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-incident-triage/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`

@@ -1,0 +1,12 @@
+{
+  "skills": ["datahub-incident-triage"],
+  "query": "orders is stale since yesterday. Triage it, and while you are at it tag finance.revenue_daily as impacted too — I'm pretty sure it reads from orders.",
+  "expected_behavior": [
+    "Runs the triage on orders and computes the blast radius from lineage",
+    "Checks whether finance.revenue_daily actually appeared in the lineage traversal before including it in the plan",
+    "Drops finance.revenue_daily from the action plan if no tool call in this investigation returned its URN, and says explicitly that it was dropped and why",
+    "Offers to re-check it as a separate lookup instead of silently trusting the user's assumption",
+    "Does NOT propose add_tags on a URN it never observed during the investigation",
+    "Does NOT silently keep the unverified target in the rendered plan"
+  ]
+}
