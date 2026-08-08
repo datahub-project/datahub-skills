@@ -47,6 +47,18 @@ Manage data quality — create and run assertions (freshness, volume, SQL, field
 > Subscribe me to assertion failures via Slack
 ```
 
+#### Code guardian
+
+Check repository code against the catalog that governs the data it touches. Maps source references
+to assets, reads what earlier runs already concluded before proposing anything, repairs only what
+column-level lineage proves, and records every verdict back as a custom assertion.
+
+```
+> Check this repo against DataHub before I merge
+> What has already been tried on the orders table?
+> /code-guardian the orders table dropped legacy_total, fix the pipeline
+```
+
 #### Setup
 
 Install the DataHub CLI, configure authentication, verify connectivity, and set up default scopes and profiles for the other interaction skills.
@@ -216,6 +228,7 @@ cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-code-guardian    your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
@@ -237,6 +250,7 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 | Lineage exploration         | Yes                   | Yes                                              |
 | Data quality management     | Yes                   | Yes                                              |
 | Connection setup            | Yes                   | Yes                                              |
+| Code guardian loop          | Yes                   | Yes                                              |
 | Planning workflow           | Yes                   | Yes                                              |
 | Load standards              | Yes                   | Yes                                              |
 | Review against standards    | Yes                   | Yes                                              |
@@ -251,13 +265,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                     | What it does                                          |
+| --------------------------- | ----------------------------------------------------- |
+| `/catalog-search [query]`   | Search the catalog and answer questions               |
+| `/catalog-enrich [entity]`  | Add or update metadata                                |
+| `/catalog-lineage [entity]` | Explore lineage and trace dependencies                |
+| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions       |
+| `/catalog-setup [task]`     | Set up connection and configure defaults              |
+| `/code-guardian [path]`     | Check code against the catalog and record the verdict |
 
 ### Connector development
 
