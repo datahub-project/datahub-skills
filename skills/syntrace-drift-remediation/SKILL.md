@@ -26,13 +26,13 @@ All commands must be run from a checkout of the Syntrace repository root (the di
 
 ## Not This Skill
 
-| If the user wants to...                                        | Use this instead                                  |
-| -------------------------------------------------------------- | ------------------------------------------------- |
-| Explore lineage read-only, with no code fix or write-back      | the official `/datahub-skills:datahub-lineage`    |
-| Search the catalog or answer "who owns X?"                     | the official `/datahub-skills:datahub-search`     |
-| Hand-edit tags, owners, or descriptions in DataHub             | the official `/datahub-skills:datahub-enrich`     |
+| If the user wants to...                                   | Use this instead                               |
+| --------------------------------------------------------- | ---------------------------------------------- |
+| Explore lineage read-only, with no code fix or write-back | the official `/datahub-skills:datahub-lineage` |
+| Search the catalog or answer "who owns X?"                | the official `/datahub-skills:datahub-search`  |
+| Hand-edit tags, owners, or descriptions in DataHub        | the official `/datahub-skills:datahub-enrich`  |
 
-**Key boundary:** this skill is for the full detect → trace → fix → PR → write-back loop on schema drift. Syntrace fixes breaking *schema* changes (renamed/dropped/added columns, type changes); it does not fix row-level data-quality defects.
+**Key boundary:** this skill is for the full detect → trace → fix → PR → write-back loop on schema drift. Syntrace fixes breaking _schema_ changes (renamed/dropped/added columns, type changes); it does not fix row-level data-quality defects.
 
 ---
 
@@ -73,13 +73,13 @@ python3 -m src.main run
 
 Real flags of `run` (there are no others):
 
-| Flag | Meaning |
-| --- | --- |
+| Flag                  | Meaning                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------ |
 | `--dataset-urn <urn>` | Upstream dataset to inspect (default: `urn:li:dataset:(urn:li:dataPlatform:postgres,raw.orders,PROD)`) |
-| `--gms-url <url>` | DataHub GMS URL (default: `$DATAHUB_GMS_URL`, then `http://localhost:8080`) |
-| `--create-pr` | Open a real GitHub PR (needs `GITHUB_TOKEN` + `SYNTRACE_REPO`, see Step 6) |
-| `--llm` | LLM-assisted code generation when available (needs `OPENAI_API_KEY`) |
-| `--output-dir <dir>` | Where artifacts are written (default: `examples/`) |
+| `--gms-url <url>`     | DataHub GMS URL (default: `$DATAHUB_GMS_URL`, then `http://localhost:8080`)                            |
+| `--create-pr`         | Open a real GitHub PR (needs `GITHUB_TOKEN` + `SYNTRACE_REPO`, see Step 6)                             |
+| `--llm`               | LLM-assisted code generation when available (needs `OPENAI_API_KEY`)                                   |
+| `--output-dir <dir>`  | Where artifacts are written (default: `examples/`)                                                     |
 
 If the user prefers a browser, the same pipeline is available as a local web app:
 
@@ -106,12 +106,12 @@ The final Summary block gives counts: schema changes detected, downstream assets
 
 By default under `examples/` (change with `--output-dir`):
 
-| File | Content |
-| --- | --- |
-| `dbt_orders_remediated.sql` | Fixed dbt model for `stg_orders` |
-| `fct_orders_remediated.sql` | Fixed dbt model for `fct_orders` |
-| `airflow_orders_dag.py` | Fixed Airflow DAG for `load_orders` |
-| `pr_body.md` | The full PR description Syntrace generated |
+| File                        | Content                                    |
+| --------------------------- | ------------------------------------------ |
+| `dbt_orders_remediated.sql` | Fixed dbt model for `stg_orders`           |
+| `fct_orders_remediated.sql` | Fixed dbt model for `fct_orders`           |
+| `airflow_orders_dag.py`     | Fixed Airflow DAG for `load_orders`        |
+| `pr_body.md`                | The full PR description Syntrace generated |
 
 `examples/raw_orders_v2.sql` is a checked-in input (the drifted DDL) and is never overwritten. The fixes target the paths listed as `target:` in the Step 5 output; they are delivered via the PR - the local `demo_pipelines/` tree is left untouched.
 
