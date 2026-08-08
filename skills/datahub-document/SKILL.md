@@ -58,10 +58,12 @@ them. "Describe this column" is Enrich. "Write up why this pipeline broke" is Do
 
 Before answering a substantive question about the data estate, look for an existing document.
 
-1. **Search by keyword** — `search_documents` with filters for platform, domain, tag,
-   glossary term or owner.
-2. **Search inside content** — `grep_documents` with a regex when the user's phrasing is
-   specific ("retention policy", "PII.*review").
+1. **Search by keyword** — `search_documents(query, filter=...)`, filtering on platform,
+   domain, tag, glossary term or owner.
+2. **Search inside content** — `grep_documents(urns, pattern)` narrows to specific phrasing
+   ("retention policy", `PII.*review`). It takes the **URNs to search within**, so it is a
+   second step rather than an alternative first one: collect URNs from `search_documents`,
+   then grep inside them. Calling it without `urns` fails.
 3. **Cite what you find.** If a document already answers the question, lead with it and link
    it. Say when it was last updated, and flag it if it looks stale.
 
@@ -97,8 +99,17 @@ Use the structure in `templates/insight-document.md`. The essentials:
 
 ### Step 3 — Save it
 
-Call `save_document` with the title and content. Documents land under a configurable parent
-folder (`SAVE_DOCUMENT_PARENT_TITLE`, default `Shared`).
+Call `save_document(document_type, title, content)`. All three are required — `document_type`
+is easy to forget, and the call fails without it. Pick the one that fits:
+
+`Insight` · `Decision` · `FAQ` · `Analysis` · `Summary` · `Recommendation` · `Note` · `Context`
+
+An impact analysis is `Analysis`, a post-mortem conclusion is `Insight`, "why we chose X" is
+`Decision`. Documents land under a configurable parent folder
+(`SAVE_DOCUMENT_PARENT_TITLE`, default `Shared`).
+
+Pass `urn` only to update a document that already exists — `save_document` rejects a URN that
+does not, so a made-up one fails rather than creating a document at that address.
 
 ### Step 4 — Verify the write
 

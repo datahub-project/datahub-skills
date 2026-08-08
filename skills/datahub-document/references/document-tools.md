@@ -21,20 +21,43 @@ Verified against the MCP server source: `save_document` carries
 
 ## Tools
 
+Signatures below are as exposed by the Agent Context Kit and exercised against a live
+DataHub Core instance.
+
 ### `search_documents`
 
+```text
+search_documents(query="*", semantic_query=None, filter=None, num_results=10, offset=0)
+```
+
 Keyword search across documents, with filters for platforms, domains, tags, glossary terms
-and owners. Use first, in recall mode.
+and owners. Use first, in recall mode. Returns `{start, count, total, searchResults}`.
 
 ### `grep_documents`
 
-Regex search _within_ document content. Use when the user's phrasing is specific enough that
-a keyword search would over-match — a policy name, an error string, a column name.
+```text
+grep_documents(urns, pattern, context_chars=200, max_matches_per_doc=5, start_offset=0)
+```
+
+Regex search _within_ document content. **`urns` is required and comes first** — this greps
+inside documents you already have, so it follows `search_documents` rather than replacing
+it. Collect URNs from the search results, then grep within them; calling it without `urns`
+raises a `TypeError`. Returns `{results, total_matches, documents_with_matches}`.
 
 ### `save_document`
 
-Saves a standalone document (insight, decision, FAQ, runbook). Documents are organised under
-a parent folder.
+```text
+save_document(document_type, title, content, urn=None, topics=None,
+              related_documents=None, related_assets=None)
+```
+
+Saves a standalone document under a parent folder. `document_type` is **required** and must
+be one of `Insight`, `Decision`, `FAQ`, `Analysis`, `Summary`, `Recommendation`, `Note`,
+`Context`.
+
+`urn` updates an existing document. It will not create one at a chosen address — passing a
+URN that does not already exist raises `ItemNotFoundError`, so an "update or create" flow has
+to look the document up first.
 
 Relevant environment variables:
 
