@@ -93,6 +93,18 @@ Loads all 22 connector standards into context. Run this before starting connecto
 > What are the connector standards?
 ```
 
+### Community skills
+
+#### Antigen Scan
+
+Find and remove prompt-injection payloads (OWASP LLM01) planted in catalog free-text — entity descriptions, column descriptions, and Knowledge-Base documents, including payloads hidden with zero-width Unicode. Drives [Antigen](https://github.com/edycutjong/antigen), an open-source (Apache-2.0) deterministic scanner and remediation loop that sweeps read-only, prints the exact mutation plan, waits for approval, then writes the remediation back into the graph as tags, structured properties, and hash-only forensic incident documents. Requires an Antigen checkout — see [`skills/antigen-scan`](skills/antigen-scan).
+
+```
+> Scan the catalog for prompt injection
+> Is this catalog safe for an agent to read?
+> /catalog-injection-scan show me what a cure would write, don't apply it
+```
+
 ## Installation
 
 ### Quick install (any agent)
@@ -224,6 +236,9 @@ cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills
 cp -r datahub-skills/skills/datahub-connector-planning   your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-connector-pr-review  your-project/.agents/skills/
 cp -r datahub-skills/skills/load-standards               your-project/.agents/skills/
+
+# Community skills
+cp -r datahub-skills/skills/antigen-scan                 your-project/.agents/skills/
 ```
 
 Each skill directory is self-contained. The `standards` symlinks get dereferenced into real files on copy, so everything travels together. The catalog interaction skills reference `shared-references/` for CLI and MCP tool documentation.
@@ -266,6 +281,12 @@ Other platforms do the same things through natural language.
 | `/connector-planning [source]`  | Plan a new connector                    |
 | `/connector-review [connector]` | Review connector code against standards |
 | `/load-standards`               | Load all 22 standards into context      |
+
+### Community
+
+| Command                          | What it does                                                  |
+| -------------------------------- | ------------------------------------------------------------- |
+| `/catalog-injection-scan [task]` | Sweep catalog free-text for prompt injection and remediate it |
 
 ## Agents
 

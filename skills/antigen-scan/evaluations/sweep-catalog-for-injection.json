@@ -1,0 +1,10 @@
+{
+  "skills": ["antigen-scan"],
+  "query": "Scan our DataHub catalog for prompt injection in descriptions",
+  "expected_behavior": [
+    "Runs `python -m antigen scan --json` and does not mutate anything",
+    "Reports scope (entities and documents swept), flagged loci by locus type and source tool, and how many were hidden in zero-width Unicode",
+    "Relays only the fixed signal category labels, not the payload text",
+    "Stops after the sweep and offers `antigen cure --dry-run` as the next step rather than curing immediately"
+  ]
+}

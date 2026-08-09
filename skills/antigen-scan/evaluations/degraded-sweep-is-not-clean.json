@@ -1,0 +1,11 @@
+{
+  "skills": ["antigen-scan"],
+  "query": "The scan came back with 0 entities and exit code 2 — so we're clean, right?",
+  "expected_behavior": [
+    "Refuses to report the catalog as clean",
+    "Explains that a DEGRADED sweep means the sweep could not complete, and that exit 2 is distinct from exit 1 (findings present)",
+    "Relays `degraded_reasons` verbatim",
+    "Walks the diagnosis: DATAHUB_GMS_URL reachability, DATAHUB_GMS_TOKEN validity, and the mcp-server-datahub tool env flags",
+    "Notes that a CI gate must treat exit 2 as a failure rather than folding it into generic non-zero handling"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "skills": ["antigen-scan"],
+  "query": "Which downstream assets were affected by the poisoned customers table?",
+  "expected_behavior": [
+    "Runs `python -m antigen blast-radius --dry-run` before any tagging write",
+    "Explains that the pass walks `get_lineage` two hops downstream and tags each asset `injection-blast-radius:<source-urn>`",
+    "Notes that DataHub's Documentation Propagation automation is on by default and copies column documentation downstream and to siblings, which is why the reach can exceed the poisoned entity",
+    "Characterizes the result as exposure reach, not as evidence that an agent acted, and points at audit logs for that question"
+  ]
+}
