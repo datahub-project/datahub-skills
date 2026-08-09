@@ -95,6 +95,8 @@ This skill handles adversarial text by definition. Everything Antigen surfaces i
    export SAVE_DOCUMENT_RESTRICT_UPDATES=false
    ```
 
+   `SAVE_DOCUMENT_RESTRICT_UPDATES` is **server-global** — it lifts the update restriction for every client of that `mcp-server-datahub`, not just Antigen. Tell the user to set it on a **dedicated** instance for the remediation path, not the one their analysts and agents share, and to run the scheduled read-only sweep against an instance where all three flags are off. Antigen should run as a dedicated `antigen-svc` account with only the four edit privileges the cure needs (`EDIT_ENTITY_DOCS`, `EDIT_DATASET_COL_DESCRIPTION`, `EDIT_ENTITY_TAGS`, `EDIT_ENTITY_PROPERTIES`); the scanner account needs **no** `EDIT_*` privilege at all. See "Least privilege" in the Antigen README.
+
 4. **One-time structured-property definitions.** `add_structured_properties` rejects a property that has no definition, so this must run before any cure:
 
    ```bash
@@ -134,7 +136,7 @@ The JSON has this shape:
 
 ```jsonc
 {
-  "summary": "17 entities + 2 documents | 15 injection loci flagged | 2 hidden in zero-width Unicode | 13 via get_entities | 2 via grep_documents",
+  "summary": "15 entities + 2 documents | 15 injection loci flagged | 2 hidden in zero-width Unicode | 13 via get_entities | 2 via grep_documents",
   "degraded": false,
   "degraded_reasons": [],
   "hits": [
@@ -287,6 +289,8 @@ python -m antigen rescan --fail-on-hit  # drift check: content changed since it 
 
 Put `scan --fail-on-hit` in the metadata-CI job so a new injection fails the build before an agent reads it, and `rescan` on a schedule so post-certification drift surfaces. Note for the user that `scan` exits **2** on a degraded sweep, so the CI job must treat 2 as a failure and not fold it into a generic non-zero handler that reports "injections found."
 
+Antigen ships a ready-made workflow for exactly this — `examples/ci/metadata-injection-scan.yml` in the repo: scheduled cron, read-only credentials, `scan --fail-on-hit --json`, the JSON report uploaded as an artifact, and exit 2 handled distinctly from exit 1. Point the user at it rather than writing one from scratch. It deliberately does not run `cure`: remediation stays behind a human, with `--dry-run` first and `--max-mutations` set.
+
 ---
 
 ## Command Reference
@@ -294,11 +298,11 @@ Put `scan --fail-on-hit` in the metadata-CI job so a new injection fails the bui
 | Command                   | Reads / Writes | Flags                                                        | Notes                                              |
 | ------------------------- | -------------- | ------------------------------------------------------------ | -------------------------------------------------- |
 | `antigen scan`            | read           | `--offline` `--fail-on-hit` `--json`                         | the sweep; safe to run any time                    |
-| `antigen cure`            | **write**      | `--offline` `--dry-run` `--apply` `--fixtures` `--only-mode` | 4 write-back tools per finding                     |
-| `antigen blast-radius`    | **write**      | `--offline` `--dry-run` `--apply`                            | 2-hop downstream tagging                           |
-| `antigen certify`         | **write**      | `--offline` `--dry-run` `--apply`                            | 2 mutations per **clean** entity                   |
+| `antigen cure`            | **write**      | `--offline` `--dry-run` `--apply` `--max-mutations` `--fixtures` `--only-mode` | 4 write-back tools per finding    |
+| `antigen blast-radius`    | **write**      | `--offline` `--dry-run` `--apply` `--max-mutations`          | 2-hop downstream tagging                           |
+| `antigen certify`         | **write**      | `--offline` `--dry-run` `--apply` `--max-mutations`          | 2 mutations per **clean** entity; skips entities already certified at the same content hash |
 | `antigen rescan`          | read           | `--offline` `--fail-on-hit`                                  | tamper-evidence drift against stamped hashes       |
-| `antigen demo`            | **write**      | `--offline` `--apply`                                        | the full arc; refuses a live run without `--apply` |
+| `antigen demo`            | **write**      | `--offline` `--apply` `--max-mutations`                      | the full arc; refuses a live run without `--apply` |
 | `antigen detect "<text>"` | neither        | —                                                            | score one string; no catalog contact               |
 | `antigen corpus`          | neither        | —                                                            | attack-corpus statistics                           |
 
@@ -309,8 +313,11 @@ Put `scan --fail-on-hit` in the metadata-CI job so a new injection fails the bui
 | `0`  | success                                                                       |
 | `1`  | findings present under `--fail-on-hit` (a working sweep that found something) |
 | `2`  | refused (`demo` without `--apply`), **or a DEGRADED sweep**                   |
+| `3`  | `--max-mutations` tripped — the run aborted with writes already on the graph  |
 
-`1` and `2` mean different things and must not be collapsed. `1` is a result. `2` is the absence of one.
+`1` and `2` mean different things and must not be collapsed. `1` is a result. `2` is the absence of one. `3` is neither: the catalog is now **partially** remediated and nothing was rolled back, so it always needs a human before the next run.
+
+**Always pass `--max-mutations N` on an unattended write.** The (N+1)th write is refused instead of executed. `cure` writes 4 mutations per finding and `certify` 2 per clean entity, so size N off the dry-run plan's mutation count and add headroom.
 
 ---
 

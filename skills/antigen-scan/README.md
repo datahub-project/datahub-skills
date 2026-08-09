@@ -30,6 +30,6 @@ Or ask naturally: "check our column descriptions for jailbreaks", "is this catal
 
 ## Requires
 
-[Antigen](https://github.com/edycutjong/antigen) (Apache-2.0, Python 3.10+), a reachable DataHub instance, and — for the write path — a self-hosted `mcp-server-datahub` with `TOOLS_IS_MUTATION_ENABLED`, `SAVE_DOCUMENT_TOOL_ENABLED`, and `SAVE_DOCUMENT_RESTRICT_UPDATES=false`. Verified against DataHub GMS `v1.7.0`, `acryl-datahub 1.6.0.6`, `datahub-agent-context 1.6.0.17`.
+[Antigen](https://github.com/edycutjong/antigen) (Apache-2.0, Python 3.10+), a reachable DataHub instance, and — for the write path — a self-hosted `mcp-server-datahub` with `TOOLS_IS_MUTATION_ENABLED`, `SAVE_DOCUMENT_TOOL_ENABLED`, and `SAVE_DOCUMENT_RESTRICT_UPDATES=false` — which is **server-global**, so put it on an `mcp-server-datahub` instance dedicated to remediation rather than the one analysts share, and run the scheduled read-only sweep against an instance with all three flags off. Verified against DataHub GMS `v1.7.0`, `acryl-datahub 1.6.0.6`, `datahub-agent-context 1.6.0.17`.
 
 `python -m antigen scan --offline` runs the whole workflow against an in-memory corpus double with no Docker and no keys.

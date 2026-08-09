@@ -14,10 +14,14 @@ An inert banner is appended:
 
 ```text
 > ⚠ Antigen: a prompt-injection payload was removed from this field on <date>.
-  Forensic evidence: <handle>. Detection signals: <labels>.
+  Forensic evidence: <handle>. Detection signals: recorded in the Antigen incident
+  record `antigen-incident-<id>` (the category labels are not repeated here — they
+  are detector triggers themselves).
 ```
 
-The banner contains no imperative and no payload text — only fixed category labels. The tamper-evidence hash is computed over the text **before** the banner marker, so the banner itself never perturbs the hash and a later edit to the real content still trips drift detection.
+The banner contains no imperative, no payload text, **and no detection category label**. The labels used to be interpolated inline, and that broke convergence: labels like `reveal-secret` are phrases the detector's own rules score on, so the banner re-flagged the field it had just cured. Entity loci were shielded by the quarantine tag; KB documents were not, and looped forever. The labels now live only in the forensic incident record, which the sweep exempts by title, and `inert_banner` scores the exact text before writing it so the invariant holds structurally.
+
+The tamper-evidence hash is computed over the text **before** the banner marker, so the banner itself never perturbs the hash and a later edit to the real content still trips drift detection.
 
 Field-level findings pass `column_path`, so a poisoned column description is edited at column scope rather than replacing the entity description.
 
