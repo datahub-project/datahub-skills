@@ -36,6 +36,16 @@ Explore data lineage, trace upstream sources and downstream consumers, perform i
 > /datahub-lineage trace the customer pipeline
 ```
 
+#### Change safety
+
+Assess a concrete SQL, dbt, schema, feature, pipeline, or model revision before merge. Uses DataHub to resolve the changed asset, select critical downstream consumers and owners, then requires executable baseline/candidate evidence. Produces a bounded three-state verdict and machine-readable Change Passport; approved regressions can become reusable protection memory.
+
+```
+> Is this dbt model change safe to merge?
+> Test the downstream model and agent impact of this schema change
+> /datahub-change-safety assess PR #123
+```
+
 #### Quality
 
 Manage data quality — create and run assertions (freshness, volume, SQL, field, schema), set up smart AI-inferred assertions, raise and resolve incidents, and configure notification subscriptions. Separates Open Source (diagnostic) from Cloud (full management) capabilities.
@@ -129,6 +139,7 @@ Then:
 > /datahub-search who owns the customer pipeline?
 > /datahub-enrich add description to orders table
 > /datahub-lineage what feeds into the revenue dashboard?
+> /datahub-change-safety assess PR #123
 > /datahub-quality find datasets with failing assertions
 > /datahub-setup verify my connection
 > /connector-review snowflake
@@ -215,6 +226,7 @@ git clone https://github.com/datahub-project/datahub-skills.git
 cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-change-safety    your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
@@ -235,6 +247,7 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 | Catalog search              | Yes                   | Yes                                              |
 | Metadata enrichment         | Yes                   | Yes                                              |
 | Lineage exploration         | Yes                   | Yes                                              |
+| Executable change safety    | Yes                   | Yes                                              |
 | Data quality management     | Yes                   | Yes                                              |
 | Connection setup            | Yes                   | Yes                                              |
 | Planning workflow           | Yes                   | Yes                                              |
@@ -251,13 +264,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                           | What it does                                    |
+| --------------------------------- | ----------------------------------------------- |
+| `/catalog-search [query]`         | Search the catalog and answer questions         |
+| `/catalog-enrich [entity]`        | Add or update metadata                          |
+| `/catalog-lineage [entity]`       | Explore lineage and trace dependencies          |
+| `/catalog-change-safety [change]` | Assess a revision and produce a Change Passport |
+| `/catalog-quality [entity]`       | Manage assertions, incidents, and subscriptions |
+| `/catalog-setup [task]`           | Set up connection and configure defaults        |
 
 ### Connector development
 
@@ -304,6 +318,9 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-change-safety/       # Executable pre-merge change assessment
+│   │   ├── SKILL.md
+│   │   └── references/
 │   ├── datahub-quality/             # Data quality management
 │   │   ├── SKILL.md
 │   │   ├── references/
@@ -339,6 +356,7 @@ datahub-skills/
 │   ├── catalog-search.md
 │   ├── catalog-enrich.md
 │   ├── catalog-lineage.md
+│   ├── catalog-change-safety.md
 │   ├── catalog-quality.md
 │   ├── catalog-setup.md
 │   ├── connector-planning.md
@@ -359,7 +377,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-change-safety/`, `skills/datahub-quality/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
