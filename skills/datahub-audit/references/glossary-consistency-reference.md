@@ -8,10 +8,10 @@ Never guess a term, group, or dataset URN — always resolve by search first.
 
 ```bash
 # Term
-datahub search "Revenue" --where "entity_type = glossaryTerm" --urns-only --limit 5
+datahub -C skill=datahub-audit search "Revenue" --where "entity_type = glossaryTerm" --urns-only --limit 5
 
 # Group (glossaryNode)
-datahub search "Finance" --where "entity_type = glossaryNode" --urns-only --limit 5
+datahub -C skill=datahub-audit search "Finance" --where "entity_type = glossaryNode" --urns-only --limit 5
 ```
 
 Glossary term URNs look like `urn:li:glossaryTerm:Revenue` (or a namespaced path, e.g. `urn:li:glossaryTerm:Finance.Revenue`, depending on how the term was created). Groups are `urn:li:glossaryNode:<id>`.
@@ -47,14 +47,14 @@ Never loop a query per term — one filter covers a single term, a whole group, 
 For full-glossary context (not a gate — see Section 8), it's fine to also enumerate term count separately:
 
 ```bash
-datahub search "*" --where "entity_type = glossaryTerm" --format json --limit 50 --offset 0
+datahub -C skill=datahub-audit search "*" --where "entity_type = glossaryTerm" --format json --limit 50 --offset 0
 # repeat with --offset 50, 100, ... until a page returns fewer than 50 results
 ```
 
 ## 4. Checking the real cost before fetching schemas
 
 ```bash
-datahub search "*" --where "entity_type = dataset AND <scope filter from Section 3>" --format json --limit 1
+datahub -C skill=datahub-audit search "*" --where "entity_type = dataset AND <scope filter from Section 3>" --format json --limit 1
 ```
 
 Read `count` from the response envelope — that's the exact number of datasets the next step will fetch full field-level schema for. This is a direct measurement of cost, not a proxy: a glossary with thousands of terms can still resolve to a handful of tagged datasets, so check this number before assuming a full sweep needs confirmation (see Section 8 for the threshold).
@@ -64,7 +64,7 @@ Read `count` from the response envelope — that's the exact number of datasets 
 Combine the scope filter from Section 3 with a projection that pulls both the ingestion-provided and user-edited term locations, plus type info, paginating 50 at a time:
 
 ```bash
-datahub search "*" --where "entity_type = dataset AND <scope filter from Section 3>" \
+datahub -C skill=datahub-audit search "*" --where "entity_type = dataset AND <scope filter from Section 3>" \
   --projection "urn type ... on Dataset {
     properties { name }
     platform { name }

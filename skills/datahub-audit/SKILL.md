@@ -76,15 +76,15 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 **Resolving a term or group to a URN:** search by name first, then use the URN — never guess it.
 
 ```bash
-datahub search "Revenue" --where "entity_type = glossaryTerm" --urns-only --limit 5
-datahub search "Finance" --where "entity_type = glossaryNode" --urns-only --limit 5
+datahub -C skill=datahub-audit search "Revenue" --where "entity_type = glossaryTerm" --urns-only --limit 5
+datahub -C skill=datahub-audit search "Finance" --where "entity_type = glossaryNode" --urns-only --limit 5
 ```
 
 **Resolving a group's child terms:** this repo has no documented search filter for "terms under group X" (`updateParentNode` sets a term's `parentNode`, but there's no confirmed reverse filter). Before running a group-scoped audit, discover the filter live:
 
 ```bash
-datahub search list-filters
-datahub search describe-filter parentNode
+datahub -C skill=datahub-audit search list-filters
+datahub -C skill=datahub-audit search describe-filter parentNode
 ```
 
 If a `parentNode`-style filter exists, use it (`--where "entity_type = glossaryTerm AND parentNode = '<group urn>'"`). If not, fall back to fetching the group entity and reading its child list directly (`datahub get --urn "<group urn>"`), or ask the user to name terms individually. Don't fabricate a filter field that hasn't been confirmed against the live instance.
@@ -119,7 +119,7 @@ For full-sweep context, it's fine to also mention the total term count (`entity_
 Check **both** the ingestion-provided and user-edited term locations, same convention this skillset already uses for tags and descriptions (`skills/datahub-search/SKILL.md`, "Editable vs. non-editable fields"):
 
 ```bash
-datahub search "*" --where "entity_type = dataset AND <scope filter from Step 2>" \
+datahub -C skill=datahub-audit search "*" --where "entity_type = dataset AND <scope filter from Step 2>" \
   --projection "urn type ... on Dataset { properties { name }
     schemaMetadata { fields { fieldPath type nativeDataType glossaryTerms { terms { term { urn } } } } }
     editableSchemaMetadata { editableSchemaFieldInfo { fieldPath glossaryTerms { terms { term { urn } } } } }
