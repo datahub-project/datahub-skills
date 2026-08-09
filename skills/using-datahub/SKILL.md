@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                      | Skill                  | Command                       |
+| -------------------------------------------------------------------------------- | ---------------------- | ----------------------------- |
+| **Find or discover entities** (search, browse, filter, list)                     | **Search**             | `/datahub-search`             |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**             | `/datahub-search`             |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**             | `/datahub-enrich`             |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage**            | `/datahub-lineage`            |
+| **Data quality** (assertions, incidents, health checks)                          | **Quality**            | `/datahub-quality`            |
+| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality**            | `/datahub-quality`            |
+| **Generate fixtures or developer test assets** from governed metadata            | **Fixture Generation** | `/datahub-fixture-generation` |
+| **Install CLI, authenticate, verify connection**                                 | **Setup**              | `/datahub-setup`              |
+| **Configure default scopes and profiles**                                        | **Setup**              | `/datahub-setup`              |
 
 ---
 
@@ -50,6 +51,13 @@ When the intent is ambiguous, use these rules:
 - **"What feeds into X" / "what depends on X" / "impact of changing X"** → **Lineage**
 - **"What dashboards use table X"** → **Lineage** (relationship traversal)
 - **"Who owns X" / "what is X"** → **Search** (metadata lookup)
+
+### Fixture generation vs. other skills
+
+- **Generate fixtures, seeds, factories, or dbt tests from metadata** → **Fixture Generation**
+- **Only inspect schema, ownership, or governance** → **Search**
+- **Only assess the impact of a schema change** → **Lineage**
+- **Update metadata without generating developer assets** → **Enrich**
 
 ### Setup vs. other skills
 
@@ -82,3 +90,4 @@ Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it
 5. **Enrich handles all metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.
 6. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
 7. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
+8. **Fixture Generation handles metadata-to-code delivery** — discovery, generation, independent validation, Git review, and approved evidence writeback.
