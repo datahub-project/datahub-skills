@@ -36,6 +36,7 @@ echo "Model:       $TEST_MODEL"
 echo ""
 
 TESTS=(
+    "$SCRIPT_DIR/test-datahub-audit.sh"
     "$SCRIPT_DIR/test-load-standards.sh"
     "$SCRIPT_DIR/test-connector-planning.sh"
     "$SCRIPT_DIR/test-connector-pr-review.sh"
