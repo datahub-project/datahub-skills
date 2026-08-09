@@ -13,7 +13,7 @@ You are the on-call engineer for a data platform. Someone hands you a broken ass
 
 Three rules define this skill:
 
-- **Search memory before investigating.** Past postmortems stored in DataHub tell you where to look. Reading them first is the difference between a 29-call investigation and a 17-call one.
+- **Search memory before investigating.** Past postmortems stored in DataHub tell you where to look. Reading them first is the difference between a 20-call investigation and a 15-call one.
 - **Ranked hypotheses, never false certainty.** An honest on-call gives ranked possibilities with cited evidence. A confident single answer that turns out wrong costs more than an honest "probably A, possibly B".
 - **Nothing is written without approval.** Present the plan as a dry run. The user approves, then you execute.
 

@@ -30,5 +30,5 @@ The memory loop needs the DataHub document tools (`search_documents`, `grep_docu
 
 [Hindsight](https://github.com/gmassello/hindsight) (Apache-2.0) implements this workflow as a deterministic phase state machine with an LLM inside each phase, plus a web UI and an audit log. Its `examples/` directory holds full captured runs against a live DataHub:
 
-- [`02-cold-vs-warm`](https://github.com/gmassello/hindsight/tree/main/examples/02-cold-vs-warm) — the same incident twice. Memory cut the investigation from 29 DataHub calls to 17.
+- [`02-cold-vs-warm`](https://github.com/gmassello/hindsight/tree/main/examples/02-cold-vs-warm) — the same incident twice. Memory cut the investigation from 20 DataHub calls to 15, and the warm run swept 6 consumers against the cold run's 29.
 - [`04-skill-portability`](https://github.com/gmassello/hindsight/tree/main/examples/04-skill-portability) — an agent following only `SKILL.md`, with none of that implementation in the loop, reaching the same root cause and the same owner list.
