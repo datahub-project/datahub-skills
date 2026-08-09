@@ -27,6 +27,39 @@ Before running any DataHub commands, determine which tools are available:
 
 MCP tool names may be prefixed (e.g. `mcp__datahub-cloud__search`). Match by the function name suffix, not the full prefixed name. MCP tools are self-documenting — check their schemas for parameter details rather than relying on static documentation.
 
+### Running the official DataHub MCP server locally
+
+For a local DataHub OSS quickstart, the official MCP server can be launched
+over stdio with `uvx`:
+
+```bash
+export DATAHUB_GMS_URL="http://localhost:8080"
+# Set this only when the deployment requires authentication.
+export DATAHUB_GMS_TOKEN="<read-only-token>"
+uvx mcp-server-datahub@latest --transport stdio
+```
+
+`DATAHUB_GMS_URL` is the GMS base URL. Do not append `/api/graphql`; the MCP
+server builds its own GraphQL requests. Keep mutation tools disabled (the
+default) while validating search, entity, schema, and lineage retrieval.
+
+When a client or inspector asks for the server command, use the equivalent
+stdio configuration:
+
+```json
+{
+  "command": "uvx",
+  "args": ["mcp-server-datahub@latest", "--transport", "stdio"],
+  "env": {
+    "DATAHUB_GMS_URL": "http://localhost:8080",
+    "DATAHUB_GMS_TOKEN": "<read-only-token>"
+  }
+}
+```
+
+Never commit real tokens. If the local deployment does not require
+authentication, omit `DATAHUB_GMS_TOKEN`.
+
 The rest of this document covers the CLI path.
 
 ---
