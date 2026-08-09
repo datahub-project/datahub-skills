@@ -47,6 +47,18 @@ Manage data quality — create and run assertions (freshness, volume, SQL, field
 > Subscribe me to assertion failures via Slack
 ```
 
+#### Agent Forensics
+
+Investigate what evidence and actions influenced an AI-agent decision, whether its
+receipt is intact, which decisions a metadata incident affected, and whether a safe
+replay can be planned.
+
+```text
+> Why is this pricing-agent recommendation stale?
+> Which signed agent decisions used the revenue field?
+> /catalog-agent-forensics can this receipt be replayed read-only?
+```
+
 #### Setup
 
 Install the DataHub CLI, configure authentication, verify connectivity, and set up default scopes and profiles for the other interaction skills.
@@ -144,6 +156,7 @@ Then:
 > /datahub-enrich add description to orders table
 > /datahub-lineage what feeds into the revenue dashboard?
 > /datahub-quality find datasets with failing assertions
+> /catalog-agent-forensics why is this agent decision stale?
 > /datahub-setup verify my connection
 > /connector-review snowflake
 > /connector-planning duckdb
@@ -230,6 +243,7 @@ cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-agent-forensics your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
@@ -250,6 +264,7 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 | Metadata enrichment         | Yes                   | Yes                                              |
 | Lineage exploration         | Yes                   | Yes                                              |
 | Data quality management     | Yes                   | Yes                                              |
+| Agent decision forensics    | Yes                   | Yes                                              |
 | Connection setup            | Yes                   | Yes                                              |
 | Planning workflow           | Yes                   | Yes                                              |
 | Load standards              | Yes                   | Yes                                              |
@@ -265,13 +280,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                               | What it does                                    |
+| ------------------------------------- | ----------------------------------------------- |
+| `/catalog-search [query]`             | Search the catalog and answer questions         |
+| `/catalog-enrich [entity]`            | Add or update metadata                          |
+| `/catalog-lineage [entity]`           | Explore lineage and trace dependencies          |
+| `/catalog-quality [entity]`           | Manage assertions, incidents, and subscriptions |
+| `/catalog-agent-forensics [decision]` | Investigate agent decisions and replay safety   |
+| `/catalog-setup [task]`               | Set up connection and configure defaults        |
 
 ### Connector development
 
@@ -322,6 +338,11 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-agent-forensics/     # Agent decision evidence and validity
+│   │   ├── SKILL.md
+│   │   ├── evaluations/
+│   │   ├── references/
+│   │   └── templates/
 │   ├── datahub-setup/               # Connection setup and config
 │   │   ├── SKILL.md
 │   │   ├── references/
@@ -354,6 +375,7 @@ datahub-skills/
 │   ├── catalog-enrich.md
 │   ├── catalog-lineage.md
 │   ├── catalog-quality.md
+│   ├── catalog-agent-forensics.md
 │   ├── catalog-setup.md
 │   ├── connector-planning.md
 │   ├── connector-review.md
@@ -373,7 +395,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-agent-forensics/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`

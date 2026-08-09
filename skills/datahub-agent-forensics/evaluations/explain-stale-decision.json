@@ -1,0 +1,12 @@
+{
+  "skills": ["datahub-agent-forensics"],
+  "query": "Why did the pricing agent recommendation become stale after the revenue column changed type?",
+  "expected_behavior": [
+    "Resolves the recommendation or receipt and the revenue schema field to exact identifiers",
+    "Uses search only for candidate discovery and directly retrieves selected DataHub entities",
+    "Requires a verified signed receipt before applying deterministic impact policy",
+    "Distinguishes recorded run-specific influence from generic DataHub lineage",
+    "Reports the exact evidence ID, impact state, policy version, and reason code",
+    "Does not expose raw prompts, rows, tool payloads, or model output"
+  ]
+}

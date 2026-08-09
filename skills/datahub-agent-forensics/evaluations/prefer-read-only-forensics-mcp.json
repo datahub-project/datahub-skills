@@ -1,0 +1,14 @@
+{
+  "skills": ["datahub-agent-forensics"],
+  "query": "DataHub MCP and a read-only decision-evidence provider are connected. Tell me which signed decisions the running impact worker actually marked stale after the revenue column changed type, and whether DataHub writeback completed.",
+  "expected_behavior": [
+    "Uses DataHub MCP for catalog discovery and exact entity retrieval",
+    "Uses deterministic receipt verification and persisted finding capabilities rather than reconstructing integrity or operational state with model judgment",
+    "Uses persisted campaign evidence when available and preserves workflow status, attempt count, DataHub writeback verification, policy version, and reason codes",
+    "Does not substitute prospective impact results for proof that the worker processed the event",
+    "Preserves the configured campaign scope, scan completeness, and truncation fields",
+    "Treats VERIFIED_AT_INGESTION, ARTIFACT_UNAVAILABLE, FAILED, and VERIFIED_NOW as distinct proof states",
+    "Does not call any mutation, quarantine, approval, replay execution, resolution, or supersession tool",
+    "Does not expose raw prompts, rows, tool payloads, receipt extensions, or model outputs"
+  ]
+}

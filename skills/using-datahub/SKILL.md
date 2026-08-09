@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                           | Skill               | Command                    |
+| ------------------------------------------------------------------------------------- | ------------------- | -------------------------- |
+| **Find or discover entities** (search, browse, filter, list)                          | **Search**          | `/datahub-search`          |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")                | **Search**          | `/datahub-search`          |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation)      | **Enrich**          | `/datahub-enrich`          |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)          | **Lineage**         | `/datahub-lineage`         |
+| **Data quality** (assertions, incidents, health checks)                               | **Quality**         | `/datahub-quality`         |
+| **Notifications** (subscribe to assertion failures, incidents)                        | **Quality**         | `/datahub-quality`         |
+| **Install CLI, authenticate, verify connection**                                      | **Setup**           | `/datahub-setup`           |
+| **Investigate a specific agent decision, receipt, stale output, approval, or replay** | **Agent Forensics** | `/datahub-agent-forensics` |
+| **Configure default scopes and profiles**                                             | **Setup**           | `/datahub-setup`           |
 
 ---
 
@@ -51,6 +52,14 @@ When the intent is ambiguous, use these rules:
 - **"What dashboards use table X"** → **Lineage** (relationship traversal)
 - **"Who owns X" / "what is X"** → **Search** (metadata lookup)
 
+### Lineage vs. Agent Forensics
+
+- **"What data assets depend on X?"** → **Lineage** (general graph traversal)
+- **"Which agent decisions actually used X?"** → **Agent Forensics** (run-specific evidence)
+- **"What could break if X changes?"** → **Lineage** (potential downstream impact)
+- **"Which existing agent outputs became stale when X changed?"** → **Agent Forensics** (continuing validity)
+- **"Why did this agent decide X?" / "was this action approved?" / "can this run be replayed?"** → **Agent Forensics**
+
 ### Setup vs. other skills
 
 - **"Set up" / "install" / "authenticate" / "verify connection"** → **Setup**
@@ -67,6 +76,7 @@ When running `datahub` CLI commands, pass `-C skill=<name>` on the root command 
 datahub -C skill=datahub-search search "revenue"
 datahub -C skill=datahub-enrich graphql --query '...'
 datahub -C skill=datahub-lineage lineage --urn "..."
+datahub -C skill=datahub-agent-forensics get --urn "..."
 ```
 
 Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it — the command works the same without it.
@@ -82,3 +92,4 @@ Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it
 5. **Enrich handles all metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.
 6. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
 7. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
+8. **Agent Forensics handles decision evidence and continuing validity** — never route ordinary dataset lineage here, and never let search or generic lineage stand in for a verified receipt.
