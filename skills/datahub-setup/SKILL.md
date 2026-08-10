@@ -29,7 +29,7 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 
 - `allowed-tools` in the YAML frontmatter above
 
-**Reference file paths:** Shared references are in `../shared-references/` relative to this skill's directory. Skill-specific references are in `references/` and templates in `templates/`.
+**Reference file paths:** References are in `references/` and templates are in `templates/` relative to this skill's directory.
 
 ---
 
@@ -239,12 +239,12 @@ Available interaction skills:
 
 ## Reference Documents
 
-| Document                 | Path                                            | Purpose                              |
-| ------------------------ | ----------------------------------------------- | ------------------------------------ |
-| Configuration schema     | `references/configuration-schema.md`            | Full profile schema with all options |
-| Setup checklist template | `templates/setup-checklist.template.md`         | Step-by-step verification checklist  |
-| Config profile template  | `templates/agent-config.template.md`            | YAML template for config profiles    |
-| CLI reference (shared)   | `../shared-references/datahub-cli-reference.md` | Full CLI command reference           |
+| Document                 | Path                                    | Purpose                              |
+| ------------------------ | --------------------------------------- | ------------------------------------ |
+| Configuration schema     | `references/configuration-schema.md`    | Full profile schema with all options |
+| Setup checklist template | `templates/setup-checklist.template.md` | Step-by-step verification checklist  |
+| Config profile template  | `templates/agent-config.template.md`    | YAML template for config profiles    |
+| CLI reference            | `references/datahub-cli-reference.md`   | Full CLI command reference           |
 
 ---
 

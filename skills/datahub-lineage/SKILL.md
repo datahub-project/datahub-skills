@@ -28,7 +28,7 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 - `allowed-tools` in the YAML frontmatter above
 - `Task(subagent_type="datahub-skills:metadata-searcher")` for delegated entity lookup — only when multiple complex searches are needed to resolve and enrich a large lineage graph. For simple entity lookups, execute inline. **Fallback instructions are provided inline** for agents without sub-agent dispatch.
 
-**Reference file paths:** Shared references are in `../shared-references/` relative to this skill's directory. Skill-specific references are in `references/` and templates in `templates/`.
+**Reference file paths:** References are in `references/` and templates are in `templates/` relative to this skill's directory.
 
 ---
 
@@ -220,12 +220,12 @@ After presenting lineage:
 
 ## Reference Documents
 
-| Document                   | Path                                            | Purpose                           |
-| -------------------------- | ----------------------------------------------- | --------------------------------- |
-| Lineage patterns reference | `references/lineage-patterns-reference.md`      | Traversal strategies and patterns |
-| Impact analysis template   | `templates/impact-analysis.template.md`         | Impact analysis report template   |
-| Lineage map template       | `templates/lineage-map.template.md`             | Lineage visualization template    |
-| CLI reference (shared)     | `../shared-references/datahub-cli-reference.md` | CLI commands                      |
+| Document                   | Path                                       | Purpose                           |
+| -------------------------- | ------------------------------------------ | --------------------------------- |
+| Lineage patterns reference | `references/lineage-patterns-reference.md` | Traversal strategies and patterns |
+| Impact analysis template   | `templates/impact-analysis.template.md`    | Impact analysis report template   |
+| Lineage map template       | `templates/lineage-map.template.md`        | Lineage visualization template    |
+| CLI reference              | `references/datahub-cli-reference.md`      | CLI commands                      |
 
 ---
 

@@ -226,7 +226,7 @@ cp -r datahub-skills/skills/datahub-connector-pr-review  your-project/.agents/sk
 cp -r datahub-skills/skills/load-standards               your-project/.agents/skills/
 ```
 
-Each skill directory is self-contained. The `standards` symlinks get dereferenced into real files on copy, so everything travels together. The catalog interaction skills reference `shared-references/` for CLI and MCP tool documentation.
+Skills CLI installations are self-contained: it dereferences the `standards` and catalog `references` symlinks into real files, so each installed skill travels with its dependencies. When copying catalog skill source directories manually, also copy `shared-references/` as shown above so their relative symlinks remain valid.
 
 ### What works where
 
@@ -349,9 +349,9 @@ datahub-skills/
     └── source_types/*.md (11 source-type)
 ```
 
-The `standards` symlinks in each connector skill directory mean you can install a single skill and it brings its standards along. `npx skills add` dereferences these into real copies.
+The `standards` symlinks in each connector skill directory mean you can install a single skill and it brings its standards along. The catalog skills similarly link their shared CLI documentation into each local `references/` directory. `npx skills add` dereferences both kinds of links into real copies.
 
-The catalog interaction skills share reference documents in `shared-references/` for CLI syntax, MCP tool signatures, and the DataHub entity model.
+The catalog interaction skills retain canonical shared documents in `shared-references/` for CLI syntax, MCP tool signatures, and the DataHub entity model.
 
 ## Contributing
 

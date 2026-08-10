@@ -34,3 +34,13 @@ repos:
       - id: ruff
         args: [--fix]
       - id: ruff-format
+
+  # Installed skill integrity
+  - repo: local
+    hooks:
+      - id: catalog-skill-installation
+        name: Verify catalog skills install with local references
+        entry: python3 -m unittest tests/test-catalog-skill-installation.py
+        language: system
+        pass_filenames: false
+        files: ^(skills/(datahub-(search|enrich|lineage|quality|setup)|shared-references)/|tests/test-catalog-skill-installation\.py$)
