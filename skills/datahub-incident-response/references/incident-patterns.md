@@ -1,39 +1,58 @@
-# Silent-Failure Patterns — Metadata Fingerprints
+# Incident Evidence Patterns
 
-The hardest data incidents are **silent**: the pipeline reports success, nothing errors, but the
-numbers are wrong. Root-causing them means recognizing the fingerprint each shape leaves in DataHub
-metadata (custom properties, freshness, schema). Reason from these clues — never from a table named
-"broken".
+These patterns help form hypotheses. A pattern match is not proof of causality. Cite the actual
+DataHub entity and field, record contradictory evidence, and name the production check that would
+confirm or reject the hypothesis.
 
-## 1. Silent partial load
+## Silent Partial Load
 
-- **Symptom:** a metric drops sharply overnight; no pipeline errors.
-- **Fingerprint:** the raw source's `run_status` is `success`, but a `last_run_note` (or row-count
-  history) shows far fewer rows than its recent average, and no backfill has run. Passthrough
-  staging models and simple aggregates carry the shortfall silently downstream.
-- **Confirm:** source API/incident log, row counts vs. the 7-day average, then trigger the backfill.
+- Consumer symptom: a metric drops sharply while orchestration reports success.
+- Supporting metadata: a source or boundary entity records a much smaller row count or a note about
+  omitted partitions; the magnitude and time align with the consumer symptom.
+- Weakening evidence: normal source volume, a mismatch in timing, or an intervening transformation
+  that could independently change the measure.
+- Confirm next: compare source and target row counts by partition against the recent baseline and
+  inspect the source response or ingestion log.
 
-## 2. Schema drift (column rename/removal)
+## Schema Drift
 
-- **Symptom:** a field goes blank/null across a dashboard; no errors.
-- **Fingerprint:** an upstream raw source changed its schema (e.g. `email` → `email_address`), but
-  the downstream mapping was not updated, so the column now resolves to NULL. Schema tests that only
-  check types pass anyway.
-- **Confirm:** diff the source schema against the mapping; update the downstream model.
+- Consumer symptom: one or more fields become null, blank, or semantically wrong.
+- Supporting metadata: an upstream field was renamed, removed, or changed type while a downstream
+  mapping or transformation still refers to the previous contract.
+- Weakening evidence: unchanged schema, a compatible mapping update, or nulls already present at the
+  source before the alleged change.
+- Confirm next: diff the source schema and transformation at the first failing partition, then test
+  a representative record end to end.
 
-## 3. Stale / freshness failure
+## Freshness or No-Op Load
 
-- **Symptom:** a metric looks "frozen" — unchanged for days.
-- **Fingerprint:** the reference/feed table's last successful load is days old; the job "succeeds"
-  but writes no new rows (upstream vendor feed down), so values are frozen while everything reports
-  green.
-- **Confirm:** last-load timestamp vs. expected cadence; check the upstream feed's status.
+- Consumer symptom: a metric is frozen or lags its expected cadence.
+- Supporting metadata: a last-load or freshness field is older than the promised cadence, or a job
+  succeeded without producing a new partition.
+- Weakening evidence: current source timestamps or a dashboard cache that is older than the dataset.
+- Confirm next: compare event time, ingestion time, and dashboard refresh time; inspect the upstream
+  feed and most recent produced partition.
 
-## Reasoning checklist
+## Transformation Regression
 
-1. Does a clue's **magnitude and timing** match the reported symptom? (A 40% drop should line up
-   with a ~40% row shortfall at about the right time.)
-2. Is the clue at a **source/boundary** node (most causes) or a **passthrough** (usually just a
-   carrier)?
-3. If no clue matches at any hop, the honest answer is **insufficient evidence** — name the signal
-   (an assertion, a run log, row-count history) that would resolve it.
+- Consumer symptom: totals, joins, or segment membership change after a deployment.
+- Supporting metadata: the exact lineage path includes a changed query or model at the matching
+  time; upstream inputs remain stable.
+- Weakening evidence: unchanged transformation text, a source anomaly of matching magnitude, or an
+  unrelated deployment window.
+- Confirm next: reproduce the transformation for a bounded partition and compare it with the prior
+  version.
+
+## Classification Checklist
+
+For each candidate ask:
+
+1. Does its timing match first observation?
+2. Does its magnitude or field-level effect match the symptom?
+3. Is it the earliest supported fault location, or merely a downstream carrier?
+4. Is the lineage response complete for the claimed boundary?
+5. What evidence contradicts the hypothesis?
+6. What one check would most cheaply confirm or reject it?
+
+If no candidate survives these checks, report insufficient evidence. Do not choose a root cause
+only because an entity name or description sounds suspicious.
