@@ -1,6 +1,6 @@
 # datahub-skills
 
-Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, manage data quality, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
+Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, manage data quality, and set up connections. Coordinate multi-agent work so finished work built on changed inputs is flagged. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
 
 ## What's in here
 
@@ -55,6 +55,18 @@ Install the DataHub CLI, configure authentication, verify connectivity, and set 
 > Set up my DataHub connection
 > /datahub-setup focus on Snowflake in the Finance domain
 > Create a profile for the data-eng team
+```
+
+#### Swarm coordination
+
+Work as one agent among several on shared data. Check inputs for staleness before starting,
+declare reads and writes as lineage, and report completions so work that was built on a changed
+input gets flagged. Needs the obsel service running alongside DataHub.
+
+```
+> Did clean_orders go stale before I read it?
+> Register my revenue_rollup task with obsel
+> Report my completion and tell me what it invalidated
 ```
 
 ### Connector development skills
@@ -219,6 +231,7 @@ cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
+cp -r datahub-skills/skills/obsel-collaboration      your-project/.agents/skills/
 
 # Connector development skills
 cp -r datahub-skills/skills/datahub-connector-planning   your-project/.agents/skills/
