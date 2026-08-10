@@ -54,7 +54,18 @@ For KB-document findings this same tool also overwrites the poisoned document **
 | `excise`           | A fixture records the field's original clean text | Injected span deleted; legitimate documentation survives                                                       | Yes — `--only-mode excise` restricts to these |
 | `quarantine-field` | No fixture — the ordinary case on a real catalog  | The **entire field** is replaced by the banner; legitimate documentation in it is lost from the current aspect | No — hold for a human                         |
 
-**Recovery.** Antigen does not keep a copy of anything it removes. That is deliberate: retaining a recoverable payload would defeat the purpose. The field's prior content is recoverable from **DataHub's native aspect version history** — one action per field — and from nothing Antigen writes. Say this before approving any `quarantine-field` locus.
+**Recovery.** Antigen does not keep a copy of anything it removes. That is deliberate: retaining a recoverable payload would defeat the purpose. The field's prior content survives only in **DataHub's native aspect version history** and in nothing Antigen writes.
+
+**It is not one action per field.** That claim was disproved against a live DataHub GMS v1.7.0 ([`docs/false-positive-revert.md`](https://github.com/edycutjong/antigen/blob/main/docs/false-positive-revert.md), reproducible with `python scripts/revert_drill.py`). State the real cost before approving any `quarantine-field` locus:
+
+- **Floor is 2 API calls** (timeline API: 1 read + 1 write); **4** via the version probe, because nothing exposes a version count — you walk versions until a 404.
+- **"Restore version 1" is a silent trap.** DataHub numbers aspect versions **0 = latest, 1 = OLDEST**. Unless the field was written exactly twice, the one-call revert restores a superseded draft and returns **200 OK with no warning** — worse than the cure, because the operator believes the text is back.
+- **Not per-field for columns.** All column descriptions share one `editableSchemaMetadata` aspect, so reverting one column silently rolls back a colleague's later edit to a _different_ column. Doing it safely means merging the single field into the _current_ aspect by hand.
+- **Residue survives the text revert:** the `injection-quarantined` tag, the three `antigen.*` structured properties, and the incident documents. A later `scan` will **not** re-flag the restored field, because it skips quarantined entities — use `rescan`.
+- **No UI path.** Live GraphQL introspection found 169 mutations and 106 queries, none of which restores an old aspect value. Recovery needs an engineer with API credentials.
+- If the operator cannot confirm their **aspect-retention policy**, warn them: a non-default policy may have discarded the pre-cure value entirely, making recovery impossible rather than merely multi-step.
+
+Antigen automates none of this. Budget a procedure, not a click.
 
 ## Blast radius
 

@@ -6,14 +6,23 @@ The implementation is `antigen/detect.py` — standard library only, no network,
 
 ## Why not a keyword grep
 
-A grep for `ignore`, `drop`, or `execute` false-positives constantly on ordinary data-engineering prose: _"ignore null values"_, _"drop_flag column"_, _"execute the nightly job"_. Antigen instead requires **co-occurrence of two independent signals**:
+A grep for `ignore`, `drop`, or `execute` false-positives constantly on ordinary data-engineering prose: _"ignore null values"_, _"drop_flag column"_, _"execute the nightly job"_. Antigen instead **scores** a field — every signal it recognises adds points — and flags at **score ≥ 2**:
 
-- **(A)** an imperative directed at the reader, or an instruction-override cue
-- **(B)** an agent-action object — override the model's own instructions, exfiltrate data to an external destination, poison a tool call, or reveal a secret
+|  Score | Signal                                                                                                                                   |
+| -----: | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **+2** | instruction-override cue                                                                                                                 |
+| **+2** | persona jailbreak                                                                                                                        |
+| **+2** | reveal-a-secret imperative                                                                                                               |
+| **+2** | transfer verb **+** sensitive object **+** external destination (exfiltration)                                                           |
+| **+2** | tool-call imperative — **only** with a second cue (`"you"/"your"`, a `"whenever … call"` frame, or an override / persona / preamble hit) |
+| **+1** | injection preamble (_"new instructions:"_)                                                                                               |
+| **+1** | transfer verb **+** sensitive object, **no** destination                                                                                 |
 
-Legitimate prose trips at most one. A real injection trips both by construction — that is what makes it an injection.
+**Four of these flag on their own** — instruction-override, persona jailbreak, reveal-a-secret, and the exfiltration triple. Do not tell a user that two independent signals must co-occur; that is true only of tool-poisoning, which is the one rule gated on a second cue. The exfiltration rule is itself a three-part conjunction before it scores at all, and the two **+1** signals must find a partner to reach the threshold.
 
-A field flags at **score ≥ 2**: one strong (A) cue plus one (B) object, or one self-contained strong signal such as a persona jailbreak or a reveal-secret imperative.
+Ordinary prose scores 0 or 1: the override cue's object must be the model's _own_ instructions, and the tool-call rule wants a named tool, function or command. A **negation guard** keeps defensive prose (_"you must not expose API keys"_) clean.
+
+One consequence worth relaying: the constituents of a composite signal only have to co-occur **anywhere in the same field**, with no proximity requirement — which is why flag rate rises with description length, and why **23 of the 24 measured false positives scored on the exfiltration triple alone**.
 
 ## Signal categories
 
