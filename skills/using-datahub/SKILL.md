@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                        | Skill             | Command                           |
+| ---------------------------------------------------------------------------------- | ----------------- | --------------------------------- |
+| **Find or discover entities** (search, browse, filter, list)                       | **Search**        | `/datahub-search`                 |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")             | **Search**        | `/datahub-search`                 |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation)   | **Enrich**        | `/datahub-enrich`                 |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)       | **Lineage**       | `/datahub-lineage`                |
+| **Data quality** (assertions, incidents, health checks)                            | **Quality**       | `/datahub-quality`                |
+| **Notifications** (subscribe to assertion failures, incidents)                     | **Quality**       | `/datahub-quality`                |
+| **Diagnose why data is wrong** (root cause analysis, RCA, postmortem, remediation) | **Investigation** | `/datahub-incident-investigation` |
+| **Install CLI, authenticate, verify connection**                                   | **Setup**         | `/datahub-setup`                  |
+| **Configure default scopes and profiles**                                          | **Setup**         | `/datahub-setup`                  |
 
 ---
 
@@ -45,6 +46,20 @@ When the intent is ambiguous, use these rules:
 - **Subscribe to assertion failures or incidents** → **Quality**
 - **Metadata quality/documentation/ownership coverage** → Use **Search** to gather the data and synthesize the answer
 
+### Quality vs. Investigation
+
+Quality **detects and records**; Investigation **explains and resolves**.
+
+- **"Raise an incident on X" / "what incidents are active?" / "create a freshness check"** → **Quality**
+- **"Why is X wrong?" / "root cause analysis" / "which upstream broke X?" / "postmortem"** → **Investigation**
+- **"Resolve incident Y"** (just flip the status) → **Quality**
+- **"Investigate and resolve incident Y"** (diagnose, fix, verify, then close) → **Investigation**
+
+### Lineage vs. Investigation
+
+- **"What feeds into X" / "show me the upstream"** → **Lineage** (topology, no defect to explain)
+- **"Which upstream node is wrong, and why"** → **Investigation** (defect localization)
+
 ### Lineage vs. Search
 
 - **"What feeds into X" / "what depends on X" / "impact of changing X"** → **Lineage**
@@ -67,6 +82,7 @@ When running `datahub` CLI commands, pass `-C skill=<name>` on the root command 
 datahub -C skill=datahub-search search "revenue"
 datahub -C skill=datahub-enrich graphql --query '...'
 datahub -C skill=datahub-lineage lineage --urn "..."
+datahub -C skill=datahub-incident-investigation timeline --urn "..." --category technical_schema
 ```
 
 Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it — the command works the same without it.
@@ -81,4 +97,5 @@ Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it
 4. **Search handles ad-hoc questions.** "Who owns X?" and "what columns does X have?" are Search questions, not Lineage.
 5. **Enrich handles all metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.
 6. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
-7. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
+7. **Investigation handles "why is this wrong?"** — root cause analysis, remediation, and verified incident resolution. Quality detects; Investigation explains and resolves.
+8. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
