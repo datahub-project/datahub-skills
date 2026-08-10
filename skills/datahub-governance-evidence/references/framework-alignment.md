@@ -66,10 +66,29 @@ For each selected objective:
 4. Name missing property definitions/bindings or collection failures as `Unable to
 determine` inputs.
 5. Include the objective-specific limitation.
-6. Link users to the authoritative source instead of quoting it:
-   - CSA AICM: <https://cloudsecurityalliance.org/artifacts/ai-controls-matrix>
-   - GDPR: <https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng>
-   - HIPAA: <https://www.hhs.gov/hipaa/for-professionals/index.html>
-   - ISO/IEC 27001: <https://www.iso.org/standard/27001>
-   - ISO/IEC 42001: <https://www.iso.org/standard/81230.html>
-   - SOC 2: <https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services>
+6. Copy the applicable primary URL from the official-source registry below
+   into `authoritative_source`. Do not replace it with a secondary summary.
+
+## Official-source registry
+
+These owner-operated HTTPS pages were retrieved and checked during package
+review on 2026-08-10. Recheck availability before claiming later validation.
+They are navigation and provenance links, not bundled framework content.
+
+| Profile and objective                | Primary `authoritative_source`                                                                                 | Supplemental official source                                                                          |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| CSA AICM objectives                  | <https://cloudsecurityalliance.org/artifacts/ai-controls-matrix-v1-1>                                          | —                                                                                                     |
+| GDPR Article 5(1)(e) and Article 30  | <https://eur-lex.europa.eu/eli/reg/2016/679/oj>                                                                | —                                                                                                     |
+| HIPAA 45 CFR 164.308(a)(1)(ii)(A)    | <https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164/subpart-C/section-164.308>             | —                                                                                                     |
+| HIPAA 45 CFR 164.502(b) / 164.514(d) | <https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164/subpart-E/section-164.502>             | <https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164/subpart-E/section-164.514>    |
+| ISO/IEC 27001 objectives             | <https://www.iso.org/standard/27001>                                                                           | —                                                                                                     |
+| ISO/IEC 42001 objectives             | <https://www.iso.org/standard/42001>                                                                           | —                                                                                                     |
+| SOC 2 objectives                     | <https://www.aicpa-cima.com/resources/download/2017-trust-services-criteria-with-revised-points-of-focus-2022> | <https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services> |
+
+The ISO pages are catalog/preview pages for licensed standards. The AICPA
+Trust Services Criteria page may require a free account to download its file.
+Do not copy, cache, or paraphrase source text beyond the project-authored
+mapping above. If a link cannot be retrieved when the user asks for live source
+validation, report it as unavailable rather than substituting a third-party
+copy. Some owners block automated HTTP clients; distinguish client blocking
+from a missing source and, when possible, verify the page in a browser.
