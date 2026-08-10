@@ -10,8 +10,8 @@ the search comes back empty — which is where an agent is most likely to be con
 wrong.
 
 1. **Disproves the absence** through eight checks before allowing the words "does not
-   exist": tokenised search, glossary terms, column-level search, other platforms,
-   deprecated assets, data products, and lineage neighbours.
+   exist": literal and tokenised search, glossary terms, column-level search, other
+   platforms, deprecated assets, data products, and lineage neighbours.
 2. **Reports the absence with its receipt** — what was ruled out, and the nearest existing
    asset — so a human can audit the claim.
 3. **Records the unmet need** in the sink the organisation already uses, without creating

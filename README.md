@@ -28,7 +28,7 @@ Add or update metadata in DataHub — descriptions, tags, glossary terms, owners
 
 #### Demand
 
-Establish whether an asset is genuinely absent from the catalog rather than merely unfound, and record the unmet need so the signal is not discarded. Runs eight disproof checks — tokenised search, glossary terms, column-level search, other platforms, deprecated assets, data products, and lineage neighbours — before allowing the words "does not exist", and reports the nearest existing asset.
+Establish whether an asset is genuinely absent from the catalog rather than merely unfound, and record the unmet need so the signal is not discarded. Runs eight disproof checks — literal and tokenised search, glossary terms, column-level search, other platforms, deprecated assets, data products, and lineage neighbours — before allowing the words "does not exist", and reports the nearest existing asset.
 
 ```
 > I could not find monthly recurring revenue by segment — does it exist?

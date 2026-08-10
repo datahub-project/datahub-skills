@@ -55,9 +55,13 @@ The requester searched where they work. The asset may live elsewhere, or in a da
 or in a dbt model that has not been ingested yet.
 
 ```bash
-datahub search "*" --where "entity_type = dataset" --projection "urn type" --limit 200
+datahub search "*" --where "entity_type = dataset" --projection "urn type" --limit 50
 datahub search "revenue" --where "entity_type = chart OR entity_type = dashboard" --format json
 ```
+
+`--limit` is capped at 50 per request; the CLI warns and silently truncates above that.
+Page with `--offset` rather than raising the limit, or the sweep will look complete when it
+is not.
 
 If a platform the organisation uses is absent from the results entirely, the asset may
 exist but be **uningested** — a different answer from absent, and one with a clear owner.
