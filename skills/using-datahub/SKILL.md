@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                      | Skill                           | Command                        |
+| -------------------------------------------------------------------------------- | ------------------------------- | ------------------------------ |
+| **Find or discover entities** (search, browse, filter, list)                     | **Search**                      | `/datahub-search`              |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**                      | `/datahub-search`              |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**                      | `/datahub-enrich`              |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage**                     | `/datahub-lineage`             |
+| **Remediate a declared breaking schema change** across code and DataHub          | **Breaking Change Remediation** | `/breaking-change-remediation` |
+| **Data quality** (assertions, incidents, health checks)                          | **Quality**                     | `/datahub-quality`             |
+| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality**                     | `/datahub-quality`             |
+| **Install CLI, authenticate, verify connection**                                 | **Setup**                       | `/datahub-setup`               |
+| **Configure default scopes and profiles**                                        | **Setup**                       | `/datahub-setup`               |
 
 ---
 
@@ -45,10 +46,11 @@ When the intent is ambiguous, use these rules:
 - **Subscribe to assertion failures or incidents** → **Quality**
 - **Metadata quality/documentation/ownership coverage** → Use **Search** to gather the data and synthesize the answer
 
-### Lineage vs. Search
+### Lineage vs. Breaking Change Remediation vs. Search
 
 - **"What feeds into X" / "what depends on X" / "impact of changing X"** → **Lineage**
 - **"What dashboards use table X"** → **Lineage** (relationship traversal)
+- **"Rewrite consumers after renaming X" / "coordinate remediation PRs"** → **Breaking Change Remediation**
 - **"Who owns X" / "what is X"** → **Search** (metadata lookup)
 
 ### Setup vs. other skills
@@ -79,6 +81,7 @@ Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it
 2. **One skill per request** unless the user explicitly asks for multiple operations.
 3. **Lineage is for lineage only** — not for general "what is this entity?" questions (that's Search).
 4. **Search handles ad-hoc questions.** "Who owns X?" and "what columns does X have?" are Search questions, not Lineage.
-5. **Enrich handles all metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.
-6. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
-7. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
+5. **Breaking Change Remediation requires a declared change** and coordinates code updates, pull requests, and approved DataHub write-back.
+6. **Enrich handles standalone metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.
+7. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
+8. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.

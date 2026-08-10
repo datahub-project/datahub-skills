@@ -1,6 +1,6 @@
 # datahub-skills
 
-Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, manage data quality, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
+Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, remediate breaking schema changes, manage data quality, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
 
 ## What's in here
 
@@ -34,6 +34,16 @@ Explore data lineage, trace upstream sources and downstream consumers, perform i
 > What feeds into the revenue dashboard?
 > Impact analysis for changing the orders table
 > /datahub-lineage trace the customer pipeline
+```
+
+#### Breaking change remediation
+
+Coordinate a declared column rename, removal, or type change across DataHub and downstream code. Assesses lineage confidence, prepares reviewed code changes and pull requests, and records the approved migration back in DataHub.
+
+```
+> Remediate downstream models after renaming orders.user_id
+> Prepare coordinated PRs for this breaking schema change
+> /breaking-change-remediation fix consumers of this removed field
 ```
 
 #### Quality
@@ -215,6 +225,7 @@ git clone https://github.com/datahub-project/datahub-skills.git
 cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
+cp -r datahub-skills/skills/breaking-change-remediation your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
@@ -235,6 +246,7 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 | Catalog search              | Yes                   | Yes                                              |
 | Metadata enrichment         | Yes                   | Yes                                              |
 | Lineage exploration         | Yes                   | Yes                                              |
+| Breaking change remediation | Yes                   | Yes                                              |
 | Data quality management     | Yes                   | Yes                                              |
 | Connection setup            | Yes                   | Yes                                              |
 | Planning workflow           | Yes                   | Yes                                              |
@@ -304,6 +316,9 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── breaking-change-remediation/ # Coordinated schema remediation
+│   │   ├── SKILL.md
+│   │   └── references/
 │   ├── datahub-quality/             # Data quality management
 │   │   ├── SKILL.md
 │   │   ├── references/
@@ -359,7 +374,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/breaking-change-remediation/`, `skills/datahub-quality/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
