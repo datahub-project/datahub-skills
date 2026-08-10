@@ -307,16 +307,16 @@ Antigen ships a ready-made workflow for exactly this — `examples/ci/metadata-i
 
 ## Command Reference
 
-| Command                   | Reads / Writes | Flags                                                        | Notes                                              |
-| ------------------------- | -------------- | ------------------------------------------------------------ | -------------------------------------------------- |
-| `antigen scan`            | read           | `--offline` `--fail-on-hit` `--json`                         | the sweep; safe to run any time                    |
-| `antigen cure`            | **write**      | `--offline` `--dry-run` `--apply` `--max-mutations` `--fixtures` `--only-mode` | 4 write-back tools per finding    |
-| `antigen blast-radius`    | **write**      | `--offline` `--dry-run` `--apply` `--max-mutations`          | 2-hop downstream tagging                           |
-| `antigen certify`         | **write**      | `--offline` `--dry-run` `--apply` `--max-mutations`          | 2 mutations per **clean** entity; skips entities already certified at the same content hash |
-| `antigen rescan`          | read           | `--offline` `--fail-on-hit`                                  | tamper-evidence drift against stamped hashes       |
-| `antigen demo`            | **write**      | `--offline` `--apply` `--max-mutations`                      | the full arc; refuses a live run without `--apply` |
-| `antigen detect "<text>"` | neither        | —                                                            | score one string; no catalog contact               |
-| `antigen corpus`          | neither        | —                                                            | attack-corpus statistics                           |
+| Command                   | Reads / Writes | Flags                                                                          | Notes                                                                                       |
+| ------------------------- | -------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| `antigen scan`            | read           | `--offline` `--fail-on-hit` `--json`                                           | the sweep; safe to run any time                                                             |
+| `antigen cure`            | **write**      | `--offline` `--dry-run` `--apply` `--max-mutations` `--fixtures` `--only-mode` | 4 write-back tools per finding                                                              |
+| `antigen blast-radius`    | **write**      | `--offline` `--dry-run` `--apply` `--max-mutations`                            | 2-hop downstream tagging                                                                    |
+| `antigen certify`         | **write**      | `--offline` `--dry-run` `--apply` `--max-mutations`                            | 2 mutations per **clean** entity; skips entities already certified at the same content hash |
+| `antigen rescan`          | read           | `--offline` `--fail-on-hit`                                                    | tamper-evidence drift against stamped hashes                                                |
+| `antigen demo`            | **write**      | `--offline` `--apply` `--max-mutations`                                        | the full arc; refuses a live run without `--apply`                                          |
+| `antigen detect "<text>"` | neither        | —                                                                              | score one string; no catalog contact                                                        |
+| `antigen corpus`          | neither        | —                                                                              | attack-corpus statistics                                                                    |
 
 ### Exit codes
 
