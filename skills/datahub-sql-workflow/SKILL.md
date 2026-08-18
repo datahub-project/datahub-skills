@@ -5,7 +5,7 @@ license: Apache-2.0
 compatibility: Requires DataHub MCP tools (find_sql_context and catalog metadata tools); SQL execution engine optional
 metadata:
   author: datahub
-  version: "2.0"
+  version: "2.1"
 ---
 
 # DataHub SQL Workflow
@@ -55,6 +55,85 @@ Interpret `shared_snippets` as modeled sibling semantics, not proof of literal
 warehouse values. Treat `suggested_tables[].evidence.source == "both"` as useful
 corroboration from independent discovery surfaces, not automatic correctness.
 
+## 1a. Route schema-discovery questions away from anchors
+
+Some questions ask about catalog structure rather than about data: which tables
+exist in a schema, what columns a table has, or what values a column takes.
+Anchors and curated documents cannot answer these — anchors describe query
+patterns, and per-table documentation does not enumerate a schema.
+
+When the question is schema discovery, skip the curated-document step below and
+answer from `search`, `get_entities`, and `list_schema_fields`, or from
+`INFORMATION_SCHEMA` when a SQL execution tool is available. Spending a document
+fan-out here costs context and cannot succeed.
+
+## 1b. Read curated documentation
+
+`find_sql_context` reads **only** documents whose subtype is `Semantic Anchor` —
+the ones DataHub generates from query history. Every other document in the
+catalog is customer-authored and invisible to it. Those are frequently where
+join keys, SCD and latest-row rules, unit conventions, and "do not use this
+table" warnings actually live.
+
+After `find_sql_context`, make **exactly one** `search_documents` call:
+
+```
+search_documents(
+  query=<user's complete question>,
+  semantic_query=<user's complete question>,
+  filter='subtype != "Semantic Anchor"',
+  num_results=10,
+)
+```
+
+Key the search on the question, not on table names. A keyword query built from
+table names narrows the candidate pool before the reranker sees it and retrieves
+markedly less, even when the table names are correct.
+
+Do not enumerate expected subtypes. Customers name them anything — `Context`,
+`Runbook`, `FAQ`, or whatever a Notion or Confluence import produced. The only
+subtype you can rely on is `Semantic Anchor`, so exclude that one and accept
+whatever else comes back.
+
+If the negated filter returns nothing, re-run the call with no `filter` and
+discard hits whose `subType` is `Semantic Anchor`. Some deployments drop negated
+clauses from the semantic leg, which silently reduces the call to keyword-only.
+
+Budget: hydrate at most **three** documents with `get_entities`. Search returns
+metadata only, never bodies, so choose which three to read from the returned
+`info.title`, `domain`, and `subType` — prefer documents that name a table your
+query will actually touch. Stop at three even when more look relevant: the
+anchor payload is already large, and a fourth document displaces evidence you
+have not read yet.
+
+**Curated documentation outranks generated anchors.** An anchor is distilled
+from what analysts have historically run, so a mistake repeated often enough
+becomes a pattern. A curated document is the organization stating what is
+correct. When the two differ on any element — table choice, column choice,
+join key, filter, guard ordering, or units — follow the document and treat the
+anchor pattern as corrected by it.
+
+This applies to a pattern's mechanics, not only its table selection:
+
+- If a document names a native column for a value the anchor pattern derives
+  from other columns, select the documented column. A derived substitute
+  changes results even when it looks equivalent.
+- If a document specifies an order between operations that the pattern applies
+  differently — deduplicating to a latest version before filtering deleted
+  rows, say — use the documented order. The same predicates in a different
+  order can select different rows.
+- If a document states a unit or conversion the pattern omits, apply it.
+
+Two limits on that precedence:
+
+- Routing advice ("prefer table X instead") states the default lane. It does not
+  override an explicit requirement in the question — freshness, a named table,
+  or a grain the preferred table cannot serve. When the question forces a
+  departure from documented routing, say so and give the reason.
+- When a curated document and live catalog metadata disagree — a documented
+  column is absent from the schema, say — state the disagreement and resolve it
+  before writing SQL. Never silently pick one.
+
 ## 2. Establish business meaning
 
 Search business context after the first call when SQL context is weak or
@@ -66,16 +145,20 @@ Business-context search is also required when:
   which datasets to use; or
 - the leading candidate table lives outside the modeled analytics schemas.
 
-When a strong, unambiguous match exists, trust it — do not re-search for
-context that is already grounded in the anchor. `search_documents` can
-return anchor documents (subtype "Semantic Anchor"); skip these — they
-contain the same evidence `find_sql_context` already provided. Focus on
-glossary terms, domain alignment, and data products instead.
+An empty `message` means the top anchor's _text_ scored well against the
+question. It does not mean the anchor names the right tables, or all of them.
+Do not read it as permission to skip the curated-document step in 1b.
 
-Search for business context relevant to the question's metric or concept — a
-single targeted `search_documents` call is usually sufficient for
-calculation rules, metric definitions, and required filters. Use `search`
-with an `entity_type` filter for glossary terms, domains, or data products.
+Before drafting, name every table the answer requires and confirm each one
+appears in evidence you actually retrieved — `matches[].datasets`,
+`suggested_tables`, `standard_filters_by_table`, or a curated document. A
+required table that appears in none of them is unverified; say so rather than
+inventing its columns.
+
+`search_documents` can also return anchor documents (subtype "Semantic
+Anchor"); skip those here — `find_sql_context` already provided them. Focus on
+glossary terms, domain alignment, and data products instead, using `search`
+with an `entity_type` filter.
 
 If a document or glossary definition names a table or calculation, follow it
 unless live evidence exposes a concrete conflict. A catalog table that looks
@@ -95,8 +178,8 @@ When a strong, unambiguous match provides a pattern with sufficient column
 and filter detail to draft SQL, go straight to step 5. Run the verification
 steps below when the anchor pattern alone is not enough to draft
 confidently: columns or join keys are unclear, the message is non-empty
-(weak or no match), matches and suggestions name different tables, or the
-query requires joining multiple tables.
+(weak or no match), matches and suggestions name different tables, a curated
+document contradicts the anchor, or the query requires joining multiple tables.
 
 1. Call `get_entities` on the candidate URNs. Read the metadata as intent
    signals: description, ownership, tags, glossary terms, domain, data
@@ -110,13 +193,14 @@ query requires joining multiple tables.
    conclusion.
 4. Confirm that an "all X" question is not answered from a segmented subset.
 5. Verify every proposed join key on both sides. Do not add a speculative inner
-   join that could silently discard unmatched rows.
+   join that could silently discard unmatched rows. When a curated document
+   names a non-obvious join key, use it rather than the same-named column.
 6. After `list_schema_fields` on the chosen table, disposition every
    lifecycle and validity column it exposes — deletion markers, state or
    status columns, snapshot or partition dates, latest-row flags. Apply a
    guard only when the question's intended population, a standard-filter
-   advisory, or an anchor pattern requires it; otherwise record the column
-   as considered and omitted.
+   advisory, a curated document, or an anchor pattern requires it; otherwise
+   record the column as considered and omitted.
 
 Use `standard_filters_by_table` from `find_sql_context` throughout verification:
 
@@ -196,7 +280,9 @@ the tool's internal injection is best-effort, so add missing required predicates
 and remove duplicates. Reconcile against the anchor pattern the same way:
 carry every guard predicate the pattern applies into the final query, at the
 same scope the pattern applies it, or record why it is intentionally
-dropped.
+dropped. Apply the same reconciliation to any required filter a curated
+document states — and where a document and an anchor pattern disagree about a
+predicate, its scope, or its order, the document wins.
 
 Match the answer's shape to the question:
 
@@ -208,9 +294,9 @@ Match the answer's shape to the question:
   able to state which requirement forces each join.
 
 Before execution, ensure every predicate traces to the user's question,
-authoritative business context, anchor instructions, a standard-filter advisory,
-a verified join, or a probe finding that will be reported. Confirm that the
-aggregation grain matches the question.
+authoritative business context, anchor instructions, a curated document, a
+standard-filter advisory, a verified join, or a probe finding that will be
+reported. Confirm that the aggregation grain matches the question.
 
 ## 6. Execute safely and report
 
@@ -230,8 +316,10 @@ Return:
 
 - the answer or execution limitation;
 - the final SQL;
-- the Dataset, anchor, document, glossary, domain, or data-product sources used;
+- the Dataset, anchor, curated document, glossary, domain, or data-product
+  sources used;
 - probe findings that changed the decision;
+- any table used without corroborating evidence;
 - assumptions and unresolved ambiguity.
 
 Separate facts from documentation, facts from catalog metadata, and your own
@@ -243,5 +331,5 @@ targeted probes when needed, ambiguity handling, and source reporting.
 Report any discrepancies, gaps, or missing metadata discovered during the
 workflow via `note_metadata_observation` — this includes missing glossary
 definitions, wrong or outdated descriptions, anchor-vs-catalog conflicts,
-and missing column documentation. The tool is fire-and-forget and does not
-block the answer.
+curated-document-vs-anchor conflicts, and missing column documentation. The
+tool is fire-and-forget and does not block the answer.
