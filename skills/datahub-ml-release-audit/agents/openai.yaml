@@ -1,0 +1,4 @@
+interface:
+  display_name: "DataHub ML Release Audit"
+  short_description: "Audit ML leakage with DataHub evidence"
+  default_prompt: "Use $datahub-ml-release-audit to audit this model for target or temporal leakage before release."
