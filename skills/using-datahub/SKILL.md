@@ -6,7 +6,7 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
@@ -18,6 +18,7 @@ You have access to 5 DataHub catalog interaction skills. Use this guide to route
 | **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
 | **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
 | **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
+| **Assess and govern a consequential change end to end**                          | **Audit**   | Natural language   |
 | **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
 | **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
 | **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
@@ -51,6 +52,13 @@ When the intent is ambiguous, use these rules:
 - **"What dashboards use table X"** → **Lineage** (relationship traversal)
 - **"Who owns X" / "what is X"** → **Search** (metadata lookup)
 
+### Auditable change vs. Lineage or Enrich
+
+- **"What depends on X?"** with no proposed action → **Lineage**
+- **"Add this approved tag"** with no impact assessment → **Enrich**
+- **Assess, approve, execute, and verify one consequential change** →
+  **Auditable change**
+
 ### Setup vs. other skills
 
 - **"Set up" / "install" / "authenticate" / "verify connection"** → **Setup**
@@ -77,6 +85,7 @@ Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it
 
 1. **Never guess the skill.** If the intent is genuinely ambiguous, ask the user to clarify.
 2. **One skill per request** unless the user explicitly asks for multiple operations.
+   Auditable change is the dedicated end-to-end exception; it owns its read and write phases.
 3. **Lineage is for lineage only** — not for general "what is this entity?" questions (that's Search).
 4. **Search handles ad-hoc questions.** "Who owns X?" and "what columns does X have?" are Search questions, not Lineage.
 5. **Enrich handles all metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.

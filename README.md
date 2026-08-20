@@ -57,6 +57,17 @@ Install the DataHub CLI, configure authentication, verify connectivity, and set 
 > Create a profile for the data-eng team
 ```
 
+#### Auditable data change
+
+Assess a consequential schema, dataset, model-input, or policy-driven change across
+DataHub lineage. Produces a counter-evidence-aware decision bundle, binds approval to its
+digest, revalidates immediately before mutation, and writes a durable decision record.
+
+```
+> Assess replacing this controlled dataset before the external partner launch
+> Trace, approve, and apply this model-input change with an auditable record
+```
+
 ### Connector development skills
 
 #### Connector planning
@@ -217,6 +228,7 @@ cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
+cp -r datahub-skills/skills/auditable-data-change    your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
 
@@ -309,6 +321,7 @@ datahub-skills/
 │   │   ├── references/
 │   │   └── templates/
 │   ├── datahub-setup/               # Connection setup and config
+│   ├── auditable-data-change/       # Approval-bound change workflow
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
@@ -359,7 +372,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`, `skills/auditable-data-change/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
