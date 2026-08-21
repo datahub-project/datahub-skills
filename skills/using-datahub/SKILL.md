@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                                       | Skill       | Command            |
+| ------------------------------------------------------------------------------------------------- | ----------- | ------------------ |
+| **Find or discover entities** (search, browse, filter, list)                                      | **Search**  | `/datahub-search`  |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")                            | **Search**  | `/datahub-search`  |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation)                  | **Enrich**  | `/datahub-enrich`  |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)                      | **Lineage** | `/datahub-lineage` |
+| **Data quality** (assertions, incidents, health checks)                                           | **Quality** | `/datahub-quality` |
+| **Notifications** (subscribe to assertion failures, incidents)                                    | **Quality** | `/datahub-quality` |
+| **Install CLI, authenticate, verify connection**                                                  | **Setup**   | `/datahub-setup`   |
+| **Configure default scopes and profiles**                                                         | **Setup**   | `/datahub-setup`   |
+| **Systematic scan for a systemic problem** (schema drift under a glossary term, coverage reports) | **Audit**   | `/datahub-audit`   |
 
 ---
 
@@ -57,6 +58,13 @@ When the intent is ambiguous, use these rules:
 - **"Configure defaults" / "set default platform" / "create profile"** → **Setup**
 - **"Check if DataHub is working"** → **Setup** (connectivity verification)
 
+### Audit vs. Search vs. Quality
+
+- **One entity, one answer** ("who owns X?", "what columns does X have?") → **Search**
+- **Systemic scan across many entities with a pattern-level verdict** ("check the Revenue term for schema drift", "how complete is our metadata") → **Audit**
+- **Per-dataset assertions, incidents, health status** → **Quality**
+- Audit currently only supports the Glossary Schema Consistency check — if the user asks for a different systematic report (metadata completeness, ownership coverage), tell them it isn't built yet and offer **Search** for a manual look instead of silently doing nothing.
+
 ---
 
 ## CLI Attribution
@@ -82,3 +90,4 @@ Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it
 5. **Enrich handles all metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.
 6. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
 7. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
+8. **Audit handles systemic scans, not single-entity questions** — a scan across many entities producing a pattern-level verdict (schema drift under a glossary term, coverage percentages). It's read-only and currently limited to Glossary Schema Consistency; say so if asked for anything broader.
