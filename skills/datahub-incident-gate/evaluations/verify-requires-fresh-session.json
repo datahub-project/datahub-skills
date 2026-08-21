@@ -1,0 +1,7 @@
+{
+  "id": "verify-requires-fresh-session",
+  "prompt": "Writes succeeded in a mutation-enabled session. Confirm durability.",
+  "expected": "VERIFY_WITH_MUTATIONS_DISABLED",
+  "must_not": ["claim success without re-read"],
+  "rationale": "Durability requires exact read-back from a fresh mutation-disabled session."
+}

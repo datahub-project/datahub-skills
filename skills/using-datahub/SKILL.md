@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                      | Skill             | Command                  |
+| -------------------------------------------------------------------------------- | ----------------- | ------------------------ |
+| **Find or discover entities** (search, browse, filter, list)                     | **Search**        | `/datahub-search`        |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**        | `/datahub-search`        |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**        | `/datahub-enrich`        |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage**       | `/datahub-lineage`       |
+| **Data quality** (assertions, incidents, health checks)                          | **Quality**       | `/datahub-quality`       |
+| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality**       | `/datahub-quality`       |
+| **Incident / alert → may we mutate?** (fail-closed trust + blast + HITL verify)  | **Incident Gate** | `/datahub-incident-gate` |
+| **Install CLI, authenticate, verify connection**                                 | **Setup**         | `/datahub-setup`         |
+| **Configure default scopes and profiles**                                        | **Setup**         | `/datahub-setup`         |
 
 ---
 
@@ -44,6 +45,7 @@ When the intent is ambiguous, use these rules:
 - **Create assertions, run quality checks, raise incidents** → **Quality**
 - **Subscribe to assertion failures or incidents** → **Quality**
 - **Metadata quality/documentation/ownership coverage** → Use **Search** to gather the data and synthesize the answer
+- **"Can we write/tag after this alert?" / fail-closed mutation gate** → **Incident Gate**
 
 ### Lineage vs. Search
 
@@ -79,6 +81,7 @@ Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it
 2. **One skill per request** unless the user explicitly asks for multiple operations.
 3. **Lineage is for lineage only** — not for general "what is this entity?" questions (that's Search).
 4. **Search handles ad-hoc questions.** "Who owns X?" and "what columns does X have?" are Search questions, not Lineage.
-5. **Enrich handles all metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.
+5. **Enrich handles ordinary metadata writes** — descriptions, tags, glossary terms, ownership, deprecation — when there is no incident fail-closed gate.
 6. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
-7. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
+7. **Incident Gate handles alert-driven mutation safety** — trust fitness, blast ranking, HITL, mutation-disabled verify. Prefer it over Enrich when an incident signal is present.
+8. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.

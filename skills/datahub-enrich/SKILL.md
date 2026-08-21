@@ -33,12 +33,13 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 
 ## Not This Skill
 
-| If the user wants to...                     | Use this instead   |
-| ------------------------------------------- | ------------------ |
-| Search or discover entities                 | `/datahub-search`  |
-| Explore lineage or dependencies             | `/datahub-lineage` |
-| Generate quality reports or audits          | `/datahub-audit`   |
-| Set up data quality assertions or incidents | `/datahub-quality` |
+| If the user wants to...                     | Use this instead         |
+| ------------------------------------------- | ------------------------ |
+| Search or discover entities                 | `/datahub-search`        |
+| Explore lineage or dependencies             | `/datahub-lineage`       |
+| Generate quality reports or audits          | `/datahub-audit`         |
+| Set up data quality assertions or incidents | `/datahub-quality`       |
+| Fail-closed incident mutation gate          | `/datahub-incident-gate` |
 
 ---
 
