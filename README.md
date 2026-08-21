@@ -57,6 +57,17 @@ Install the DataHub CLI, configure authentication, verify connectivity, and set 
 > Create a profile for the data-eng team
 ```
 
+#### Import docs
+
+Import documentation from a git repository (GitHub, GitLab, Bitbucket, or self-hosted) into DataHub's knowledge base, turning a repo's markdown/text files into a hierarchy of Document entities. Works on the local repo you're currently in (reads the working tree directly — no clone, any forge) or a named remote repo. Each repo becomes its own folder under a host-based namespace, so imports from different repos and forges never collide. Preserves folder structure as parent-child documents, uses deterministic IDs so re-imports are idempotent, and writes through the stable DataHub SDK (no server-side import resolvers). Requires CLI v1.6.0+.
+
+```
+> Import docs from this repo into DataHub
+> /datahub-import-docs import the docs/ folder into DataHub
+> Import docs from github.com/acme/handbook
+> Import acme/runbooks as AI-only context linked to the orders dataset
+```
+
 ### Connector development skills
 
 #### Connector planning
@@ -217,6 +228,7 @@ cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-import-docs      your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
 
@@ -251,13 +263,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                       | What it does                                    |
+| ----------------------------- | ----------------------------------------------- |
+| `/catalog-search [query]`     | Search the catalog and answer questions         |
+| `/catalog-enrich [entity]`    | Add or update metadata                          |
+| `/catalog-lineage [entity]`   | Explore lineage and trace dependencies          |
+| `/catalog-quality [entity]`   | Manage assertions, incidents, and subscriptions |
+| `/catalog-setup [task]`       | Set up connection and configure defaults        |
+| `/catalog-import-docs [repo]` | Import docs from a git repo into DataHub        |
 
 ### Connector development
 
