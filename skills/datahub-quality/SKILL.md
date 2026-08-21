@@ -81,6 +81,8 @@ User-supplied values (assertion descriptions, incident titles, SQL statements) a
 | View incident details             | Fetch incident entity by URN                                       |
 | Report external assertion results | `reportAssertionResult` mutation                                   |
 | Register external assertions      | `upsertCustomAssertion` mutation                                   |
+| Raise incidents                   | `raiseIncident` mutation                                           |
+| Resolve incidents                 | `updateIncidentStatus` with `state: RESOLVED`                      |
 
 ### Cloud-only capabilities (Acryl SaaS)
 
@@ -92,8 +94,6 @@ Everything above, **plus:**
 | Create assertion monitors (schedule + evaluate) | `upsertDataset*AssertionMonitor` mutations                                                        |
 | Smart assertions (AI-inferred)                  | `inferWithAI: true` on monitor upsert inputs                                                      |
 | Run assertions on demand                        | `runAssertion`, `runAssertions`, `runAssertionsForAsset`                                          |
-| Raise incidents                                 | `raiseIncident` mutation                                                                          |
-| Resolve incidents                               | `updateIncidentStatus` with `state: RESOLVED`                                                     |
 | Create notification subscriptions               | `createSubscription` mutation                                                                     |
 
 ---
@@ -668,7 +668,7 @@ After executing, confirm the change took effect:
 ## Common Mistakes
 
 - **Guessing GraphQL fields.** Never invent field names. If unsure whether a field exists (e.g. `dataProduct.assets`), run `datahub graphql --describe dataProduct --recurse` first. See "GraphQL best practices" in Step 6.
-- **Running Cloud-only mutations against OSS.** Always confirm the deployment tier first. `raiseIncident`, `runAssertion`, and `createSubscription` are Cloud-only. `reportAssertionResult` and `upsertCustomAssertion` work on OSS.
+- **Running Cloud-only mutations against OSS.** Always confirm the deployment tier first. `runAssertion` and `createSubscription` are Cloud-only. `reportAssertionResult`, `upsertCustomAssertion`, `raiseIncident`, and `updateIncidentStatus` work on OSS.
 - **Not using `--variables` for dataset URNs.** Dataset URNs contain `(`, `)`, `,` which break shell escaping. Use `--variables` with a temp JSON file.
 - **Inline `--query` too long.** Long GraphQL queries passed via `--query '...'` hit OS filename length limits (Errno 63). Write the query to a temp file and pass the path: `--query /tmp/query.graphql`. The CLI auto-detects file paths. Clean up with `rm`.
 - **Using `dataProduct.assets` instead of `dataProduct.entities`.** The field is `entities(input: { query: "*" })`, not `assets`. Data products also have no `health` field — check health on constituent datasets individually.
