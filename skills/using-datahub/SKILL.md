@@ -20,6 +20,7 @@ You have access to 5 DataHub catalog interaction skills. Use this guide to route
 | **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
 | **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
 | **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
+| **Systematic reports** (coverage audit, governance health check, "how complete") | **Audit**   | `/datahub-audit`   |
 | **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
 | **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
 
