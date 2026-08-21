@@ -57,6 +57,16 @@ Install the DataHub CLI, configure authentication, verify connectivity, and set 
 > Create a profile for the data-eng team
 ```
 
+#### Bailiff
+
+Govern AI agents on DataHub — register identity, gate mutations through Bailiff MCP, cross-examine catalog claims against warehouse truth, convert cold mutates into proposals, and write verdicts back so the next agent inherits context.
+
+```
+> Should this agent be allowed to mutate?
+> Verify this description against SQL
+> /datahub-bailiff register a governed steward
+```
+
 ### Connector development skills
 
 #### Connector planning
@@ -359,7 +369,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`, `skills/datahub-bailiff/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
