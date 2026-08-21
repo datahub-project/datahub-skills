@@ -57,6 +57,16 @@ Install the DataHub CLI, configure authentication, verify connectivity, and set 
 > Create a profile for the data-eng team
 ```
 
+#### Investigate
+
+Chain discovery, lineage, and documentation into a multi-step investigation, then conclude with claims that are each traceable to a specific URN — optionally saving the write-up back to DataHub. Checks which tool categories (discovery, documents, mutations) are actually available before promising any of them.
+
+```
+> Investigate why orders_daily's row count dropped last week
+> /datahub-investigate trace the root cause of the revenue dashboard discrepancy
+> Find out where the customer_ltv column's definition comes from and document it
+```
+
 ### Connector development skills
 
 #### Connector planning
@@ -131,6 +141,7 @@ Then:
 > /datahub-lineage what feeds into the revenue dashboard?
 > /datahub-quality find datasets with failing assertions
 > /datahub-setup verify my connection
+> /datahub-investigate why did orders_daily's row count drop last week?
 > /connector-review snowflake
 > /connector-planning duckdb
 ```
@@ -217,6 +228,7 @@ cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-investigate      your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
 
@@ -237,6 +249,7 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 | Lineage exploration         | Yes                   | Yes                                              |
 | Data quality management     | Yes                   | Yes                                              |
 | Connection setup            | Yes                   | Yes                                              |
+| Investigation               | Yes                   | Yes                                              |
 | Planning workflow           | Yes                   | Yes                                              |
 | Load standards              | Yes                   | Yes                                              |
 | Review against standards    | Yes                   | Yes                                              |
@@ -251,13 +264,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                           | What it does                                                                               |
+| --------------------------------- | ------------------------------------------------------------------------------------------ |
+| `/catalog-search [query]`         | Search the catalog and answer questions                                                    |
+| `/catalog-enrich [entity]`        | Add or update metadata                                                                     |
+| `/catalog-lineage [entity]`       | Explore lineage and trace dependencies                                                     |
+| `/catalog-quality [entity]`       | Manage assertions, incidents, and subscriptions                                            |
+| `/catalog-setup [task]`           | Set up connection and configure defaults                                                   |
+| `/catalog-investigate [question]` | Investigate across discovery, lineage, and documentation, and conclude with cited findings |
 
 ### Connector development
 
@@ -312,6 +326,10 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-investigate/        # Multi-step investigation with citations
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   └── templates/
 │   ├── datahub-connector-planning/  # Connector planning
 │   │   ├── SKILL.md
 │   │   ├── standards -> ../../standards
@@ -341,6 +359,7 @@ datahub-skills/
 │   ├── catalog-lineage.md
 │   ├── catalog-quality.md
 │   ├── catalog-setup.md
+│   ├── catalog-investigate.md
 │   ├── connector-planning.md
 │   ├── connector-review.md
 │   └── load-standards.md
@@ -359,7 +378,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`, `skills/datahub-investigate/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`

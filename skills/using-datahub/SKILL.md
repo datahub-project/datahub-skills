@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                                                                       | Skill           | Command                |
+| --------------------------------------------------------------------------------------------------------------------------------- | --------------- | ---------------------- |
+| **Find or discover entities** (search, browse, filter, list)                                                                      | **Search**      | `/datahub-search`      |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")                                                            | **Search**      | `/datahub-search`      |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation)                                                  | **Enrich**      | `/datahub-enrich`      |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)                                                      | **Lineage**     | `/datahub-lineage`     |
+| **Data quality** (assertions, incidents, health checks)                                                                           | **Quality**     | `/datahub-quality`     |
+| **Notifications** (subscribe to assertion failures, incidents)                                                                    | **Quality**     | `/datahub-quality`     |
+| **Install CLI, authenticate, verify connection**                                                                                  | **Setup**       | `/datahub-setup`       |
+| **Configure default scopes and profiles**                                                                                         | **Setup**       | `/datahub-setup`       |
+| **Multi-step investigation** spanning discovery + lineage + documentation, ending in a cited conclusion (optionally written back) | **Investigate** | `/datahub-investigate` |
 
 ---
 
@@ -56,6 +57,12 @@ When the intent is ambiguous, use these rules:
 - **"Set up" / "install" / "authenticate" / "verify connection"** → **Setup**
 - **"Configure defaults" / "set default platform" / "create profile"** → **Setup**
 - **"Check if DataHub is working"** → **Setup** (connectivity verification)
+
+### Investigate vs. Search or Lineage
+
+- **A single ad-hoc question or lineage trace, answerable in one or two calls** → **Search** or **Lineage**
+- **A question that requires combining discovery + lineage + documentation, and concluding with cited claims (optionally saved back to DataHub)** → **Investigate**
+- **If unsure which, default to Search or Lineage first** — only escalate to Investigate if the user's question can't be answered from a single tool category.
 
 ---
 
