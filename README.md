@@ -312,6 +312,8 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── ml-incident-root-cause/      # Silent ML failure root-cause
+│   │   └── SKILL.md
 │   ├── datahub-connector-planning/  # Connector planning
 │   │   ├── SKILL.md
 │   │   ├── standards -> ../../standards
@@ -360,6 +362,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 Where things live:
 
 - Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- ML reliability skills: `skills/ml-incident-root-cause/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
