@@ -258,6 +258,7 @@ Other platforms do the same things through natural language.
 | `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
 | `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
 | `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| `/catalog-onboarding [who]` | Onboard a joiner, capture a leaver's runbook    |
 
 ### Connector development
 
@@ -312,6 +313,10 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-onboarding/          # Onboarding, handoff capture, doc validation
+│   │   ├── SKILL.md
+│   │   ├── README.md
+│   │   └── evaluations/
 │   ├── datahub-connector-planning/  # Connector planning
 │   │   ├── SKILL.md
 │   │   ├── standards -> ../../standards
@@ -341,6 +346,7 @@ datahub-skills/
 │   ├── catalog-lineage.md
 │   ├── catalog-quality.md
 │   ├── catalog-setup.md
+│   ├── catalog-onboarding.md
 │   ├── connector-planning.md
 │   ├── connector-review.md
 │   └── load-standards.md
@@ -359,7 +365,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`, `skills/datahub-onboarding/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
