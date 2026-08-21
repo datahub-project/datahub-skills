@@ -47,6 +47,18 @@ Manage data quality — create and run assertions (freshness, volume, SQL, field
 > Subscribe me to assertion failures via Slack
 ```
 
+#### Decision governance
+
+Turn operational recommendations into evidence-bound DataHub decision records.
+Captures governed context and downstream impact, requires approval before
+write-back, and creates a replacement revision when the evidence changes.
+
+```
+> Should we reorder Northeast inventory based on the current forecast?
+> Revalidate this decision after the freshness incident
+> /datahub-decision-governance compare the prior and current evidence
+```
+
 #### Setup
 
 Install the DataHub CLI, configure authentication, verify connectivity, and set up default scopes and profiles for the other interaction skills.
@@ -216,6 +228,7 @@ cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-decision-governance your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
@@ -236,6 +249,7 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 | Metadata enrichment         | Yes                   | Yes                                              |
 | Lineage exploration         | Yes                   | Yes                                              |
 | Data quality management     | Yes                   | Yes                                              |
+| Decision governance         | Yes                   | Yes                                              |
 | Connection setup            | Yes                   | Yes                                              |
 | Planning workflow           | Yes                   | Yes                                              |
 | Load standards              | Yes                   | Yes                                              |
@@ -251,13 +265,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                                   | What it does                                    |
+| ----------------------------------------- | ----------------------------------------------- |
+| `/catalog-search [query]`                 | Search the catalog and answer questions         |
+| `/catalog-enrich [entity]`                | Add or update metadata                          |
+| `/catalog-lineage [entity]`               | Explore lineage and trace dependencies          |
+| `/catalog-quality [entity]`               | Manage assertions, incidents, and subscriptions |
+| `/datahub-decision-governance [decision]` | Govern and revalidate an operational decision   |
+| `/catalog-setup [task]`                   | Set up connection and configure defaults        |
 
 ### Connector development
 
@@ -305,6 +320,10 @@ datahub-skills/
 │   │   ├── references/
 │   │   └── templates/
 │   ├── datahub-quality/             # Data quality management
+│   │   ├── SKILL.md
+│   │   ├── references/
+│   │   └── templates/
+│   ├── datahub-decision-governance/ # Evidence-bound decisions
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
@@ -359,7 +378,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-decision-governance/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`

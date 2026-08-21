@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                      | Skill                   | Command                        |
+| -------------------------------------------------------------------------------- | ----------------------- | ------------------------------ |
+| **Find or discover entities** (search, browse, filter, list)                     | **Search**              | `/datahub-search`              |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**              | `/datahub-search`              |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**              | `/datahub-enrich`              |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage**             | `/datahub-lineage`             |
+| **Data quality** (assertions, incidents, health checks)                          | **Quality**             | `/datahub-quality`             |
+| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality**             | `/datahub-quality`             |
+| **Govern a decision** (capture evidence, approval, write-back, revalidation)     | **Decision Governance** | `/datahub-decision-governance` |
+| **Install CLI, authenticate, verify connection**                                 | **Setup**               | `/datahub-setup`               |
+| **Configure default scopes and profiles**                                        | **Setup**               | `/datahub-setup`               |
 
 ---
 
@@ -57,6 +58,13 @@ When the intent is ambiguous, use these rules:
 - **"Configure defaults" / "set default platform" / "create profile"** → **Setup**
 - **"Check if DataHub is working"** → **Setup** (connectivity verification)
 
+### Decision governance vs. other skills
+
+- **"What depends on X?"** → **Lineage** (inspect the dependency graph)
+- **"Should we act, given X?"** → **Decision Governance** (bind a recommendation to evidence)
+- **"Approve, persist, compare, or revalidate this recommendation"** → **Decision Governance**
+- **"Change an entity's metadata"** → **Enrich** (the entity itself is the target)
+
 ---
 
 ## CLI Attribution
@@ -67,6 +75,7 @@ When running `datahub` CLI commands, pass `-C skill=<name>` on the root command 
 datahub -C skill=datahub-search search "revenue"
 datahub -C skill=datahub-enrich graphql --query '...'
 datahub -C skill=datahub-lineage lineage --urn "..."
+datahub -C skill=datahub-decision-governance get --urn "..."
 ```
 
 Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it — the command works the same without it.
@@ -82,3 +91,4 @@ Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it
 5. **Enrich handles all metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.
 6. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
 7. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
+8. **Decision Governance preserves history** — approved records are never overwritten; changed evidence creates a linked replacement revision.
