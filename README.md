@@ -215,6 +215,7 @@ git clone https://github.com/datahub-project/datahub-skills.git
 cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-document         your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
@@ -256,6 +257,7 @@ Other platforms do the same things through natural language.
 | `/catalog-search [query]`   | Search the catalog and answer questions         |
 | `/catalog-enrich [entity]`  | Add or update metadata                          |
 | `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
+| `/catalog-document [topic]` | Save answers as documents, or recall them       |
 | `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
 | `/catalog-setup [task]`     | Set up connection and configure defaults        |
 
@@ -304,6 +306,10 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-document/            # Knowledge capture and recall
+│   │   ├── SKILL.md
+│   │   ├── references/
+│   │   └── templates/
 │   ├── datahub-quality/             # Data quality management
 │   │   ├── SKILL.md
 │   │   ├── references/
@@ -339,6 +345,7 @@ datahub-skills/
 │   ├── catalog-search.md
 │   ├── catalog-enrich.md
 │   ├── catalog-lineage.md
+│   ├── catalog-document.md
 │   ├── catalog-quality.md
 │   ├── catalog-setup.md
 │   ├── connector-planning.md
@@ -359,7 +366,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-document/`, `skills/datahub-quality/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
