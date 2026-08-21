@@ -6,7 +6,7 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
@@ -20,6 +20,7 @@ You have access to 5 DataHub catalog interaction skills. Use this guide to route
 | **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
 | **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
 | **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
+| **Systematic metadata coverage** (counts, percentages, gap reports)              | **Audit**   | `/datahub-audit` |
 | **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
 | **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
 
@@ -43,7 +44,7 @@ When the intent is ambiguous, use these rules:
 - **Failing assertions, active incidents, health status** → **Quality**
 - **Create assertions, run quality checks, raise incidents** → **Quality**
 - **Subscribe to assertion failures or incidents** → **Quality**
-- **Metadata quality/documentation/ownership coverage** → Use **Search** to gather the data and synthesize the answer
+- **Metadata quality/documentation/ownership coverage** → **Audit** for systematic counts and gap reports; **Search** for one-off questions
 
 ### Lineage vs. Search
 
@@ -82,3 +83,4 @@ Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it
 5. **Enrich handles all metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.
 6. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
 7. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
+8. **Audit handles systematic coverage reports** — it is read-only and must show its denominator and unavailable fields.
