@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                                                                                        | Skill       | Command            |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------ |
+| **Find or discover entities** (search, browse, filter, list)                                                                                       | **Search**  | `/datahub-search`  |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")                                                                             | **Search**  | `/datahub-search`  |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation)                                                                   | **Enrich**  | `/datahub-enrich`  |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)                                                                       | **Lineage** | `/datahub-lineage` |
+| **Data quality** (assertions, incidents, health checks)                                                                                            | **Quality** | `/datahub-quality` |
+| **Notifications** (subscribe to assertion failures, incidents)                                                                                     | **Quality** | `/datahub-quality` |
+| **Install CLI, authenticate, verify connection**                                                                                                   | **Setup**   | `/datahub-setup`   |
+| **Configure default scopes and profiles**                                                                                                          | **Setup**   | `/datahub-setup`   |
+| **Check whether this was already figured out, or remember a conclusion for next time** (recall from documents before investigating, persist after) | **Memory**  | `/datahub-memory`  |
 
 ---
 
@@ -56,6 +57,13 @@ When the intent is ambiguous, use these rules:
 - **"Set up" / "install" / "authenticate" / "verify connection"** → **Setup**
 - **"Configure defaults" / "set default platform" / "create profile"** → **Setup**
 - **"Check if DataHub is working"** → **Setup** (connectivity verification)
+
+### Memory vs. investigating directly
+
+- **"Did we already look into X" / "what do we already know about X" / "remember this for later"** → **Memory**. It checks existing documents for a prior answer first, and only investigates whatever gap remains — chaining Search, Lineage, and other skills as needed for that gap (or handing off to a dedicated deep-dive investigation skill, if one is installed).
+- **A single ad-hoc question with no need to check prior write-ups first** → **Search** or **Lineage** directly, same as always.
+- **The user explicitly wants a fresh look with no recall step** ("ignore what's documented, investigate from scratch") → skip Memory and go straight to Search/Lineage/whatever the investigation needs.
+- **The user just wants to save a conclusion they already have** → still route through **Memory** for its persist step (title/tag conventions, citation via related assets, and the confirm-before-saving discipline) rather than calling document mutation tools directly.
 
 ---
 
