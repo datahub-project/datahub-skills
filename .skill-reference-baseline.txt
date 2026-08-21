@@ -1,0 +1,8 @@
+# Known unresolved skill references already present on main.
+# Format: <path> <skill-name>
+# Remove an entry as soon as its target skill exists or the reference is removed.
+skills/datahub-search/SKILL.md datahub-audit # issue #24
+skills/datahub-enrich/SKILL.md datahub-audit # issue #24
+skills/datahub-lineage/SKILL.md datahub-audit # issue #24
+skills/datahub-setup/SKILL.md datahub-audit # issue #24
+skills/shared-references/datahub-cli-reference.md datahub-audit # issue #24

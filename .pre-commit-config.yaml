@@ -34,3 +34,12 @@ repos:
       - id: ruff
         args: [--fix]
       - id: ruff-format
+
+  # Repository integrity checks
+  - repo: local
+    hooks:
+      - id: validate-skill-references
+        name: validate DataHub skill references
+        entry: python scripts/validate_skill_references.py
+        language: system
+        pass_filenames: false
