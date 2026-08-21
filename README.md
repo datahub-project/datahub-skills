@@ -36,6 +36,16 @@ Explore data lineage, trace upstream sources and downstream consumers, perform i
 > /datahub-lineage trace the customer pipeline
 ```
 
+#### Impact
+
+Analyze schema change blast radius, calculate 5-factor severity scores, generate owner-grouped remediation migration plans, and write impact state back into DataHub.
+
+```
+> What breaks if I rename customer_id in raw.customers?
+> Blast radius for dropping email column
+> /catalog-impact type change on amount in raw.payments
+```
+
 #### Quality
 
 Manage data quality — create and run assertions (freshness, volume, SQL, field, schema), set up smart AI-inferred assertions, raise and resolve incidents, and configure notification subscriptions. Separates Open Source (diagnostic) from Cloud (full management) capabilities.
@@ -215,6 +225,7 @@ git clone https://github.com/datahub-project/datahub-skills.git
 cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-impact           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
@@ -256,6 +267,7 @@ Other platforms do the same things through natural language.
 | `/catalog-search [query]`   | Search the catalog and answer questions         |
 | `/catalog-enrich [entity]`  | Add or update metadata                          |
 | `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
+| `/catalog-impact [change]`  | Schema change blast radius & migration plan     |
 | `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
 | `/catalog-setup [task]`     | Set up connection and configure defaults        |
 
@@ -301,6 +313,10 @@ datahub-skills/
 │   │   ├── references/
 │   │   └── templates/
 │   ├── datahub-lineage/             # Lineage exploration
+│   │   ├── SKILL.md
+│   │   ├── references/
+│   │   └── templates/
+│   ├── datahub-impact/              # Schema change impact analysis & migration plan
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/

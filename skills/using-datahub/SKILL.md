@@ -18,6 +18,7 @@ You have access to 5 DataHub catalog interaction skills. Use this guide to route
 | **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
 | **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
 | **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
+| **Schema change impact** (blast radius, severity ranking, migration plan)        | **Impact**  | `/catalog-impact`  |
 | **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
 | **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
 | **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
@@ -45,9 +46,10 @@ When the intent is ambiguous, use these rules:
 - **Subscribe to assertion failures or incidents** → **Quality**
 - **Metadata quality/documentation/ownership coverage** → Use **Search** to gather the data and synthesize the answer
 
-### Lineage vs. Search
+### Lineage vs. Impact vs. Search
 
-- **"What feeds into X" / "what depends on X" / "impact of changing X"** → **Lineage**
+- **"What feeds into X" / "what depends on X"** → **Lineage** (general graph traversal)
+- **"What breaks if I rename/drop/change column X" / "blast radius" / "schema migration plan"** → **Impact** (schema change blast radius analysis, severity scoring, migration plan checklist)
 - **"What dashboards use table X"** → **Lineage** (relationship traversal)
 - **"Who owns X" / "what is X"** → **Search** (metadata lookup)
 
