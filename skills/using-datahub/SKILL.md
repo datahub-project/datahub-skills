@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                                | Skill               | Command                    |
+| ------------------------------------------------------------------------------------------ | ------------------- | -------------------------- |
+| **Find or discover entities** (search, browse, filter, list)                               | **Search**          | `/datahub-search`          |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")                     | **Search**          | `/datahub-search`          |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation)           | **Enrich**          | `/datahub-enrich`          |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)               | **Lineage**         | `/datahub-lineage`         |
+| **Data quality** (assertions, incidents, health checks)                                    | **Quality**         | `/datahub-quality`         |
+| **Notifications** (subscribe to assertion failures, incidents)                             | **Quality**         | `/datahub-quality`         |
+| **Author a data contract** (schema + freshness + volume for a dataset, from live metadata) | **Contract Author** | `/datahub-contract-author` |
+| **Install CLI, authenticate, verify connection**                                           | **Setup**           | `/datahub-setup`           |
+| **Configure default scopes and profiles**                                                  | **Setup**           | `/datahub-setup`           |
 
 ---
 
@@ -44,6 +45,11 @@ When the intent is ambiguous, use these rules:
 - **Create assertions, run quality checks, raise incidents** → **Quality**
 - **Subscribe to assertion failures or incidents** → **Quality**
 - **Metadata quality/documentation/ownership coverage** → Use **Search** to gather the data and synthesize the answer
+
+### Quality vs. Contract Author
+
+- **Create or manage a single assertion, run a check, raise an incident** → **Quality**
+- **Give a dataset a whole data contract** (schema + freshness + volume + column checks bound together, derived from live metadata) → **Contract Author**
 
 ### Lineage vs. Search
 

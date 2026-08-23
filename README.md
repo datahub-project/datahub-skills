@@ -47,6 +47,16 @@ Manage data quality — create and run assertions (freshness, volume, SQL, field
 > Subscribe me to assertion failures via Slack
 ```
 
+#### Contract author
+
+Generate a native `dataContract` for a dataset from its live schema and profiling statistics — schema, freshness, volume, and column checks bound together. Derives evidence-based thresholds from the dataset's profile, drafts a declarative contract YAML for approval, and emits it through the native entity API (not the deprecated `datahub datacontract` CLI).
+
+```
+> Give the purchases table a data contract
+> Author a data contract for analytics.orders from its profile
+> /catalog-contract generate a contract for the trips dataset
+```
+
 #### Setup
 
 Install the DataHub CLI, configure authentication, verify connectivity, and set up default scopes and profiles for the other interaction skills.
@@ -265,13 +275,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                       | What it does                                     |
+| ----------------------------- | ------------------------------------------------ |
+| `/catalog-search [query]`     | Search the catalog and answer questions          |
+| `/catalog-enrich [entity]`    | Add or update metadata                           |
+| `/catalog-lineage [entity]`   | Explore lineage and trace dependencies           |
+| `/catalog-quality [entity]`   | Manage assertions, incidents, and subscriptions  |
+| `/catalog-contract [dataset]` | Author a native data contract from live metadata |
+| `/catalog-setup [task]`       | Set up connection and configure defaults         |
 
 ### Connector development
 
@@ -322,6 +333,12 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-contract-author/     # Data contract generation
+│   │   ├── SKILL.md
+│   │   ├── commands/
+│   │   ├── references/
+│   │   ├── templates/
+│   │   └── evaluations/
 │   ├── datahub-setup/               # Connection setup and config
 │   │   ├── SKILL.md
 │   │   ├── references/
@@ -373,7 +390,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-contract-author/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
