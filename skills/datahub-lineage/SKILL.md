@@ -40,8 +40,9 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 | Answer "who owns X?" or "what is X?"                    | `/datahub-search` (metadata lookup, not lineage) |
 | Add or update metadata (descriptions, tags, owners)     | `/datahub-enrich`                                |
 | Create assertions, run quality checks, manage incidents | `/datahub-quality`                               |
+| Diagnose a live incident and write the diagnosis back   | `/datahub-incident-triage`                       |
 
-**Key boundary:** Lineage handles **lineage and dependency questions** ("what feeds into X?", "what breaks if I change X?"). Search handles **metadata questions** ("who owns X?"). Enrich handles **metadata updates** ("set owner", "tag this").
+**Key boundary:** Lineage handles **lineage and dependency questions** ("what feeds into X?", "what breaks if I change X?"). Search handles **metadata questions** ("who owns X?"). Enrich handles **metadata updates** ("set owner", "tag this"). Incident triage handles **a live incident** — it walks the same graph, but to rank a blast radius and a root cause, and it writes the conclusion back.
 
 ---
 
