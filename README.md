@@ -67,6 +67,20 @@ Install the DataHub CLI, configure authentication, verify connectivity, and set 
 > Create a profile for the data-eng team
 ```
 
+#### Evals
+
+Runs your saved DataHub evals and reports how they did. An eval is a saved question plus the conditions its answer must meet.
+
+Each eval is answered in a fresh agent with the DataHub tools attached, then reported back **without a verdict** so DataHub scores it with the same judge it uses for its own runs — which is what makes two runs comparable. The same command reports an answer produced anywhere else, so you can score another agent's answer against the same conditions.
+
+```
+> Run our evals
+> /datahub-evals run urn:li:eval:abc123
+> /datahub-evals score this Slack answer against that eval
+```
+
+Needs the DataHub Cloud CLI — `pip install 'acryl-datahub-cloud[datahub-evals]'` — and a DataHub MCP server for the answering agent.
+
 ### Connector development skills
 
 #### Connector planning
