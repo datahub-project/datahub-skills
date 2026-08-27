@@ -12,16 +12,17 @@ You have access to 5 DataHub catalog interaction skills. Use this guide to route
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                             | Skill             | Command            |
+| --------------------------------------------------------------------------------------- | ----------------- | ------------------ |
+| **Find or discover entities** (search, browse, filter, list)                            | **Search**        | `/datahub-search`  |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")                  | **Search**        | `/datahub-search`  |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation)        | **Enrich**        | `/datahub-enrich`  |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)            | **Lineage**       | `/datahub-lineage` |
+| **Data quality** (assertions, incidents, health checks)                                 | **Quality**       | `/datahub-quality` |
+| **Notifications** (subscribe to assertion failures, incidents)                          | **Quality**       | `/datahub-quality` |
+| **Check code against the catalog** (validate a pipeline, repair a rename, record a run) | **Code Guardian** | `/code-guardian`   |
+| **Install CLI, authenticate, verify connection**                                        | **Setup**         | `/datahub-setup`   |
+| **Configure default scopes and profiles**                                               | **Setup**         | `/datahub-setup`   |
 
 ---
 
@@ -50,6 +51,12 @@ When the intent is ambiguous, use these rules:
 - **"What feeds into X" / "what depends on X" / "impact of changing X"** → **Lineage**
 - **"What dashboards use table X"** → **Lineage** (relationship traversal)
 - **"Who owns X" / "what is X"** → **Search** (metadata lookup)
+
+### Code vs. catalog questions
+
+- **"What breaks if I change X"** → **Lineage** (catalog reachability)
+- **"What breaks in this repository if X changes"** → **Code Guardian** (source joined to catalog)
+- **"Record what my scan concluded about X"** → **Code Guardian** (external verdicts as custom assertions)
 
 ### Setup vs. other skills
 
