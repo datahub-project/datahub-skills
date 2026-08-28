@@ -5,7 +5,7 @@ license: Apache-2.0
 compatibility: Requires DataHub MCP tools (find_sql_context and catalog metadata tools); SQL execution engine optional
 metadata:
   author: datahub
-  version: "2.1"
+  version: "2.2"
 ---
 
 # DataHub SQL Workflow
@@ -63,9 +63,8 @@ Anchors and curated documents cannot answer these — anchors describe query
 patterns, and per-table documentation does not enumerate a schema.
 
 When the question is schema discovery, skip the curated-document step below and
-answer from `search`, `get_entities`, and `list_schema_fields`, or from
-`INFORMATION_SCHEMA` when a SQL execution tool is available. Spending a document
-fan-out here costs context and cannot succeed.
+answer from `search`, `get_entities`, and `list_schema_fields`. Spending a
+document fan-out here costs context and cannot succeed.
 
 ## 1b. Read curated documentation
 
@@ -75,7 +74,9 @@ catalog is customer-authored and invisible to it. Those are frequently where
 join keys, SCD and latest-row rules, unit conventions, and "do not use this
 table" warnings actually live.
 
-After `find_sql_context`, make **exactly one** `search_documents` call:
+After `find_sql_context`, make these `search_documents` calls in order:
+
+**Call 1 — question-keyed search** (finds concept-level documentation):
 
 ```
 search_documents(
@@ -86,32 +87,56 @@ search_documents(
 )
 ```
 
-Key the search on the question, not on table names. A keyword query built from
-table names narrows the candidate pool before the reranker sees it and retrieves
-markedly less, even when the table names are correct.
+**Calls 2–4 — per-table keyword searches** (finds table-specific documentation):
 
-Do not enumerate expected subtypes. Customers name them anything — `Context`,
-`Runbook`, `FAQ`, or whatever a Notion or Confluence import produced. The only
-subtype you can rely on is `Semantic Anchor`, so exclude that one and accept
-whatever else comes back.
+Extract the distinct table short names from `matches[].datasets` URNs (the
+last segment after the final dot — e.g., `db.schema.MY_TABLE` → `MY_TABLE`).
+For each of the top 3 distinct table names, call:
 
-If the negated filter returns nothing, re-run the call with no `filter` and
+```
+search_documents(
+  query=<TABLE_SHORT_NAME>,
+  filter='subtype != "Semantic Anchor"',
+  num_results=3,
+)
+```
+
+Do **not** pass `semantic_query` in the per-table calls — keyword matching on
+the table name reliably finds table-specific documentation.
+
+If any negated filter returns nothing, re-run that call with no `filter` and
 discard hits whose `subType` is `Semantic Anchor`. Some deployments drop negated
 clauses from the semantic leg, which silently reduces the call to keyword-only.
 
-Budget: hydrate at most **three** documents with `get_entities`. Search returns
-metadata only, never bodies, so choose which three to read from the returned
-`info.title`, `domain`, and `subType` — prefer documents that name a table your
-query will actually touch. Stop at three even when more look relevant: the
-anchor payload is already large, and a fourth document displaces evidence you
-have not read yet.
+From the combined results across all calls, hydrate up to **three** documents
+total with `grep_documents` — not three per call, and not a fourth extra read.
+Choose by `subType` and title: prefer documents whose title names one of the
+candidate tables and whose `subType` indicates table documentation (e.g.,
+`Context`) over notebook-style documents.
 
-**Curated documentation outranks generated anchors.** An anchor is distilled
-from what analysts have historically run, so a mistake repeated often enough
-becomes a pattern. A curated document is the organization stating what is
-correct. When the two differ on any element — table choice, column choice,
-join key, filter, guard ordering, or units — follow the document and treat the
-anchor pattern as corrected by it.
+Count the strongest question-keyed non-anchor table document toward that cap,
+and fully read it before choosing a source table when its title or matched
+text covers the requested grain or measures, even when anchors did not name
+that table. If competing curated documents describe different grains, compare
+them before selecting.
+
+When a governed table already provides the requested measures at the requested
+grain, use its documented native columns instead of reconstructing them from
+lower-grain tables.
+
+These table-specific documents frequently contain routing instructions that
+redirect you to a governed table. When a curated document says to prefer a
+different table for the concept you are querying, follow that routing — search
+for documentation on the redirected table too, and use the governed table as
+the primary candidate.
+
+When retrieved evidence conflicts, rank it: user-edited match instructions,
+then curated documentation, then generated (non-user-edited) anchors.
+An anchor is distilled from what analysts have historically run, so a mistake
+repeated often enough becomes a pattern. A curated document is the organization
+stating what is correct. When a curated document and a generated anchor differ
+on any element — table choice, column choice, join key, filter, guard ordering,
+or units — follow the document and treat the generated pattern as corrected.
 
 This applies to a pattern's mechanics, not only its table selection:
 
@@ -181,6 +206,16 @@ confidently: columns or join keys are unclear, the message is non-empty
 (weak or no match), matches and suggestions name different tables, a curated
 document contradicts the anchor, or the query requires joining multiple tables.
 
+For every requested output column, identify the authoritative table and exact
+field that supplies it. A table can be canonical for one purpose without being
+canonical for every column it carries. Do not replace an entity label or
+lifecycle field with a similarly named column from a bridge or lookup table
+when evidence assigns that output to the canonical entity table or direct
+field. Treat tables and joins in the closest matching SQL pattern as a
+checklist: investigate any omitted canonical join before simplifying it away.
+Do not invent `COALESCE` fallbacks or other derivations when documentation is
+silent; nullable lifecycle fields can encode state.
+
 1. Call `get_entities` on the candidate URNs. Read the metadata as intent
    signals: description, ownership, tags, glossary terms, domain, data
    product, table type, partition or clustering keys. Compare candidates on
@@ -195,7 +230,11 @@ document contradicts the anchor, or the query requires joining multiple tables.
 5. Verify every proposed join key on both sides. Do not add a speculative inner
    join that could silently discard unmatched rows. When a curated document
    names a non-obvious join key, use it rather than the same-named column.
-6. After `list_schema_fields` on the chosen table, disposition every
+6. When resolving a user-provided name or search token without evidence of the
+   exact stored value, use a case-insensitive contains predicate rather than
+   copying an equality predicate from historical SQL. Use equality only when
+   curated documentation or `declared_enum_values` confirms the exact value.
+7. After `list_schema_fields` on the chosen table, disposition every
    lifecycle and validity column it exposes — deletion markers, state or
    status columns, snapshot or partition dates, latest-row flags. Apply a
    guard only when the question's intended population, a standard-filter
@@ -316,8 +355,12 @@ Return:
 
 - the answer or execution limitation;
 - the final SQL;
-- the Dataset, anchor, curated document, glossary, domain, or data-product
-  sources used;
+- every source your answer relies on — datasets, curated documents, glossary
+  terms, domains, data products — cited as a markdown link
+  `[display name](urn:li:...)` using the URN a tool returned. For dataset
+  tables the SQL touches, cite the dataset entity URN (`urn:li:dataset:...`).
+  If you also relied on a curated document about that table, cite both the
+  dataset and the document — they are separate entities;
 - probe findings that changed the decision;
 - any table used without corroborating evidence;
 - assumptions and unresolved ambiguity.
