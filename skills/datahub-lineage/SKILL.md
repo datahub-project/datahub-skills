@@ -149,13 +149,38 @@ Lineage may return a dbt model URN when the user is thinking of the warehouse ta
 
 ### Specific path tracing
 
-Use the CLI command first:
+When MCP advertises `get_lineage_paths_between`, prefer it and follow the tool's
+live input schema. It returns exact lineage paths between two assets or columns,
+including intermediate transformations when DataHub has that context.
+
+If that MCP tool is unavailable, use the CLI:
 
 ```bash
 datahub lineage path --from "<URN_A>" --to "<URN_B>"
 ```
 
-If `path` is unavailable, fall back to manual BFS: get downstream from A incrementing depth, check for B at each hop, and stop after 5 hops.
+If neither path operation is available, fall back to manual BFS: get downstream
+from A incrementing depth, check for B at each hop, and stop after 5 hops. Report
+the hop limit so the bounded search is not presented as proof that no path exists.
+
+### Evidence-safe lineage reporting
+
+Before presenting a lineage result:
+
+- **State the observed granularity.** Dataset- or entity-level edges do not prove
+  column-level lineage. Claim column-level lineage only when the returned path
+  contains column-level evidence.
+- **Check completeness signals.** Inspect MCP pagination and token-budget fields,
+  or the CLI `metadata` object, before calling a lineage graph complete. If the
+  tool exposes no completeness signal, describe the result as the observed graph
+  within the requested scope.
+- **Treat an empty result as "not observed."** Zero returned edges or paths may
+  reflect ingestion coverage, permissions, filters, pagination, or the requested
+  depth; it is not proof that no dependency exists.
+- **Separate facts from interpretation.** Clearly distinguish relationships
+  returned by DataHub from agent inferences about impact or root cause.
+- **Keep results readable and traceable.** Lead with entity names and platforms;
+  retain URNs for verification and show them when the user requests raw evidence.
 
 ---
 
