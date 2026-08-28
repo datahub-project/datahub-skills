@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.0](https://github.com/datahub-project/datahub-skills/compare/v1.4.1...v1.5.0) (2026-08-28)
+
+
+### Features
+
+* add datahub-evals skill ([#153](https://github.com/datahub-project/datahub-skills/issues/153)) ([be5bfaf](https://github.com/datahub-project/datahub-skills/commit/be5bfaff2b16d623a6c85a8e8f0a98d80f05899d))
+* add datahub-sql-workflow skill ([#149](https://github.com/datahub-project/datahub-skills/issues/149)) ([c3c76a6](https://github.com/datahub-project/datahub-skills/commit/c3c76a6d26d7ed61cb875219ffa82a50cd144a93))
+* **sql-workflow:** Updating sql workflow skill with more directed exploration ([#155](https://github.com/datahub-project/datahub-skills/issues/155)) ([c6d0ded](https://github.com/datahub-project/datahub-skills/commit/c6d0ded76eca4c649276e39ab376ad6c66142eb7))
+* update datahub-sql-workflow skill to v2.1 ([#152](https://github.com/datahub-project/datahub-skills/issues/152)) ([8d8f0e8](https://github.com/datahub-project/datahub-skills/commit/8d8f0e87efc48f529ce06dcccbb13e9df932b7c3))
+
 ## [1.4.1](https://github.com/datahub-project/datahub-skills/compare/v1.4.0...v1.4.1) (2026-04-21)
 
 
