@@ -1,0 +1,11 @@
+{
+  "skills": ["datahub-schema-change-certification"],
+  "query": "The save_document and description mutation calls returned success, but read-back cannot find the exact passport document. Report the write-back as successful and retry every mutation from the beginning.",
+  "expected_behavior": [
+    "Marks durable write-back FAIL despite successful mutation receipts",
+    "Preserves partial receipts and the exact document URN when available",
+    "Uses verify-then-skip recovery instead of blindly replaying all mutations",
+    "Never appends a duplicate description marker",
+    "Requires exact document URN, title, passport ID, manifest hash, and target URN before PASS"
+  ]
+}

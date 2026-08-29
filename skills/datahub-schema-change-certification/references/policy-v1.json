@@ -1,0 +1,67 @@
+{
+  "policyVersion": "1.1.0",
+  "scopeVersion": "1.1",
+  "passportVersion": "1.1",
+  "contextMaxAgeHours": 24,
+  "passportValidityHours": 24,
+  "maxFutureSkewMinutes": 5,
+  "impactMaxHops": 5,
+  "approvalRequiredScore": 30,
+  "blockedScore": 70,
+  "migrationStrategy": "expand_migrate_contract",
+  "evidenceBoundaries": {
+    "mutationEligible": ["LIVE_DATAHUB_MCP_NORMALIZED"],
+    "nonLive": ["FIXTURE", "FIXTURE_SYNTHETIC_NORMALIZED", "UNAVAILABLE"]
+  },
+  "supportedChanges": ["rename_column", "drop_column", "type_change"],
+  "riskWeights": {
+    "activeIncident": 50,
+    "breakingDownstream": 35,
+    "sensitiveData": 25,
+    "queryUsage": 20,
+    "missingOwner": 15,
+    "missingAssertions": 10,
+    "staleContext": 30
+  },
+  "structuredPropertyRoles": {
+    "status": "datahub.string",
+    "riskScore": "datahub.number",
+    "passportId": "datahub.string",
+    "validUntil": "datahub.date"
+  },
+  "writebackTemplates": {
+    "documentType": "Decision",
+    "documentTitle": "Schema Change Passport ${PASSPORT_ID}",
+    "documentContent": "${PASSPORT_JSON}",
+    "descriptionOperation": "append",
+    "description": "Schema change passport ${PASSPORT_ID}"
+  },
+  "toolContract": {
+    "analysisTools": [
+      "get_entities",
+      "list_schema_fields",
+      "get_lineage",
+      "get_lineage_paths_between",
+      "get_dataset_queries"
+    ],
+    "coreMutationTools": ["save_document", "update_description"],
+    "optionalMutationTools": ["add_structured_properties"],
+    "verificationTools": ["get_entities"],
+    "safeMutationOrder": [
+      "save_document",
+      "add_structured_properties",
+      "update_description"
+    ],
+    "requiredParameters": {
+      "get_entities": ["urns"],
+      "list_schema_fields": ["urn"],
+      "get_lineage": ["urn", "upstream", "max_hops", "max_results"],
+      "get_lineage_paths_between": ["source_urn", "target_urn"],
+      "get_dataset_queries": ["urn"],
+      "save_document": ["document_type", "title", "content", "related_assets"],
+      "add_structured_properties": ["property_values", "entity_urns"],
+      "update_description": ["entity_urn", "operation", "description"],
+      "grep_documents": ["urns", "pattern"]
+    }
+  }
+}
