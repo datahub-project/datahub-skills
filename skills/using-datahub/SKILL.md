@@ -12,16 +12,17 @@ You have access to 5 DataHub catalog interaction skills. Use this guide to route
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                      | Skill                  | Command                       |
+| -------------------------------------------------------------------------------- | ---------------------- | ----------------------------- |
+| **Find or discover entities** (search, browse, filter, list)                     | **Search**             | `/datahub-search`             |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**             | `/datahub-search`             |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**             | `/datahub-enrich`             |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage**            | `/datahub-lineage`            |
+| **Data quality** (assertions, incidents, health checks)                          | **Quality**            | `/datahub-quality`            |
+| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality**            | `/datahub-quality`            |
+| **Install CLI, authenticate, verify connection**                                 | **Setup**              | `/datahub-setup`              |
+| **Configure default scopes and profiles**                                        | **Setup**              | `/datahub-setup`              |
+| **Investigate conflicting KPI or metric definitions**                            | **Semantic Conflicts** | `/datahub-semantic-conflicts` |
 
 ---
 
