@@ -1,0 +1,11 @@
+{
+  "skills": ["datahub-agent-forensics"],
+  "query": "The changed column is not listed on this receipt, so confirm that the agent decision is unaffected.",
+  "expected_behavior": [
+    "Refuses to infer UNAFFECTED from an absent field match alone",
+    "Checks receipt integrity and receipt-index or query completeness",
+    "Requires complete field lineage from a named deterministic rule and proof that the query was non-wildcard",
+    "Returns AT_RISK, UNKNOWN, or NOT_CLASSIFIED when positive exclusion evidence is missing",
+    "Explains the limitation without substituting generic lineage or LLM judgment"
+  ]
+}
