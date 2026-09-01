@@ -17,6 +17,22 @@ Common lineage traversal strategies and patterns.
 
 **Key question:** "Which downstream entities have no alternative data source?"
 
+### Field-Specific Impact (Downstream)
+
+**Goal:** Separate the exact paths reached by a changed field from independent paths that
+can be positively proven safe.
+
+**Strategy:**
+
+1. Query dataset-level downstream lineage for the conservative review scope
+2. Query downstream fine-grained lineage for every changed field
+3. Preserve intermediate field paths and query-completeness metadata
+4. Classify each scoped asset as `AFFECTED`, `PRESERVED`, or `UNKNOWN`
+5. Treat table-level-only consumers and incomplete field lineage as `UNKNOWN`
+6. Identify the first consequential consumer on every affected path
+
+**Key question:** "What evidence proves this branch is affected or preserved?"
+
 ### Root Cause (Upstream)
 
 **Goal:** Trace where data originates and how it's transformed.
