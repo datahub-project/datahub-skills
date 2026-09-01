@@ -40,8 +40,14 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 | Answer "who owns X?" or "what is X?"                    | `/datahub-search` (metadata lookup, not lineage) |
 | Add or update metadata (descriptions, tags, owners)     | `/datahub-enrich`                                |
 | Create assertions, run quality checks, manage incidents | `/datahub-quality`                               |
+| Judge a change against the ML models downstream of it   | `/datahub-ml-impact`                             |
 
 **Key boundary:** Lineage handles **lineage and dependency questions** ("what feeds into X?", "what breaks if I change X?"). Search handles **metadata questions** ("who owns X?"). Enrich handles **metadata updates** ("set owner", "tag this").
+
+When a model is on one end of the question, use `/datahub-ml-impact` instead. A plain
+lineage walk answers ML questions confidently and wrongly: column level lineage stops at
+the feature table, so a column walk reports that nothing reaches a deployed model. Lineage
+remains the right skill whenever nothing downstream is a model, and is simpler.
 
 ---
 
