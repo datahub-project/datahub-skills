@@ -36,6 +36,16 @@ Explore data lineage, trace upstream sources and downstream consumers, perform i
 > /datahub-lineage trace the customer pipeline
 ```
 
+#### ML lineage
+
+Trace lineage past the warehouse boundary — from columns, through features and feature tables, to models and the endpoints serving them. Covers label leakage, offline-vs-online feature drift, and restricted data reaching a deployed model. Handles the two places a naive traversal goes wrong: `MLFeatureProperties.sources` points at datasets while `FineGrainedLineage` operates on columns, and the offline and online copies of one feature necessarily live in different tables.
+
+```
+> What data feeds churn_propensity_v7?
+> Does segment_churn_rate leak the label?
+> /datahub-ml-lineage what models break if I change raw_orders.amount?
+```
+
 #### Quality
 
 Manage data quality — create and run assertions (freshness, volume, SQL, field, schema), set up smart AI-inferred assertions, raise and resolve incidents, and configure notification subscriptions. Separates Open Source (diagnostic) from Cloud (full management) capabilities.
@@ -229,6 +239,7 @@ git clone https://github.com/datahub-project/datahub-skills.git
 cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-ml-lineage       your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
@@ -265,13 +276,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                        | What it does                                      |
+| ------------------------------ | ------------------------------------------------- |
+| `/catalog-search [query]`      | Search the catalog and answer questions           |
+| `/catalog-enrich [entity]`     | Add or update metadata                            |
+| `/catalog-lineage [entity]`    | Explore lineage and trace dependencies            |
+| `/catalog-ml-lineage [entity]` | Trace lineage into features, models and endpoints |
+| `/catalog-quality [entity]`    | Manage assertions, incidents, and subscriptions   |
+| `/catalog-setup [task]`        | Set up connection and configure defaults          |
 
 ### Connector development
 
@@ -318,6 +330,9 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-ml-lineage/          # Lineage into features, models, deployments
+│   │   ├── SKILL.md
+│   │   └── README.md
 │   ├── datahub-quality/             # Data quality management
 │   │   ├── SKILL.md
 │   │   ├── references/
@@ -373,7 +388,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-ml-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
