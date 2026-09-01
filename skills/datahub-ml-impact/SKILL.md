@@ -75,7 +75,17 @@ as evidence, and be honest that absence of a signal is not proof of absence.
 
 ## Writing back
 
-Leave what you learned in the graph so the next agent inherits it: tag
-affected models (`model-at-risk`, `leakage-suspect`), append the assessment
-to the model's documentation, and file an incident on the affected upstream
-dataset with the evidence — incidents attach to datasets, not ML entities.
+Leave what you learned in the graph so the next agent inherits it: append the
+assessment to the model's documentation, and raise an incident with the
+evidence directly on the ML entity that is at risk. `mlModel`, `mlFeature`,
+and `mlFeatureTable` all take incidents, and one incident can carry several
+urns, so name the model, the affected features, and the upstream dataset in
+a single incident instead of filing on the dataset and hoping the reader
+connects it to the model. That incident is now the model-side signal, so a
+`model-at-risk` tag is no longer needed to stand in for one.
+
+Against releases that predate this support (v1.7.0 and earlier), incidents do
+not surface on ML entities, and the older pattern still applies: file on the
+affected upstream dataset and tag the models (`model-at-risk`,
+`leakage-suspect`). `mlModelGroup` and `mlModelDeployment` take no incidents
+on any release yet, so raise on the model.

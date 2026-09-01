@@ -23,3 +23,9 @@ post-outcome assets, forward-looking SQL windows).
 Developed and tested against DataHub v1.6.0 (OSS quickstart) with the
 MLflow + dbt connectors, as part of the Blast Radius agent
 (github.com/Danishlynx/blast-radius).
+
+The write-back step raises incidents directly on the affected `mlModel`,
+`mlFeature`, or `mlFeatureTable`, which needs a build carrying the ML
+incident support merged into datahub-project/datahub after v1.7.0
+(PRs 19112, 19132 and 19367). On older releases the skill falls back to an
+incident on the upstream dataset.
