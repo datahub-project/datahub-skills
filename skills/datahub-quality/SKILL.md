@@ -1,7 +1,7 @@
 ---
 name: datahub-quality
 description: |
-  Use this skill when the user wants to manage data quality in DataHub: create or run assertions, check assertion outcomes, raise or resolve incidents, create notification subscriptions, or diagnose health problems across their estate. Triggers on: "create assertion", "run assertion", "check quality", "data quality", "health check", "raise incident", "resolve incident", "subscribe to", "failing assertions", "active incidents", or any request involving data quality, assertions, incidents, or quality notifications.
+  Use this skill when the user wants to manage data quality in DataHub: create or run assertions, check assertion outcomes, assess version-bound evidence for a proposed change, raise or resolve incidents, create notification subscriptions, or diagnose health problems across their estate. Triggers on: "create assertion", "run assertion", "check quality", "proof gap", "release evidence", "data quality", "health check", "raise incident", "resolve incident", "subscribe to", "failing assertions", "active incidents", or any request involving data quality, assertions, incidents, or quality notifications.
 user-invocable: true
 min-cli-version: 1.4.0
 allowed-tools: Bash(datahub *)
@@ -9,7 +9,7 @@ allowed-tools: Bash(datahub *)
 
 # DataHub Quality
 
-You are an expert DataHub data quality engineer. Your role is to help users monitor, diagnose, and improve data quality using assertions, incidents, and subscriptions.
+You are an expert DataHub data quality engineer. Your role is to help users monitor, diagnose, and improve data quality using assertions, incidents, subscriptions, and evidence-backed change reviews.
 
 This skill operates across two deployment tiers:
 
@@ -108,6 +108,8 @@ Determine what the user wants to do:
 - **Entity health check** — "check quality of table X" / "are there incidents on X?"
 - **Assertion inspection** — "what assertions exist on X?" / "show me the latest results"
 - **Incident review** — "what incidents are active?" / "show me details of incident Y"
+- **Change proof-gap review** — "is this schema change proven safe?" / "which impacted behaviors
+  lack version-matched test evidence?"
 
 ### Management intents (Cloud only)
 
@@ -331,6 +333,30 @@ query {
 | --- | --------- | -------------------- | -------- | ------------- | ------ |
 | 1   | FRESHNESS | Stale data in orders | HIGH     | INVESTIGATION | 3h ago |
 ```
+
+### Change proof-gap review
+
+Use this path when the user asks whether a proposed data or schema change has sufficient evidence,
+not merely whether the asset is healthy now.
+
+1. Resolve the exact asset and changed field, then bind the environment, schema snapshot, source
+   revision, and change digest. Do not claim exact-version coverage if any required binding is
+   absent.
+2. Use `/datahub-lineage` to identify downstream impact and preserve its pagination, truncation,
+   and field-lineage limitations. An empty or incomplete traversal is not proof of no impact.
+3. Read relevant assertions and externally supplied evidence metadata. Create one independently
+   decidable proof obligation per affected behavior or control.
+4. Classify evidence as `satisfied`, `negative`, `stale`, `missing`, or `unknown`; do not collapse
+   these states into a generic failure.
+5. Return `ready` only when every required obligation is satisfied and every required query is
+   complete. Return `not_ready` for matching negative evidence and `indeterminate` for missing,
+   stale, unknown, or unresolved evidence.
+6. Propose the smallest gap-closing actions and pause. Approval of the assessment is not approval
+   to execute tests or mutate DataHub. After fresh evidence is supplied, repeat the assessment
+   before any approved assertion result or summary write-back.
+
+Read `references/change-proof-gap-reference.md` for the binding, evidence, decision, and digest
+contract. Use `templates/change-proof-gap-report.template.md` for the result.
 
 ---
 
@@ -656,12 +682,14 @@ After executing, confirm the change took effect:
 
 ## Reference Documents
 
-| Document                          | Path                                            | Purpose                                                                    |
-| --------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------- |
-| Assertion mutations reference     | `references/assertion-mutations-reference.md`   | All assertion types, standalone/monitor/smart patterns, running, reporting |
-| Incident & subscription reference | `references/incident-subscription-reference.md` | Incident CRUD, subscription CRUD, notification channels                    |
-| Quality report template           | `templates/quality-report.template.md`          | Quality status report format                                               |
-| CLI reference (shared)            | `../shared-references/datahub-cli-reference.md` | CLI syntax                                                                 |
+| Document                          | Path                                            | Purpose                                                                     |
+| --------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------- |
+| Assertion mutations reference     | `references/assertion-mutations-reference.md`   | All assertion types, standalone/monitor/smart patterns, running, reporting  |
+| Incident & subscription reference | `references/incident-subscription-reference.md` | Incident CRUD, subscription CRUD, notification channels                     |
+| Change proof-gap reference        | `references/change-proof-gap-reference.md`      | Version binding, proof obligations, evidence states, deterministic decision |
+| Quality report template           | `templates/quality-report.template.md`          | Quality status report format                                                |
+| Change proof-gap report template  | `templates/change-proof-gap-report.template.md` | Evidence coverage and release-readiness report                              |
+| CLI reference (shared)            | `../shared-references/datahub-cli-reference.md` | CLI syntax                                                                  |
 
 ---
 
@@ -676,6 +704,10 @@ After executing, confirm the change took effect:
 - **Assuming smart assertions work immediately.** AI-inferred assertions enter a `TRAINING` phase first. Set expectations with the user.
 - **Subscribing without `UPSTREAM_ENTITY_CHANGE`.** `ENTITY_CHANGE` covers direct changes only. Ask if the user also wants upstream alerts.
 - **Skipping the approval step.** Never create assertions, raise incidents, or create subscriptions without explicit user confirmation.
+- **Treating the latest passing result as change evidence.** A pass for another revision, schema
+  snapshot, field, or environment is stale, not proof for the proposed change.
+- **Treating absence as failure.** Missing evidence, negative evidence, and an incomplete evidence
+  query have different meanings; preserve `missing`, `negative`, and `unknown`.
 - **Disabling telemetry.** Do not run `datahub telemetry disable`. Ignore telemetry prompts.
 
 ## Red Flags
@@ -684,6 +716,10 @@ After executing, confirm the change took effect:
 - **SQL assertion with destructive SQL** (DROP, DELETE, TRUNCATE, ALTER) → warn and refuse.
 - **Bulk assertion creation across >20 entities** → require explicit count confirmation.
 - **User says "yes" to a plan you haven't shown** → re-present the plan.
+- **Required lineage is capped, permission-filtered, or unavailable** → decision is
+  `indeterminate`, never `ready`.
+- **Schema snapshot or source revision cannot be bound** → report known impacts, but do not claim
+  exact-version evidence coverage.
 
 ---
 
@@ -699,3 +735,5 @@ After executing, confirm the change took effect:
 - **Self-healing loops** (`RAISE_INCIDENT` / `RESOLVE_INCIDENT` actions) reduce toil.
 - **Use `--variables` for complex URNs.** Dataset URNs break inline `--query` strings.
 - **Verify after writing.** Re-read the entity to confirm changes took effect.
+- **Evidence is version-bound.** A model summary, proposed test, or current catalog health is not
+  executed evidence for a specific change.
