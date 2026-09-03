@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                      | Skill                 | Command                      |
+| -------------------------------------------------------------------------------- | --------------------- | ---------------------------- |
+| **Find or discover entities** (search, browse, filter, list)                     | **Search**            | `/datahub-search`            |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**            | `/datahub-search`            |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**            | `/datahub-enrich`            |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage**           | `/datahub-lineage`           |
+| **Data quality** (assertions, incidents, health checks)                          | **Quality**           | `/datahub-quality`           |
+| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality**           | `/datahub-quality`           |
+| **Live incident response** (symptom, evidence-backed diagnosis, containment)     | **Incident Response** | `/datahub-incident-response` |
+| **Install CLI, authenticate, verify connection**                                 | **Setup**             | `/datahub-setup`             |
+| **Configure default scopes and profiles**                                        | **Setup**             | `/datahub-setup`             |
 
 ---
 
@@ -31,7 +32,8 @@ When the intent is ambiguous, use these rules:
 
 ### "Tag" requests
 
-- **All tag operations** (PII, sensitive, important, reviewed, team-x) → **Enrich** (general metadata)
+- **Routine tag operations** (PII, sensitive, important, reviewed, team-x) → **Enrich**
+- **Temporary warning tags within an active symptom investigation** → **Incident Response**
 
 ### "Domain" requests
 
@@ -44,6 +46,13 @@ When the intent is ambiguous, use these rules:
 - **Create assertions, run quality checks, raise incidents** → **Quality**
 - **Subscribe to assertion failures or incidents** → **Quality**
 - **Metadata quality/documentation/ownership coverage** → Use **Search** to gather the data and synthesize the answer
+
+### Lineage vs. Incident Response vs. Quality
+
+- **"What feeds X?" / "What is affected if X changes?"** → **Lineage**
+- **"Numbers are wrong/stale/null; find what broke and warn affected consumers"** → **Incident Response**
+- **"Show failing assertions" / "raise or resolve a native DataHub incident"** → **Quality**
+- Incident Response may add reversible warning tags only after an exact plan and explicit approval.
 
 ### Lineage vs. Search
 
@@ -81,4 +90,5 @@ Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it
 4. **Search handles ad-hoc questions.** "Who owns X?" and "what columns does X have?" are Search questions, not Lineage.
 5. **Enrich handles all metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.
 6. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
-7. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
+7. **Incident Response starts from a live symptom** — diagnose from evidence and optionally apply approved, reversible warnings.
+8. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.

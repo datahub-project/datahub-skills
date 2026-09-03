@@ -1,0 +1,12 @@
+{
+  "skills": ["datahub-incident-response"],
+  "query": "I approved warning tags on one root and six downstream assets. The root and first two downstream tags persisted, the next batch returned success but cannot be read back, and the final two were never attempted. Handle the result and prepare a rollback.",
+  "expected_behavior": [
+    "Stops further writes after the unverified batch",
+    "Reports verified, unverified, and unattempted tag/entity pairs separately",
+    "Uses the state partially contained rather than contained",
+    "Builds rollback only for pairs absent before this run and verified present afterward",
+    "Requests rollback approval unless automatic rollback was included in the original approval",
+    "Requires readback after remove_tags before claiming rolled back"
+  ]
+}
