@@ -86,11 +86,11 @@ Ask about depth if the user doesn't specify: "How many hops should I trace? (def
 
 ### Choosing your tool: MCP vs. CLI
 
-|                    | MCP tools                                        | DataHub CLI                                                     |
-| ------------------ | ------------------------------------------------ | --------------------------------------------------------------- |
-| **When available** | Preferred for simple traversals                  | Use for `path`, column-level lineage, `--format json` metadata  |
-| **Lineage**        | `get_lineage(urn=..., direction=..., depth=...)` | `datahub lineage --urn "..." --direction upstream`              |
-| **Enrich results** | `get_entities(urns=[...])`                       | `datahub search "*" --where 'urn IN (...)'` with `--projection` |
+|                    | MCP tools                                        | DataHub CLI                                                    |
+| ------------------ | ------------------------------------------------ | -------------------------------------------------------------- |
+| **When available** | Preferred for simple traversals                  | Use for `path`, column-level lineage, `--format json` metadata |
+| **Lineage**        | `get_lineage(urn=..., direction=..., depth=...)` | `datahub lineage --urn "..." --direction upstream`             |
+| **Enrich results** | `get_entities(urns=[...])`                       | `datahub search --where 'urn IN (...)'` with `--projection`    |
 
 MCP provides structured lineage graphs without shell overhead — MCP tools are self-documenting, so check their schemas for parameter details. Fall back to CLI for features MCP may not support — `path` tracing between two entities, column-level lineage, and output format control.
 
@@ -130,7 +130,7 @@ To enrich lineage results with richer metadata, use search with a `urn` filter t
 
 ```bash
 # Batch-enrich lineage results — quote URNs (they contain parentheses and commas)
-datahub search "*" \
+datahub search \
   --where 'urn IN ("urn:li:dataset:(urn:li:dataPlatform:snowflake,db.schema.table1,PROD)", "urn:li:dataset:(urn:li:dataPlatform:snowflake,db.schema.table2,PROD)")' \
   --projection "urn type
     ... on Dataset { properties { name description } platform { name }

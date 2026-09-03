@@ -129,7 +129,7 @@ If the user wants to set up quality monitoring but doesn't know where to begin, 
 
 ```bash
 # Step 1: Find the most popular datasets on a supported platform (Cloud only — requires usage indexing)
-datahub -C skill=datahub-quality search "*" \
+datahub -C skill=datahub-quality search \
   --where "entity_type = dataset AND platform = snowflake" \
   --sort-by queryCountLast30DaysFeature --sort-order desc \
   --format json --limit 10
@@ -159,13 +159,13 @@ If the user wants to add checks across multiple assets, search first to build th
 
 ```bash
 # Find all Snowflake datasets in the Finance domain
-datahub -C skill=datahub-quality search "*" \
+datahub -C skill=datahub-quality search \
   --where "entity_type = dataset AND platform = snowflake AND domain = urn:li:domain:finance" \
   --projection "urn type ... on Dataset { properties { name } platform { name } }" \
   --format json --limit 20
 
 # Find critical datasets (by tag or structured property)
-datahub -C skill=datahub-quality search "*" \
+datahub -C skill=datahub-quality search \
   --where "entity_type = dataset AND tag = urn:li:tag:tier-1" \
   --format json --limit 20
 ```
@@ -185,7 +185,7 @@ Data products don't have their own `health` field — quality is assessed across
 datahub -C skill=datahub-quality search "Loans" --where "entity_type = data_product" --format json --limit 5
 
 # Then find all datasets in that data product
-datahub -C skill=datahub-quality search "*" \
+datahub -C skill=datahub-quality search \
   --where "entity_type = dataset AND data_product = urn:li:dataProduct:<ID>" \
   --format json --limit 50
 ```
@@ -236,7 +236,7 @@ Use search filters to find assets with quality problems across the estate.
 | `hasErroringAssertions` | Assets with erroring assertions            |
 
 ```bash
-datahub -C skill=datahub-quality search "*" \
+datahub -C skill=datahub-quality search \
   --where "hasActiveIncidents = true OR hasFailingAssertions = true" \
   --projection "urn type
     ... on Dataset { properties { name } platform { name }
@@ -251,7 +251,7 @@ datahub -C skill=datahub-quality search "*" \
 Combine with platform or entity type filters to narrow scope:
 
 ```bash
-datahub -C skill=datahub-quality search "*" \
+datahub -C skill=datahub-quality search \
   --where "entity_type = dataset AND platform = snowflake AND hasFailingAssertions = true" \
   --format json --limit 20
 ```
