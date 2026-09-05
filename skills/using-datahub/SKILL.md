@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                      | Skill               | Command                    |
+| -------------------------------------------------------------------------------- | ------------------- | -------------------------- |
+| **Find or discover entities** (search, browse, filter, list)                     | **Search**          | `/datahub-search`          |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**          | `/datahub-search`          |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**          | `/datahub-enrich`          |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage**         | `/datahub-lineage`         |
+| **Data quality** (assertions, incidents, health checks)                          | **Quality**         | `/datahub-quality`         |
+| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality**         | `/datahub-quality`         |
+| **Triage a data incident end to end** (root cause, blast radius, post-mortem)    | **Incident Triage** | `/datahub-incident-triage` |
+| **Install CLI, authenticate, verify connection**                                 | **Setup**           | `/datahub-setup`           |
+| **Configure default scopes and profiles**                                        | **Setup**           | `/datahub-setup`           |
 
 ---
 
@@ -50,6 +51,15 @@ When the intent is ambiguous, use these rules:
 - **"What feeds into X" / "what depends on X" / "impact of changing X"** → **Lineage**
 - **"What dashboards use table X"** → **Lineage** (relationship traversal)
 - **"Who owns X" / "what is X"** → **Search** (metadata lookup)
+
+### Incident Triage vs. Quality vs. Lineage
+
+Incident Triage is the closed-loop skill: it connects a live quality signal to a verified root cause, downstream impact, owners, approved actions, and a stored post-mortem. Quality and Lineage each own one step of that loop on their own.
+
+- **"Triage this incident" / "why is X failing" / "find the root cause and who is affected"** → **Incident Triage** (end-to-end investigation)
+- **"Create an assertion" / "raise an incident" / "list failing assertions"** → **Quality** (assertion and incident management, no diagnosis)
+- **"Show upstreams of X" / "impact of changing X"** → **Lineage** (graph traversal with no live quality signal to diagnose)
+- **"Write a post-mortem" / "has this broken before?"** → **Incident Triage** (incident memory)
 
 ### Setup vs. other skills
 
@@ -82,3 +92,4 @@ Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it
 5. **Enrich handles all metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.
 6. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
 7. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
+8. **Incident Triage handles the full loop** from a failing signal to root cause, blast radius, approved actions, and a stored post-mortem. Prefer it over Quality plus Lineage when the user wants a diagnosis rather than a single lookup.
