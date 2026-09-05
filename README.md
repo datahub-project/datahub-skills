@@ -47,6 +47,16 @@ Manage data quality — create and run assertions (freshness, volume, SQL, field
 > Subscribe me to assertion failures via Slack
 ```
 
+#### ML Leakage
+
+Decide whether an ML model is safe to deploy by walking its feature provenance through column-level lineage. Blocks when a feature traces back to a column tagged as post-outcome or label data, and fails closed when lineage cannot be resolved.
+
+```
+> Does churn_model_v2 have target leakage?
+> /datahub-ml-leakage is this model safe to deploy?
+> Trace customer_value_score back to its source columns
+```
+
 #### Setup
 
 Install the DataHub CLI, configure authentication, verify connectivity, and set up default scopes and profiles for the other interaction skills.
@@ -144,6 +154,7 @@ Then:
 > /datahub-enrich add description to orders table
 > /datahub-lineage what feeds into the revenue dashboard?
 > /datahub-quality find datasets with failing assertions
+> /datahub-ml-leakage does churn_model_v2 have target leakage?
 > /datahub-setup verify my connection
 > /connector-review snowflake
 > /connector-planning duckdb
@@ -230,6 +241,7 @@ cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-ml-leakage       your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
@@ -322,6 +334,10 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-ml-leakage/          # ML feature provenance safety
+│   │   ├── SKILL.md
+│   │   ├── references/
+│   │   └── templates/
 │   ├── datahub-setup/               # Connection setup and config
 │   │   ├── SKILL.md
 │   │   ├── references/
@@ -373,7 +389,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-ml-leakage/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
