@@ -107,6 +107,22 @@ Loads all 22 connector standards into context. Run this before starting connecto
 > What are the connector standards?
 ```
 
+### Community skills
+
+#### Syntrace Drift Remediation
+
+Detect breaking schema changes and drive the full detect → trace → fix → PR → write-back
+loop with [Syntrace](https://github.com/mrnetwork0001/Syntrace), an open-source (Apache-2.0)
+autonomous remediation agent built on live DataHub metadata: versioned-schema drift
+detection, column-level blast radius via the DataHub MCP Server, deterministic dbt/Airflow
+code fixes, and four-surface catalog write-back. Requires a Syntrace checkout - see
+[`skills/syntrace-drift-remediation`](skills/syntrace-drift-remediation).
+
+```
+> a column was renamed upstream - what breaks and how do we fix it?
+> run Syntrace on raw.orders and show me the blast radius
+```
+
 ## Installation
 
 ### Quick install (any agent)
