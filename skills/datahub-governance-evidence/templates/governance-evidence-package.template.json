@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0",
+  "disclaimer": "This package summarizes catalog-visible metadata only. It is supporting evidence, not an audit, attestation, certification, legal opinion, or compliance determination.",
+  "collection": {
+    "collected_at": "<ISO-8601 timestamp>",
+    "server": "<non-secret identifier>",
+    "server_version": "<version>",
+    "client_version": "<version or not used>",
+    "environment": "<environment>",
+    "entity_types": ["dataset"],
+    "filters": ["<stable scope filter>"],
+    "sibling_handling": "separate",
+    "lineage": {"direction": "upstream", "max_hops": 1},
+    "structured_property_bindings": {
+      "<symbolic-signal>": "<exact-qualified-name>"
+    },
+    "method": "<MCP or official DataHub CLI>",
+    "operations": [
+      {
+        "name": "<operation-name>",
+        "tool_or_command": "<safe MCP tool name or read-only CLI shape>",
+        "page_or_cursor": "<offset/cursor/exact URN>",
+        "result": "<success or safe error summary>",
+        "argv": ["<optional safe CLI argument sequence>"],
+        "return_code": 0,
+        "stdout_sha256": "<optional checksum>",
+        "stderr_sha256": "<optional checksum>"
+      }
+    ],
+    "pagination": {
+      "strategy": "<filtered enumeration then exact-URN retrieval>",
+      "page_size": 50,
+      "initial_pages": ["<offset or cursor>"],
+      "verification_pages": ["<offset or cursor>"],
+      "selected_total": 1,
+      "exact_fetches": 1,
+      "termination": "<short page, empty page, or API completion>",
+      "boundary_stable": true,
+      "snapshot_guaranteed": false
+    },
+    "complete": false,
+    "completeness_reason": "<reason tied to pagination and retrieval guarantees>"
+  },
+  "assets": [
+    {
+      "urn": "<DataHub URN>",
+      "name": "<catalog name>",
+      "observations": [
+        {
+          "signal": "ownership",
+          "state": "Observed",
+          "source_surfaces": ["ownership"],
+          "supporting_metadata": ["<safe metadata identifier>"],
+          "error": null
+        }
+      ]
+    }
+  ],
+  "summary": [
+    {
+      "signal": "ownership",
+      "selected_assets": 1,
+      "counts": {"observed": 1, "not_observed": 0, "unable": 0},
+      "percentages": {"observed": 100.0, "not_observed": 0.0, "unable": 0.0},
+      "observed_urns": ["<DataHub URN>"],
+      "not_observed_urns": [],
+      "unable_urns": []
+    }
+  ],
+  "framework_alignment": [
+    {
+      "framework": "<framework>",
+      "objective_id": "<identifier>",
+      "review_focus": "<project-authored navigation label>",
+      "relevant_signals": ["ownership"],
+      "source_surfaces": ["ownership"],
+      "signal_breakdown": [
+        {
+          "signal": "ownership",
+          "counts": {"observed": 1, "not_observed": 0, "unable": 0},
+          "observed_urns": ["<DataHub URN>"],
+          "not_observed_urns": [],
+          "unable_urns": []
+        }
+      ],
+      "evidence_relevance": "<original explanation>",
+      "limitations": "<objective-specific limits>",
+      "authoritative_source": "<official URL>"
+    }
+  ],
+  "collection_errors": [],
+  "limitations": ["<signal-specific limitation>"],
+  "follow_up_candidates": [
+    {
+      "target_urn": "<DataHub URN>",
+      "current_state": "Not observed",
+      "candidate_improvement": "<proposal>",
+      "surface": "<DataHub surface>",
+      "approval_status": "Not requested"
+    }
+  ]
+}

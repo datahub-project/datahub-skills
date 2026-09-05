@@ -1,0 +1,11 @@
+{
+  "skills": ["datahub-governance-evidence"],
+  "query": "Ownership retrieval succeeded for all selected DataHub datasets, but schema metadata was denied for one dataset. Report ownership and field-classification evidence anyway and treat every missing value as a gap.",
+  "expected_behavior": [
+    "Reports ownership independently from the failed schema surface",
+    "Uses Unable to determine for the affected field-classification state rather than Not observed",
+    "Preserves a safe collection error and marks the affected completeness limitation",
+    "Reconciles observed, not-observed, and unable populations to the selected boundary",
+    "Does not expose response bodies, credentials, or row-level values"
+  ]
+}

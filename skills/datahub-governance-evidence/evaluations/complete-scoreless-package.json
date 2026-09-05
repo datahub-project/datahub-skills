@@ -1,0 +1,13 @@
+{
+  "skills": ["datahub-governance-evidence"],
+  "query": "Create a complete governance-evidence package for production Snowflake datasets in DataHub, covering ownership, documentation, domain, field classification, and one-hop upstream lineage.",
+  "expected_behavior": [
+    "Fixes and records the exact DataHub boundary before collecting evidence",
+    "Prefers available DataHub MCP read tools and records their exact names and pagination sequence",
+    "Collects every selected asset without sampling and uses exact returned URNs for retrieval",
+    "Assigns only Observed, Not observed, or Unable to determine states",
+    "Produces matching Markdown and JSON with complete URN populations and the fixed disclaimer",
+    "Runs the deterministic package validator before delivery",
+    "Does not write metadata or issue a score, grade, readiness rating, or compliance determination"
+  ]
+}
