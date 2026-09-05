@@ -33,7 +33,7 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 
 - `allowed-tools` in the YAML frontmatter above
 
-**Reference file paths:** Shared references are in `../shared-references/` relative to this skill's directory. Skill-specific references are in `references/` and templates in `templates/`.
+**Reference file paths:** References are in `references/` and templates are in `templates/` relative to this skill's directory.
 
 ---
 
@@ -472,7 +472,7 @@ Use `datahub graphql --query '...' --format json`. See the reference docs for fu
 
 ### GraphQL best practices
 
-1. **Only use documented fields and mutations.** Do not guess or invent GraphQL field names from training data — they are often wrong. The CLI has built-in introspection commands to verify the live schema (see `../shared-references/datahub-cli-reference.md` → "GraphQL Discovery"):
+1. **Only use documented fields and mutations.** Do not guess or invent GraphQL field names from training data — they are often wrong. The CLI has built-in introspection commands to verify the live schema (see `references/datahub-cli-reference.md` → "GraphQL Discovery"):
 
    ```bash
    datahub graphql --describe dataProduct --recurse --format json   # show fields on a type
@@ -661,7 +661,7 @@ After executing, confirm the change took effect:
 | Assertion mutations reference     | `references/assertion-mutations-reference.md`   | All assertion types, standalone/monitor/smart patterns, running, reporting |
 | Incident & subscription reference | `references/incident-subscription-reference.md` | Incident CRUD, subscription CRUD, notification channels                    |
 | Quality report template           | `templates/quality-report.template.md`          | Quality status report format                                               |
-| CLI reference (shared)            | `../shared-references/datahub-cli-reference.md` | CLI syntax                                                                 |
+| CLI reference                     | `references/datahub-cli-reference.md`           | CLI syntax                                                                 |
 
 ---
 

@@ -27,7 +27,7 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 - `allowed-tools` in the YAML frontmatter above
 - **Do not delegate to the `metadata-searcher` sub-agent** from this skill. Enrichment requires mutation context and approval workflows that the searcher agent does not have. Execute all search and entity resolution inline.
 
-**Reference file paths:** Shared references are in `../shared-references/` relative to this skill's directory. Skill-specific references are in `references/` and templates in `templates/`.
+**Reference file paths:** References are in `references/` and templates are in `templates/` relative to this skill's directory.
 
 ---
 
@@ -205,13 +205,13 @@ See `templates/enrichment-report.template.md` for the full template.
 
 ## Reference Documents
 
-| Document                   | Path                                            | Purpose                          |
-| -------------------------- | ----------------------------------------------- | -------------------------------- |
-| Mutation reference         | `references/mutation-reference.md`              | GraphQL mutations per operation  |
-| Bulk operations guide      | `references/bulk-operations-reference.md`       | Batch patterns and safety limits |
-| Enrichment plan template   | `templates/enrichment-plan.template.md`         | Proposed changes template        |
-| Enrichment report template | `templates/enrichment-report.template.md`       | Completed changes template       |
-| CLI reference (shared)     | `../shared-references/datahub-cli-reference.md` | CLI syntax                       |
+| Document                   | Path                                      | Purpose                          |
+| -------------------------- | ----------------------------------------- | -------------------------------- |
+| Mutation reference         | `references/mutation-reference.md`        | GraphQL mutations per operation  |
+| Bulk operations guide      | `references/bulk-operations-reference.md` | Batch patterns and safety limits |
+| Enrichment plan template   | `templates/enrichment-plan.template.md`   | Proposed changes template        |
+| Enrichment report template | `templates/enrichment-report.template.md` | Completed changes template       |
+| CLI reference              | `references/datahub-cli-reference.md`     | CLI syntax                       |
 
 ---
 

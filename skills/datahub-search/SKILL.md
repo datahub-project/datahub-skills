@@ -34,7 +34,7 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 - `allowed-tools` in the YAML frontmatter above
 - `Task(subagent_type="datahub-skills:metadata-searcher")` for delegated search — **fallback instructions are provided inline** for agents that cannot dispatch sub-agents
 
-**Reference file paths:** Shared references are in `../shared-references/` relative to this skill's directory. Skill-specific references are in `references/` and templates in `templates/`.
+**Reference file paths:** References are in `references/` and templates are in `templates/` relative to this skill's directory.
 
 ---
 
@@ -202,7 +202,7 @@ The filter field is always `structuredProperties.<qualifiedName>` and requires a
 | **Get entity**     | `get_entities(urns=[...])`                    | `datahub get --urn "..."`                                                |
 | **Browse**         | `browse(path=...)`                            | Not available via CLI                                                    |
 
-MCP tool names vary by server (e.g., `mcp__datahub__search`). Match by function suffix — MCP tools are self-documenting, so check their schemas for parameter details. See `../shared-references/datahub-cli-reference.md` for CLI syntax.
+MCP tool names vary by server (e.g., `mcp__datahub__search`). Match by function suffix — MCP tools are self-documenting, so check their schemas for parameter details. See `references/datahub-cli-reference.md` for CLI syntax.
 
 ### Using DataHub CLI
 
@@ -384,11 +384,11 @@ When showing a single entity:
 
 ## Reference Documents
 
-| Document                | Path                                            | Purpose                              |
-| ----------------------- | ----------------------------------------------- | ------------------------------------ |
-| Entity type reference   | `references/entity-type-reference.md`           | Entity types, URN formats, platforms |
-| Search filter reference | `references/search-filter-reference.md`         | Filters, facets, search syntax       |
-| CLI reference (shared)  | `../shared-references/datahub-cli-reference.md` | CLI command syntax                   |
+| Document                | Path                                    | Purpose                              |
+| ----------------------- | --------------------------------------- | ------------------------------------ |
+| Entity type reference   | `references/entity-type-reference.md`   | Entity types, URN formats, platforms |
+| Search filter reference | `references/search-filter-reference.md` | Filters, facets, search syntax       |
+| CLI reference           | `references/datahub-cli-reference.md`   | CLI command syntax                   |
 
 ---
 
