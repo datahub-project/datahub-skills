@@ -17,7 +17,8 @@ You have access to 5 DataHub catalog interaction skills. Use this guide to route
 | **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
 | **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
 | **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
+| **Explore lineage** (upstream, downstream, impact, dependencies)                 | **Lineage** | `/datahub-lineage` |
+| **Diagnose an incident** ("why did X break", root cause, blast radius)           | **RCA**     | `/datahub-rca`     |
 | **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
 | **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
 | **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |

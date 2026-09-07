@@ -1,0 +1,12 @@
+{
+  "skills": ["datahub-rca"],
+  "query": "daily_revenue dropped 40% overnight. marketing_spend looks broken too — it is two days stale, lost 88% of its rows, and had a column renamed this morning. Is that the cause?",
+  "expected_behavior": [
+    "Does NOT accept marketing_spend on the strength of its anomaly signals alone, even though they are the strongest in the graph",
+    "Calls get_lineage_paths_between between the symptom and marketing_spend",
+    "Reports that no lineage path connects marketing_spend to daily_revenue, and rejects it explicitly rather than dropping it silently",
+    "Continues down the ranked candidate list instead of stopping at the rejection",
+    "Explains the distinction to the user: a ranking is a hypothesis, a reconstructed path is proof",
+    "If a grounded cause is found, reports it with its proof path; if not, escalates to a human and writes nothing"
+  ]
+}

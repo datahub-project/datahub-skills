@@ -1,0 +1,18 @@
+{
+  "skills": ["datahub-rca"],
+  "query": "The revenue dashboard dropped 40% this morning and a volume assertion on daily_revenue failed. Why?",
+  "expected_behavior": [
+    "Resolves the symptom to the daily_revenue dataset URN via search",
+    "Calls get_lineage upstream (max_hops 3) to scope the suspect subgraph",
+    "Ranks upstream candidates on more than one signal — freshness lag, volume anomaly, schema change, key uniqueness — rather than a single anomaly score",
+    "Checks whether a candidate's own upstreams show the same signal, and prefers the node where the fault originates rather than one that inherited it",
+    "Identifies raw_trips as the origin, not the intermediate victim trips_cleaned",
+    "Calls get_lineage_paths_between to VERIFY a path from the symptom to the candidate before accepting it",
+    "Rejects any candidate it cannot connect with a verifiable lineage path, even when that candidate carries stronger anomaly signals",
+    "Captures the transform SQL on the edge leaving the culprit as proof",
+    "States whether it reached path-and-transform grounding or path-only, rather than implying a complete proof either way",
+    "Calls search_documents to check for prior dossiers on the culprit before recommending a fix",
+    "Writes an incident dossier back via save_document and tags the culprit root-cause",
+    "Writes nothing at all if no candidate could be grounded"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "skills": ["datahub-rca"],
+  "query": "Two teams opened incidents twenty minutes apart — billing_facts USD amounts fell 31% and usage_rollup spend came in 28% under forecast. Are these the same problem?",
+  "expected_behavior": [
+    "Scopes the upstream ancestors of BOTH symptoms rather than investigating one and stopping",
+    "Intersects the ancestor sets to find assets upstream of both",
+    "Discards a shared ancestor that carries no fault of its own — being a common dependency is not evidence of being the broken one",
+    "Identifies currency_rates as the shared cause, and reports its own freshness lag as the evidence",
+    "Verifies a lineage path from currency_rates to EACH symptom separately, rather than asserting the second by association with the first",
+    "States the grounding at the weakest rung across those proofs, because a group claim cannot be better grounded than its worst link",
+    "Names any incident it cannot prove the shared cause reaches, instead of folding it into the group",
+    "Files one dossier for the shared cause rather than one per symptom"
+  ]
+}
