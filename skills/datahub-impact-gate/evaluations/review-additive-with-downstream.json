@@ -1,0 +1,11 @@
+{
+  "skills": ["datahub-impact-gate"],
+  "query": "Impact gate: I'm adding a new nullable column promo_code (STRING) to the trips dataset that feeds our fare model.",
+  "expected_behavior": [
+    "Classifies adding a nullable column as a non-breaking, additive change",
+    "Still computes the downstream blast radius with a skip-cache searchAcrossLineage query",
+    "Finds the downstream production model and resolves its owner",
+    "Returns a REVIEW verdict rather than an automatic PASS because a live downstream consumer exists and a human owner should sign off",
+    "Does not mutate any metadata and offers /datahub-quality for follow-up actions"
+  ]
+}

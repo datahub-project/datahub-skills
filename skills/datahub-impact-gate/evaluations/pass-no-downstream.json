@@ -1,0 +1,11 @@
+{
+  "skills": ["datahub-impact-gate"],
+  "query": "Is it safe to merge? Adding a notes TEXT column to a standalone staging table with nothing built on top of it.",
+  "expected_behavior": [
+    "Classifies adding a column as a non-breaking additive change",
+    "Runs a skip-cache searchAcrossLineage DOWNSTREAM query and confirms there are no downstream ML models or dashboards",
+    "Returns a PASS verdict",
+    "Still presents the (empty) impacted set so the user can see the gate actually looked downstream",
+    "Does not disable telemetry or mutate any metadata"
+  ]
+}

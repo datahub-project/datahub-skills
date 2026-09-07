@@ -36,6 +36,16 @@ Explore data lineage, trace upstream sources and downstream consumers, perform i
 > /datahub-lineage trace the customer pipeline
 ```
 
+#### Impact gate
+
+Decide whether a proposed schema or dbt change is safe to merge. Computes the downstream blast radius onto ML models and dashboards, walks the ML lineage path (dataset → feature → model), resolves owners, and returns a PASS / REVIEW / BLOCK recommendation — failing safe when lineage is ambiguous.
+
+```
+> Should I merge this? I'm dropping airport_fee from trip_features
+> Impact gate for renaming pickup_ts on the trips table
+> /catalog-impact drop column fare_amount from raw_trips
+```
+
 #### Quality
 
 Manage data quality — create and run assertions (freshness, volume, SQL, field, schema), set up smart AI-inferred assertions, raise and resolve incidents, and configure notification subscriptions. Separates Open Source (diagnostic) from Cloud (full management) capabilities.
@@ -270,6 +280,7 @@ Other platforms do the same things through natural language.
 | `/catalog-search [query]`   | Search the catalog and answer questions         |
 | `/catalog-enrich [entity]`  | Add or update metadata                          |
 | `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
+| `/catalog-impact [change]`  | Gate a proposed change (PASS / REVIEW / BLOCK)  |
 | `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
 | `/catalog-setup [task]`     | Set up connection and configure defaults        |
 
@@ -318,6 +329,12 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-impact-gate/         # Change merge gate (blast radius)
+│   │   ├── SKILL.md
+│   │   ├── commands/
+│   │   ├── references/
+│   │   ├── templates/
+│   │   └── evaluations/
 │   ├── datahub-quality/             # Data quality management
 │   │   ├── SKILL.md
 │   │   ├── references/
@@ -373,7 +390,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-impact-gate/`, `skills/datahub-quality/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
