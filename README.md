@@ -36,6 +36,19 @@ Explore data lineage, trace upstream sources and downstream consumers, perform i
 > /datahub-lineage trace the customer pipeline
 ```
 
+#### PR blast radius
+
+Review SQL and dbt pull requests before merge: resolve every changed model in
+the catalog, trace downstream consumers, and score the change with
+deterministic rules (missing lineage or unresolved entities never produce
+SAFE). Posts the verdict with an impact table, owners, and a fix suggestion.
+
+```
+> Review PR 42 for blast radius before we merge it
+> What breaks if this dbt PR merges?
+> /datahub-pr-blast-radius check the open customers model PR
+```
+
 #### Quality
 
 Manage data quality — create and run assertions (freshness, volume, SQL, field, schema), set up smart AI-inferred assertions, raise and resolve incidents, and configure notification subscriptions. Separates Open Source (diagnostic) from Cloud (full management) capabilities.
