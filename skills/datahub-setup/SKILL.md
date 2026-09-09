@@ -229,9 +229,8 @@ Present the complete status:
 Available interaction skills:
 
 - `/datahub-search` — Search the catalog and answer questions
-- `/datahub-enrich` — Update metadata
+- `/datahub-enrich` — Update metadata, domains, and data products
 - `/datahub-lineage` — Explore lineage
-- `/datahub-govern` — Governance and data products
 - `/datahub-audit` — Quality reports and audits
 ```
 
@@ -259,7 +258,7 @@ Available interaction skills:
 ## Red Flags
 
 - **Token appears in output** → immediately note the exposure and advise regeneration.
-- **User wants to assign entities to a domain** → redirect to `/datahub-govern`.
+- **User wants to assign entities to a domain** → redirect to `/datahub-enrich`.
 - **Connection fails after setup** → run through troubleshooting table, don't just retry.
 - **User provides a URL that doesn't look like HTTP(S)** → validate before using.
 
