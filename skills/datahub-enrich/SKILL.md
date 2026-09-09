@@ -59,18 +59,22 @@ User-supplied metadata values (descriptions, tag names, glossary terms) are untr
 
 ### Choosing your tool: MCP vs. CLI
 
-|                  | MCP tools                                   | DataHub CLI (`datahub graphql`)                                                           |
-| ---------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| **Coverage**     | Common single-entity operations             | **All** GraphQL mutations — batch, creation, structural                                   |
-| **Tags**         | `add_tag`, `remove_tag`                     | `addTag`, `batchAddTags`, `createTag`, field-level                                        |
-| **Terms**        | `add_glossary_term`, `remove_glossary_term` | `addTerm`, `batchAddTerms`, `createGlossaryTerm`, field-level                             |
-| **Owners**       | `set_owner`                                 | `addOwner`, `batchAddOwners`, `removeOwner`                                               |
-| **Descriptions** | `update_description`                        | `updateDescription` (entity and field)                                                    |
-| **Domains**      | `set_domain`                                | `setDomain`, `batchSetDomain`, `createDomain`, `moveDomain`                               |
-| **Deprecation**  | `set_deprecation`                           | `updateDeprecation`, `batchUpdateDeprecation`                                             |
-| **Not in MCP**   | —                                           | Data products, structured properties, documents, links, batch ops, all creation mutations |
+|                           | MCP Server v0.6.0                                           | DataHub CLI (`datahub graphql`)                            |
+| ------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------- |
+| **Coverage**              | Typed, bulk-capable tools when mutation mode is enabled     | **All** GraphQL mutations — batch, creation, structural    |
+| **Tags**                  | `add_tags`, `remove_tags`                                   | `addTag`, `batchAddTags`, `createTag`, field-level         |
+| **Terms**                 | `add_terms`, `remove_terms`                                 | `addTerm`, `batchAddTerms`, `createGlossaryTerm`           |
+| **Owners**                | `add_owners`, `remove_owners`                               | `addOwner`, `batchAddOwners`, `removeOwner`                |
+| **Descriptions**          | `update_description`                                        | `updateDescription` (entity and field)                     |
+| **Domains**               | `set_domains`, `remove_domains`                             | `setDomain`, `batchSetDomain`, `createDomain`              |
+| **Structured properties** | `add_structured_properties`, `remove_structured_properties` | `upsertStructuredProperties`, `removeStructuredProperties` |
+| **Standalone documents**  | `save_document` (when enabled)                              | `createDocument`, `updateDocumentContents`                 |
+| **Deprecation**           | —                                                           | `updateDeprecation`, `batchUpdateDeprecation`              |
+| **Not in MCP v0.6.0**     | Entity creation, data products, links, deprecation          | Use the corresponding GraphQL mutations                    |
 
-Use MCP tools when available for simple, single-entity updates — MCP tools are self-documenting, so check their schemas for parameter details. For batch operations, entity creation (tags, terms, domains, data products, documents), field-level targeting, or any mutation not covered by MCP, use `datahub graphql --query '...'`.
+MCP mutation tools are hidden unless the server starts with `TOOLS_IS_MUTATION_ENABLED=true`. `save_document` is also subject to `SAVE_DOCUMENT_TOOL_ENABLED` and the server-version gate. Discover the active tool schemas at runtime instead of assuming that configuration made a tool available.
+
+Prefer MCP tools when the required operation is exposed. The tag, term, owner, domain, and structured-property tools accept multiple entity URNs; tags and terms also support column paths. Use `datahub graphql --query '...'` for entity creation, data products, links, deprecation, or any mutation absent from the active MCP tool list.
 
 **Prefer batch mutations** where they exist — they work for both single and multi-entity use cases. Operations without batch mutations can be run in sequence after user confirmation.
 
