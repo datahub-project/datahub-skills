@@ -1,0 +1,11 @@
+{
+  "skills": ["datahub-contract-author"],
+  "query": "Add a volume assertion to the orders contract so it fails if the row count leaves its normal range.",
+  "expected_behavior": [
+    "Explains that the declarative model has no separate volume key and expresses volume as a data_quality custom_sql check",
+    "Uses SELECT COUNT(*) FROM the table with a between operator whose min and max come from the profiled row count",
+    "Refuses if asked to include any non-read-only SQL such as DELETE or TRUNCATE",
+    "Emits via the native datahub.api.entities.datacontract path rather than the deprecated datahub datacontract CLI",
+    "Gives the check a distinct description or id so parsing does not fail on duplicate ids"
+  ]
+}

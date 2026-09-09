@@ -1,0 +1,48 @@
+# Data contract for {{DATASET_NAME}}
+# Emit with:
+#   from datahub.api.entities.datacontract.datacontract import DataContract
+#   from datahub.ingestion.graph.client import get_default_graph
+#   with get_default_graph() as graph:
+#       for mcp in DataContract.from_yaml("{{DATASET_NAME}}.contract.yaml").generate_mcp():
+#           graph.emit_mcp(mcp)
+version: 1
+id: {{CONTRACT_ID}} # optional; a stable GUID is generated if omitted
+entity: {{DATASET_URN}}
+
+# Schema assertion — the columns consumers rely on (from live schemaMetadata)
+schema:
+  type: json-schema
+  json-schema:
+    type: object
+    properties:
+      {{COLUMN_A}}:
+        type: {{JSON_TYPE}} # integer | string | number | boolean
+        native_type: {{NATIVE_TYPE}} # e.g. NUMBER, VARCHAR
+      {{COLUMN_B}}:
+        type: {{JSON_TYPE}}
+        native_type: {{NATIVE_TYPE}}
+    required: [{{REQUIRED_COLUMNS}}]
+
+# Freshness assertion — when the table should be updated by
+freshness:
+  type: cron
+  cron: "{{CRON}}" # e.g. "0 8 * * *"
+  timezone: UTC
+
+# Volume + column checks (thresholds derived from datasetProfiles)
+data_quality:
+  - type: custom_sql
+    description: row count stays within the expected band
+    sql: "SELECT COUNT(*) FROM {{TABLE}}"
+    operator:
+      type: between
+      min: {{ROWCOUNT_MIN}}
+      max: {{ROWCOUNT_MAX}}
+  - type: custom_sql
+    description: {{KEY_COLUMN}} is never null
+    sql: "SELECT COUNT(*) FROM {{TABLE}} WHERE {{KEY_COLUMN}} IS NULL"
+    operator:
+      type: equal_to
+      value: 0
+  - type: unique
+    column: {{KEY_COLUMN}}

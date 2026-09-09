@@ -1,0 +1,12 @@
+{
+  "skills": ["datahub-contract-author"],
+  "query": "Give the analytics.purchases table a data contract, it should refresh daily by 8am UTC.",
+  "expected_behavior": [
+    "Resolves analytics.purchases to a dataset URN and reads its live schema via schemaMetadata",
+    "Reads datasetProfiles via GraphQL to get rowCount and per-field null/unique proportions",
+    "Drafts a declarative contract YAML with a json-schema schema block, a cron freshness at 0 8 * * * UTC, a volume custom_sql SELECT COUNT(*) band derived from rowCount, and null/unique column checks from the profile",
+    "Presents the drafted YAML and a plan summary and asks for approval before emitting",
+    "Emits via DataContract.from_yaml(...).generate_mcp() through the entity API, not the deprecated datahub datacontract CLI",
+    "Notes the contract lands PENDING and offers to activate it, then verifies the bound assertions"
+  ]
+}
