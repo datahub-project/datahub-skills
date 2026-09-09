@@ -6,22 +6,25 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                      | Skill          | Command               |
+| -------------------------------------------------------------------------------- | -------------- | --------------------- |
+| **Find or discover entities** (search, browse, filter, list)                     | **Search**     | `/datahub-search`     |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**     | `/datahub-search`     |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**     | `/datahub-enrich`     |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage**    | `/datahub-lineage`    |
+| **Data quality** (assertions, incidents, health checks)                          | **Quality**    | `/datahub-quality`    |
+| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality**    | `/datahub-quality`    |
+| **Install CLI, authenticate, verify connection**                                 | **Setup**      | `/datahub-setup`      |
+| **Configure default scopes and profiles**                                        | **Setup**      | `/datahub-setup`      |
+| **Onboard someone** (new hire, ramp up, week-one plan, learning path)            | **Onboarding** | `/datahub-onboarding` |
+| **Capture or replay knowledge** (handoff, offboarding, runbook, "what X knows")  | **Onboarding** | `/datahub-onboarding` |
+| **Check a saved runbook or doc is still accurate** against the live catalog      | **Onboarding** | `/datahub-onboarding` |
 
 ---
 
@@ -44,6 +47,13 @@ When the intent is ambiguous, use these rules:
 - **Create assertions, run quality checks, raise incidents** → **Quality**
 - **Subscribe to assertion failures or incidents** → **Quality**
 - **Metadata quality/documentation/ownership coverage** → Use **Search** to gather the data and synthesize the answer
+
+### Onboarding vs. Search
+
+- **"Which table should I use?" as a one-off question** → **Search**
+- **"I'm new — get me oriented in this domain" / "build me a week-one plan"** → **Onboarding**
+- **"Is this saved runbook still accurate?"** → **Onboarding** (document validation)
+- **"Is this dataset healthy right now?"** → **Quality**
 
 ### Lineage vs. Search
 

@@ -1,0 +1,16 @@
+{
+  "skills": ["datahub-onboarding"],
+  "query": "Our last data engineer left a 'Monthly Revenue Close' runbook in DataHub six months ago. Can I still follow it, or is it out of date?",
+  "expected_behavior": [
+    "Finds the saved runbook in the catalog with search_documents or grep_documents rather than reconstructing it from memory",
+    "For each dataset URN in the runbook, verifies the entity still resolves in the live catalog",
+    "Reads the deprecation field on each referenced dataset and, if deprecated, names the replacement from the deprecation note",
+    "Verifies every column the runbook names still exists in the current schemaMetadata, including columns referenced only inside the runbook's SQL blocks",
+    "Reads the health field on each referenced dataset and reports assertions currently failing or incidents currently open",
+    "Verifies the owners the runbook names still appear in the current ownership aspect",
+    "Reports each failed check as an explicit warning attached to the specific step it invalidates, before presenting the runbook as followable",
+    "Offers to update the saved document in DataHub with the corrections",
+    "Does NOT answer 'it's probably still fine' or rely on LLM judgment where a deterministic catalog check exists",
+    "Does NOT silently present stale steps as current"
+  ]
+}

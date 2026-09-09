@@ -1,0 +1,21 @@
+{
+  "skills": ["datahub-onboarding"],
+  "query": "The 'Monthly Revenue Close' runbook has gone stale — a column it selects was renamed and the owner it names has moved teams. Record that in the catalog and give me the corrected runbook to review.",
+  "expected_behavior": [
+    "Re-validates the runbook against the live catalog first rather than accepting the user's description of what broke",
+    "Reports which specific claims broke and which still hold, e.g. '18 of 19 claims still hold', rather than labelling the whole runbook stale",
+    "For each broken claim, names the aspect it was validated against and what that aspect reads now, so the verdict can be reproduced from the catalog",
+    "Applies a StaleRunbook tag to the drifted datasets, creating the tag entity first so it does not render as a bare URN",
+    "Records the runbook's status and the specific catalog change as structured state on the affected datasets, prefixed with the runbook id so other runbooks' values are preserved",
+    "Reads existing structured property values before upserting, because the mutation replaces the whole value list",
+    "Raises an incident only on datasets where a step would now fail, and assigns it to whoever owns that dataset in the catalog today rather than the person the runbook names",
+    "Proposes the column rename from a column that exists now and did not when the runbook was recorded, naming the evidence for the match",
+    "Proposes the owner substitution from the current ownership aspect",
+    "Repoints pronouns referring to the departed owner, or flags the step for a human read, rather than leaving prose that makes a false statement about a different person",
+    "Presents the correction as a diff and asks for approval before saving it back",
+    "Does NOT auto-apply the corrected runbook",
+    "Does NOT guess a replacement column when no candidate is clearly closest — says so and asks",
+    "Does NOT edit the runbook in response to a failing assertion or open incident, which is a live data problem rather than a wrong instruction",
+    "Does NOT count its own previously raised incident or failing runbook assertion as fresh drift on a later validation"
+  ]
+}

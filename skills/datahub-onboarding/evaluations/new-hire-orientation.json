@@ -1,0 +1,17 @@
+{
+  "skills": ["datahub-onboarding"],
+  "query": "I'm an analytics engineer starting on the e-commerce team Monday. There seem to be several order_details datasets in DataHub across Snowflake, dbt and Looker — which one should I actually use, and who should I talk to?",
+  "expected_behavior": [
+    "Searches the catalog rather than answering from prior knowledge, and retrieves the candidate datasets with get_entities",
+    "Distinguishes the same-named copies using catalog evidence — certification or authoritative-source markers, glossary terms, ownership and domain coverage, or platform-assigned usage tags — and says which signal decided it",
+    "Reads the health field off get_entities and reports failing assertions or open incidents on the recommended dataset",
+    "Reads the deprecation field and, if a candidate is deprecated, names the replacement from the deprecation note instead of recommending it",
+    "Identifies actual owners from the ownership aspect with their ownership type, distinguishing technical owner from data steward",
+    "Checks structuredProperties for an escalation contact, retention period or SLA rather than only reading the ownership list",
+    "Quotes glossary term definitions attached to the dataset and its columns rather than paraphrasing metric definitions from general knowledge",
+    "Cites real recorded queries from get_dataset_queries, or states 'no recorded queries' when the tool returns a total of 0",
+    "Offers to save the orientation as a document via save_document, linked to the datasets it references, and reports the returned document URN",
+    "Does NOT assume a usage-statistics MCP tool exists; if it wants query volume it reads the datasetUsageStatistics aspect over the CLI, or says the catalog has no usage data",
+    "Does NOT pick a dataset because its name sounds authoritative, and does NOT invent SQL examples or owner names not present in the catalog"
+  ]
+}
