@@ -47,6 +47,26 @@ Manage data quality — create and run assertions (freshness, volume, SQL, field
 > Subscribe me to assertion failures via Slack
 ```
 
+#### Circuit Breaker
+
+Trip, lift, or inspect **advisory** quarantine state (tags + structured properties) so agents and humans can honor unsafe context. Clear about what MCP does *not* auto-block.
+
+```
+> Quarantine the billing mart
+> Lift quarantine on orders after the fix merges
+> /datahub-circuit-breaker gate status for customers
+```
+
+#### Quality Circuit
+
+Selective quality circuit-breaking: findings → lineage blast radius → minimum quarantine set → MBOM-style attestation. Prefer halting only the impacted fork.
+
+```
+> Selective halt for the healthcare billing cascade
+> Blast radius for negative billing amounts
+> /datahub-quality-circuit analyze staging_patients
+```
+
 #### Setup
 
 Install the DataHub CLI, configure authentication, verify connectivity, and set up default scopes and profiles for the other interaction skills.
