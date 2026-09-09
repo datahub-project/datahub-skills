@@ -1,6 +1,6 @@
 # datahub-skills
 
-Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, manage data quality, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
+Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, coordinate privacy operations, manage data quality, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
 
 ## What's in here
 
@@ -34,6 +34,17 @@ Explore data lineage, trace upstream sources and downstream consumers, perform i
 > What feeds into the revenue dashboard?
 > Impact analysis for changing the orders table
 > /datahub-lineage trace the customer pipeline
+```
+
+#### Privacy operations
+
+Trace a data-subject request across schema and lineage, preserve retention conflicts and legal
+holds, and prepare an approval-bound plan with separate DataHub evidence write-back.
+
+```
+> Trace the downstream PII footprint for this erasure request
+> Prepare a dry-run plan and preserve legal holds
+> /datahub-privacy-ops record the verified outcome after separate approval
 ```
 
 #### Quality
@@ -229,6 +240,7 @@ git clone https://github.com/datahub-project/datahub-skills.git
 cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-privacy-ops      your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
@@ -249,6 +261,7 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 | Catalog search              | Yes                   | Yes                                              |
 | Metadata enrichment         | Yes                   | Yes                                              |
 | Lineage exploration         | Yes                   | Yes                                              |
+| Privacy operations planning | Yes                   | Yes (official DataHub MCP preferred)             |
 | Data quality management     | Yes                   | Yes                                              |
 | Connection setup            | Yes                   | Yes                                              |
 | Planning workflow           | Yes                   | Yes                                              |
@@ -265,13 +278,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                       | What it does                                    |
+| ----------------------------- | ----------------------------------------------- |
+| `/catalog-search [query]`     | Search the catalog and answer questions         |
+| `/catalog-enrich [entity]`    | Add or update metadata                          |
+| `/catalog-lineage [entity]`   | Explore lineage and trace dependencies          |
+| `/catalog-privacy-ops [case]` | Plan and record a bounded privacy operation     |
+| `/catalog-quality [entity]`   | Manage assertions, incidents, and subscriptions |
+| `/catalog-setup [task]`       | Set up connection and configure defaults        |
 
 ### Connector development
 
@@ -318,6 +332,11 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-privacy-ops/         # Privacy impact and operations planning
+│   │   ├── SKILL.md
+│   │   ├── evaluations/
+│   │   ├── references/
+│   │   └── templates/
 │   ├── datahub-quality/             # Data quality management
 │   │   ├── SKILL.md
 │   │   ├── references/
@@ -353,6 +372,7 @@ datahub-skills/
 │   ├── catalog-search.md
 │   ├── catalog-enrich.md
 │   ├── catalog-lineage.md
+│   ├── catalog-privacy-ops.md
 │   ├── catalog-quality.md
 │   ├── catalog-setup.md
 │   ├── connector-planning.md
@@ -373,7 +393,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-privacy-ops/`, `skills/datahub-quality/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
