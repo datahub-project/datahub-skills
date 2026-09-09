@@ -4,7 +4,7 @@ description: |
   Use this skill when the user needs to set up a DataHub connection, install the DataHub CLI, configure authentication, verify connectivity, set default scopes, or create agent configuration profiles. Triggers on: "set up DataHub", "connect to DataHub", "install datahub CLI", "configure DataHub", "set default platform", "focus on domain X", "create profile", or any request to establish, configure, or troubleshoot DataHub connectivity.
 user-invocable: true
 min-cli-version: 1.5.0.1rc1
-allowed-tools: Bash(datahub *), Bash(pip install *acryl-datahub*), Bash(which datahub), Bash(python3 -c *), Bash(python3 -m venv *), Bash(cat ~/.datahubenv)
+allowed-tools: Bash(datahub *), Bash(pip install *acryl-datahub*), Bash(which datahub), Bash(python3 -m venv *), Bash(test -f ~/.datahubenv), Bash(test -s ~/.datahubenv), Bash(chmod 600 ~/.datahubenv)
 ---
 
 # DataHub Setup
@@ -50,6 +50,8 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 
 - **Never display tokens or secrets in output.** When showing configuration, mask tokens as `<REDACTED>`.
 - **Never log credentials.** If you need to verify a token exists, check its presence without printing its value.
+- **Never ask users to paste tokens into chat.** Have them enter secrets directly through a local editor, credential workflow, or non-echoing terminal prompt.
+- **Never read secret-bearing configuration files.** Use existence and non-empty checks such as `test -f ~/.datahubenv` and `test -s ~/.datahubenv`; do not use `cat`, `head`, or similar commands.
 - **Validate GMS URLs.** Confirm the URL looks like a valid HTTP(S) endpoint before using it.
 - **Use virtual environments.** Always install the CLI in a Python virtual environment (venv).
 
@@ -66,8 +68,8 @@ Assess what's already configured before making changes.
 1. **Python available?** — Run `python3 --version`
 2. **Virtual environment?** — Check if a `.venv` exists or is active
 3. **CLI installed?** — Run `which datahub` and `datahub version`
-4. **Configuration file?** — Check if `~/.datahubenv` exists (do NOT display token values)
-5. **Environment variables?** — Check if `DATAHUB_GMS_URL` is set (do NOT display `DATAHUB_GMS_TOKEN` value, only confirm presence/absence)
+4. **Configuration file?** — Use `test -f ~/.datahubenv` and `test -s ~/.datahubenv`; never read the file
+5. **Environment variables?** — Check whether `DATAHUB_GMS_URL` and `DATAHUB_GMS_TOKEN` are present without expanding or printing the token value
 6. **MCP server configured?** — Check for DataHub MCP server in the agent's MCP configuration
 
 Present a status table:
@@ -118,7 +120,9 @@ gms:
   token: "<PERSONAL_ACCESS_TOKEN>"
 ```
 
-Ask the user for their GMS URL and personal access token. Suggest a URL based on their deployment:
+Ask the user for the non-secret GMS URL. Show the template with the token placeholder intact, then instruct the user to open or create `~/.datahubenv` locally and replace the placeholder themselves. Do not ask them to paste the token into chat, and do not read the resulting file.
+
+Suggest a URL based on their deployment:
 
 | Deployment    | URL Pattern                           |
 | ------------- | ------------------------------------- |
@@ -133,10 +137,12 @@ Set permissions: `chmod 600 ~/.datahubenv`.
 
 ```bash
 export DATAHUB_GMS_URL="<GMS_URL>"
-export DATAHUB_GMS_TOKEN="<TOKEN>"
+read -rsp "DataHub token: " DATAHUB_GMS_TOKEN
+export DATAHUB_GMS_TOKEN
+printf '\n'
 ```
 
-Environment variables take precedence over `~/.datahubenv`.
+The non-echoing prompt keeps the token out of the command text and shell history. Environment variables take precedence over `~/.datahubenv`.
 
 **Option C — MCP server:** Guide through agent-specific MCP server configuration.
 
@@ -252,6 +258,7 @@ Available interaction skills:
 
 - **Installing without a virtual environment.** Never `pip install` globally or with `sudo`. Always create and activate a venv first.
 - **Displaying tokens in output.** Never echo, print, or include tokens in any response. Mask as `<REDACTED>`.
+- **Requesting a token in chat.** Direct the user to a local editor, credential workflow, or non-echoing terminal prompt instead.
 - **Declaring success without verification.** Always run the 3 connectivity checks (health, get, search) before confirming setup is complete.
 - **Confusing "configure scope" with "assign domain".** "Focus on Finance domain" is a scope configuration (Setup). "Assign these tables to Finance domain" is domain management (Govern).
 - **Disabling telemetry.** Do not modify telemetry settings. The CLI may show telemetry prompts — ignore them. Leave telemetry as-is unless the user explicitly asks to change it.
@@ -268,6 +275,7 @@ Available interaction skills:
 ## Remember
 
 - **Never display tokens or secrets.** Mask with `<REDACTED>`.
+- **Never request or read tokens.** Verify only that credential sources are present, then test connectivity through the CLI or MCP server.
 - **Always use virtual environments** for CLI installation.
 - **Verify before declaring success** — run all connectivity checks.
 - **Support both CLI and MCP paths** — the user may use either or both.
