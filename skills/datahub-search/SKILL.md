@@ -40,12 +40,13 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 
 ## Not This Skill
 
-| If the user wants to...                                        | Use this instead   |
-| -------------------------------------------------------------- | ------------------ |
-| Explore lineage, upstream/downstream, impact analysis          | `/datahub-lineage` |
-| Create assertions, run quality checks, raise/resolve incidents | `/datahub-quality` |
-| Update metadata (descriptions, tags, ownership)                | `/datahub-enrich`  |
-| Install CLI, authenticate, configure defaults                  | `/datahub-setup`   |
+| If the user wants to...                                        | Use this instead                  |
+| -------------------------------------------------------------- | --------------------------------- |
+| Explore lineage, upstream/downstream, impact analysis          | `/datahub-lineage`                |
+| Create assertions, run quality checks, raise/resolve incidents | `/datahub-quality`                |
+| Update metadata (descriptions, tags, ownership)                | `/datahub-enrich`                 |
+| Diagnose why a metric or column is wrong                       | `/datahub-incident-investigation` |
+| Install CLI, authenticate, configure defaults                  | `/datahub-setup`                  |
 
 **Key boundary:** Search answers **ad-hoc questions** ("who owns X?"). Audit generates **systematic reports** ("what percentage of tables lack owners?"). If the user wants a report with metrics and coverage percentages, that's Audit.
 
