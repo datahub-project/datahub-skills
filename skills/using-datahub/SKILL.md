@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                       | Skill          | Command               |
+| --------------------------------------------------------------------------------- | -------------- | --------------------- |
+| **Find or discover entities** (search, browse, filter, list)                      | **Search**     | `/datahub-search`     |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")            | **Search**     | `/datahub-search`     |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation)  | **Enrich**     | `/datahub-enrich`     |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)      | **Lineage**    | `/datahub-lineage`    |
+| **Data quality** (assertions, incidents, health checks)                           | **Quality**    | `/datahub-quality`    |
+| **Notifications** (subscribe to assertion failures, incidents)                    | **Quality**    | `/datahub-quality`    |
+| **ML feature safety** ("does this model have target leakage?", "safe to deploy?") | **ML Leakage** | `/datahub-ml-leakage` |
+| **Install CLI, authenticate, verify connection**                                  | **Setup**      | `/datahub-setup`      |
+| **Configure default scopes and profiles**                                         | **Setup**      | `/datahub-setup`      |
 
 ---
 
@@ -44,6 +45,16 @@ When the intent is ambiguous, use these rules:
 - **Create assertions, run quality checks, raise incidents** → **Quality**
 - **Subscribe to assertion failures or incidents** → **Quality**
 - **Metadata quality/documentation/ownership coverage** → Use **Search** to gather the data and synthesize the answer
+
+### Lineage vs. ML Leakage
+
+- **"What feeds this model / dataset?"** → **Lineage** (graph exploration)
+- **"Does this model have target leakage?" / "Is it safe to deploy?"** → **ML Leakage** (policy verdict over provenance)
+- **"Trace this ML feature back to its source columns"** → **ML Leakage** (column-level provenance with governance tags)
+
+Key difference: Lineage presents the graph. ML Leakage decides whether the model
+may ship given that graph, and treats unresolvable lineage as a block rather than
+as "no edges found."
 
 ### Lineage vs. Search
 
@@ -82,3 +93,4 @@ Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it
 5. **Enrich handles all metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.
 6. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
 7. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
+8. **ML Leakage handles ML feature provenance safety** — target leakage verdicts on `mlModel` entities. It is fail-closed: missing lineage blocks. Route graph-exploration requests to Lineage instead.
