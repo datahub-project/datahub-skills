@@ -6,22 +6,23 @@ description: |
 
 # Using DataHub Skills
 
-You have access to 5 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
+You have access to 6 DataHub catalog interaction skills. Use this guide to route the user's request to the correct skill.
 
 ---
 
 ## Skill Routing Table
 
-| User Intent                                                                      | Skill       | Command            |
-| -------------------------------------------------------------------------------- | ----------- | ------------------ |
-| **Find or discover entities** (search, browse, filter, list)                     | **Search**  | `/datahub-search`  |
-| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**  | `/datahub-search`  |
-| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**  | `/datahub-enrich`  |
-| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage** | `/datahub-lineage` |
-| **Data quality** (assertions, incidents, health checks)                          | **Quality** | `/datahub-quality` |
-| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality** | `/datahub-quality` |
-| **Install CLI, authenticate, verify connection**                                 | **Setup**   | `/datahub-setup`   |
-| **Configure default scopes and profiles**                                        | **Setup**   | `/datahub-setup`   |
+| User Intent                                                                      | Skill        | Command             |
+| -------------------------------------------------------------------------------- | ------------ | ------------------- |
+| **Find or discover entities** (search, browse, filter, list)                     | **Search**   | `/datahub-search`   |
+| **Answer a question** about the catalog ("who owns X?", "how many X?")           | **Search**   | `/datahub-search`   |
+| **Update metadata** (descriptions, tags, glossary terms, ownership, deprecation) | **Enrich**   | `/datahub-enrich`   |
+| **Explore lineage** (upstream, downstream, impact, root cause, dependencies)     | **Lineage**  | `/datahub-lineage`  |
+| **Save or recall knowledge** (documents, runbooks, write-ups, FAQs)              | **Document** | `/datahub-document` |
+| **Data quality** (assertions, incidents, health checks)                          | **Quality**  | `/datahub-quality`  |
+| **Notifications** (subscribe to assertion failures, incidents)                   | **Quality**  | `/datahub-quality`  |
+| **Install CLI, authenticate, verify connection**                                 | **Setup**    | `/datahub-setup`    |
+| **Configure default scopes and profiles**                                        | **Setup**    | `/datahub-setup`    |
 
 ---
 
@@ -44,6 +45,16 @@ When the intent is ambiguous, use these rules:
 - **Create assertions, run quality checks, raise incidents** → **Quality**
 - **Subscribe to assertion failures or incidents** → **Quality**
 - **Metadata quality/documentation/ownership coverage** → Use **Search** to gather the data and synthesize the answer
+
+### Document vs. Enrich
+
+Both write to DataHub, and the difference is what the writing is attached to.
+
+- **Metadata on an entity** (description, tag, glossary term, owner) → **Enrich**
+- **Standalone knowledge** that can reference many entities and outlive any one of them
+  (impact analyses, incident write-ups, runbooks, FAQs) → **Document**
+- **"Describe this column"** → Enrich. **"Write up why this pipeline broke"** → Document
+- **Recalling knowledge already captured** ("is there a runbook for X") → **Document**
 
 ### Lineage vs. Search
 
@@ -80,5 +91,6 @@ Use the skill name from the YAML frontmatter. If `-C` is not recognized, omit it
 3. **Lineage is for lineage only** — not for general "what is this entity?" questions (that's Search).
 4. **Search handles ad-hoc questions.** "Who owns X?" and "what columns does X have?" are Search questions, not Lineage.
 5. **Enrich handles all metadata writes** — descriptions, tags, glossary terms, ownership, deprecation.
-6. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
-7. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
+6. **Document handles standalone knowledge** — write-ups, runbooks and FAQs that stand on their own, and recalling ones already written. Metadata attached to an entity is still Enrich.
+7. **Quality handles data quality** — assertions, incidents, health checks, subscriptions.
+8. **Setup handles environment and configuration** — CLI install, auth, connectivity, default scopes.
