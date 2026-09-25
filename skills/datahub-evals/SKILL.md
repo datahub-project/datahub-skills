@@ -1,15 +1,16 @@
 ---
 name: datahub-evals
 description: |
-  Use this skill to run DataHub's saved evals and report answers for judging. Triggers on: "run our evals", "run the eval suite", "run eval urn:li:eval:...", "how are our evals doing", "check for eval regressions", "upload this answer as an eval result", "score this answer with the DataHub judge", "compare two agents on the same eval". Answers each eval in a fresh agent with the DataHub tools attached, reports the answer through the DataHub Cloud CLI, and reads back the verdict DataHub's own judge produced.
+  Use this skill to run DataHub's saved evals, record answers as eval runs, and score answers with DataHub's judge without recording them. Triggers on: "run our evals", "run the eval suite", "run eval urn:li:eval:...", "how are our evals doing", "check for eval regressions", "upload this answer as an eval result", "score this answer with the DataHub judge", "compare two agents on the same eval". Answers each eval in a fresh agent with the DataHub tools attached. Records real eval runs with `evals report` and scores everything else with `evals judge`, which records nothing, using the DataHub Cloud CLI and DataHub's own judge either way.
 user-invocable: true
 allowed-tools: Bash(acryl-datahub-cloud *), Bash(claude *), Bash(pip install *acryl-datahub-cloud*), Bash(python3 -m venv *), Task
 ---
 
 # DataHub Evals
 
-Run DataHub's saved evals, and report answers — yours or another agent's — for DataHub to
-judge.
+Run DataHub's saved evals, and have DataHub's judge score answers — yours or another agent's.
+An answer is either recorded as a run, which the DataHub UI shows, or only scored, which leaves
+nothing behind. [Choose which](#record-a-run-or-just-score-it) before sending anything.
 
 **You are the runner.** There is no script: you fetch the evals, answer each one in a fresh
 agent, and report the answers. Every call to DataHub is one `evals` subcommand, so the queries
@@ -35,9 +36,34 @@ A simulated verdict written in the house style reads as authoritative, gets past
 comparison table, and is comparable with nothing. A model is also not a fair judge of an
 answer it or a sibling produced.
 
-That is why `--type` is never passed to `evals report`: omitting it routes the answer
-through the same judge a native run gets, which is the only thing that makes two runs
-comparable.
+That is why `--type` is never passed to `evals report`, and why an answer that should not be
+recorded goes to `evals judge` rather than to a local verdict. Both route the answer through the
+same judge a native run gets, which is the only thing that makes two scores comparable.
+
+---
+
+## Record a run, or just score it?
+
+Two commands send an answer to DataHub's judge. They differ in what they leave behind.
+
+|                   | `evals report`                                       | `evals judge`     |
+| ----------------- | ---------------------------------------------------- | ----------------- |
+| Recorded          | Yes, as a run event on the eval                      | No                |
+| In the DataHub UI | The eval's run history, latest result, and pass rate | Nowhere           |
+| Run id            | Required, and deduplicated                           | None              |
+| Verdict           | Read back with `evals history`                       | Printed on stdout |
+
+**Record only a real run of an `EXTERNAL` eval:** the user asked you to run the suite, or to
+upload a result. A recorded run becomes the eval's latest result, so it moves the pass rate that
+everyone who opens the Evals page sees. The CLI has no command that removes one.
+
+**Score everything else with `judge`:** "score this answer", a candidate or draft answer,
+checking whether a documentation change fixes an eval, comparing two agents or two prompts, and
+any answer to a `NATIVE` eval. Recording these mixes ad hoc results into the pass rate and makes
+it unreadable.
+
+**When it is unclear, ask.** A scored answer can still be recorded afterwards with `report`. A
+recorded run cannot be taken back.
 
 ---
 
@@ -77,8 +103,20 @@ returning its result on stdout, so a warning about adapting the GraphQL query fo
 compatibility is not a failed call.
 
 If that fails, stop and fix the connection — a bad token or URL surfaces here, before
-anything is spent. It does not prove the `MANAGE_AGENTS` privilege that reporting requires;
-there is no privilege query, so a token without it fails at report time instead.
+anything is spent. It does not prove the Manage Evals or Manage Agents privilege that `report`
+and `judge` require; there is no privilege query, so a token without it fails at that call
+instead.
+
+**The CLI has `judge`,** if any answer is to be scored without recording it.
+
+```bash
+acryl-datahub-cloud evals judge --help
+```
+
+It needs an `acryl-datahub-cloud` release that ships the command, and a DataHub Cloud v2.3.0 or
+later server. If the command does not exist, or a call fails with `judge_unsupported`, say so
+and ask the user whether to record the answer with `report` instead. Never switch to `report`
+on your own: that records a run the user did not ask for.
 
 **The answering agent has the SQL workflow skill.** A `SQL` eval is scored on catalog-grounded
 SQL — the right tables, joins and metric definitions, found through the DataHub tools rather
@@ -156,10 +194,12 @@ acryl-datahub-cloud evals get urn:li:eval:...    # one eval, with its conditions
 
 **`--eval-executor` says whose job the run is.** Everything below is the `EXTERNAL` path —
 you produce the answer and report it. A `NATIVE` eval is run by DataHub itself, and
-`acryl-datahub-cloud evals run <urn>... [--wait N] [--fail-on-fail]` is how you ask for that; answering
-one yourself reports an external run against an eval the product would have run. `run` refuses
-`--eval-executor EXTERNAL` outright, because starting a run queues native execution that would
-race the answer you are about to report.
+`acryl-datahub-cloud evals run <urn>... [--wait N] [--fail-on-fail]` is how you ask for that. Never
+`report` your own answer to a `NATIVE` eval: it is recorded as an external run and mixed into
+the pass rate of the scheduled native runs. To see how your answer to one scores, use
+[`judge`](#scoring-without-recording). `run` refuses `--eval-executor EXTERNAL` outright,
+because starting a run queues native execution that would race the answer you are about to
+report.
 
 **Show the plan and get a yes.** One eval is one full agent run. Never start a suite the
 user has not seen the size of.
@@ -196,6 +236,10 @@ pin.
 
 ## Reporting the answer
 
+This records a run. Use it only when the run
+[should be recorded](#record-a-run-or-just-score-it); otherwise
+[score without recording](#scoring-without-recording).
+
 Check the answer against [the citation trap](#the-citation-trap) first. `--dry-run` will not
 catch it: that validates the request, never the eval's conditions.
 
@@ -212,8 +256,8 @@ acryl-datahub-cloud evals report urn:li:eval:... \
 - **Pipe the answer on stdin** (`--answer -`). Answers are long, arbitrary text.
 - **`--external-client`** keeps a reported answer distinguishable from a native product run.
   Be accurate: an answer pasted in by a person is not a `claude-code` run.
-- **`--run-id`** is the only key tying a verdict back to a run. For a bakeoff, use one shared
-  prefix per comparison.
+- **`--run-id`** is the only key tying a verdict back to a run. For a bakeoff the user wants
+  recorded, use one shared prefix per comparison.
 
 **A failing report is not proof the answer was lost.** `report_not_persisted` means the
 confirmation poll gave up, not that nothing was written. Check before concluding:
@@ -231,8 +275,45 @@ discarding the text you just sent. So a re-send is safe for a report you are uns
 and useless for correcting one that did: a corrected answer needs a new run id, and you say
 which id carries which text.
 
-**This is also how you report an answer produced somewhere else** — a chat bot, a notebook,
-another agent. Same command, honest `--external-client`.
+**This is also how you record an answer produced somewhere else** — a chat bot, a notebook,
+another agent. Same command, honest `--external-client`. To score such an answer without
+recording it, use `judge`.
+
+---
+
+## Scoring without recording
+
+```bash
+acryl-datahub-cloud evals judge urn:li:eval:... --answer -
+```
+
+The CLI reads the eval's question, reference answers, and conditions, sends them with the answer
+to the same judge a recorded run gets, and prints the verdict. Nothing is stored.
+
+- **Check [the citation trap](#the-citation-trap) first.** `ASSET_REFERENCE` is scored the same
+  way as for a recorded run.
+- **Pipe the answer on stdin** (`--answer -`).
+- **There is no run id, client, or model to pass.** Nothing is stored, so there is nothing to
+  attribute. When you present the score, state the model and tool surface yourself.
+- **Every call is a new judgment.** Nothing is deduplicated, and each call spends judge tokens.
+  Scoring the same answer twice can flip a borderline `LLM_JUDGE` condition; that is the judge's
+  variance, not a change in the answer.
+
+The output has `"recorded": false`, `result` (`PASS` or `FAIL`), `conditionResults`,
+`judgeModel`, and `citedUrns`, the URNs `ASSET_REFERENCE` was scored against. Read it the way
+you read a recorded verdict, [below](#reading-the-results).
+
+An `LLM_JUDGE` condition without guidelines comes back failed, with reasoning that says it has
+no configuration. That is a defect in the eval, not in the answer, so report it as one.
+
+When no verdict comes back, the command exits non-zero and names the error:
+
+| Error                | Meaning                                       | What to do                                                           |
+| -------------------- | --------------------------------------------- | -------------------------------------------------------------------- |
+| `judge_unavailable`  | The judge returned no verdict                 | Retry once. If it fails again, say the judge is unavailable and stop |
+| `judge_unsupported`  | The server predates v2.3.0                    | Say so, and ask before recording with `report`                       |
+| `judge_unauthorized` | The token lacks Manage Evals or Manage Agents | Stop and say which privilege is missing                              |
+| `eval_not_judgeable` | No condition on the eval can be judged        | Report that the eval's conditions need fixing                        |
 
 ---
 
@@ -250,7 +331,7 @@ So an agent that names exactly the right asset in prose fails the condition for 
 reason that has nothing to do with whether it found the asset — and reported without
 comment, that produces a cross-agent comparison that looks damning and means nothing.
 
-**Before reporting**, classify each URN in the condition's `mustReference`:
+**Before reporting or judging**, classify each URN in the condition's `mustReference`:
 
 |                               |                                                  |
 | ----------------------------- | ------------------------------------------------ |
@@ -273,8 +354,8 @@ what the condition requires.
 acryl-datahub-cloud evals history urn:li:eval:... --limit 10
 ```
 
-Match on your `runId`. A judge that has not answered yet is not a failing eval — and
-`COMPLETE` alone is not a verdict either. Read `result.type`:
+For a recorded run, match on your `runId`. A judge that has not answered yet is not a failing
+eval — and `COMPLETE` alone is not a verdict either. Read `result.type`:
 
 - **`PASS` / `FAIL`** — a real verdict, with `conditionResults` and a `judgeModel`.
 - **`ERROR`** — the judge did not score the answer. A `judgeModel` of `null`, no
@@ -284,11 +365,14 @@ conditions` mean the answer is stored and unscored. **It is not a failed eval, a
   returning its stored result. If it errors again the judge is unavailable — report that and
   stop, rather than filling the gap with a verdict of your own.
 
+`judge` prints its verdict directly and never returns `ERROR`: when the judge does not score
+the answer, the command fails instead.
+
 **Read the answer before trusting a verdict.** It is how you tell a real regression from a
 judge that disagreed about wording. Then read a failure by kind:
 
-- **`ASSET_REFERENCE` failed, `citedEntities` empty, answer names the asset** — the citation
-  trap, not a retrieval failure.
+- **`ASSET_REFERENCE` failed, `citedEntities` (or `citedUrns` from `judge`) empty, answer
+  names the asset** — the citation trap, not a retrieval failure.
 - **`ASSET_REFERENCE` failed and the asset appears nowhere** — before blaming the agent, ask
   whether it could have found it: search for that URN with the same MCP tools the answer had.
   If the catalog does not return it, the eval is pointing at something unreachable and no
