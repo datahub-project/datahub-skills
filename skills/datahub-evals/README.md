@@ -15,6 +15,9 @@ There is no script. The skill drives it:
    the same judge it uses for its own runs.
 5. `acryl-datahub-cloud evals history` reads the verdict back.
 
+Ad hoc scores ("score this answer", comparisons) go through `acryl-datahub-cloud evals judge`
+instead, which prints the verdict and records no run.
+
 Every call to DataHub is one CLI subcommand, so the queries and the payload live in the CLI
 rather than being reimplemented here.
 

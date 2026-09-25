@@ -1,7 +1,7 @@
 ---
 name: datahub-evals
 description: |
-  Use this skill to run DataHub's saved evals and report answers for judging. Triggers on: "run our evals", "run the eval suite", "run eval urn:li:eval:...", "how are our evals doing", "check for eval regressions", "upload this answer as an eval result", "score this answer with the DataHub judge", "compare two agents on the same eval". Answers each eval in a fresh agent with the DataHub tools attached, reports the answer through the DataHub Cloud CLI, and reads back the verdict DataHub's own judge produced.
+  Use this skill to run DataHub's saved evals and report answers for judging. Triggers on: "run our evals", "run the eval suite", "run eval urn:li:eval:...", "how are our evals doing", "check for eval regressions", "upload this answer as an eval result", "score this answer with the DataHub judge", "compare two agents on the same eval". Answers each eval in a fresh agent with the DataHub tools attached, reports the answer through the DataHub Cloud CLI, and reads back the verdict DataHub's own judge produced. Ad hoc scoring uses `evals judge`, which records nothing.
 user-invocable: true
 allowed-tools: Bash(acryl-datahub-cloud *), Bash(claude *), Bash(pip install *acryl-datahub-cloud*), Bash(python3 -m venv *), Task
 ---
@@ -191,6 +191,22 @@ Or one subagent per eval when the tool surface allows it.
 **Pin the model** for any run whose pass rate will be compared with another. The CLI default
 moves, so an unpinned run is not repeatable — say so rather than naming a model you did not
 pin.
+
+---
+
+## Record a run, or just score it
+
+`evals report` records a run: it shows in the eval's history and pass rate in the DataHub UI.
+Use it only for a real run of an `EXTERNAL` eval, or when the user asks to upload a result.
+
+For everything else ("score this answer", comparisons, draft answers, answers to `NATIVE`
+evals), use `evals judge`. Same judge, verdict printed to stdout, nothing recorded:
+
+```bash
+acryl-datahub-cloud evals judge urn:li:eval:... --answer -
+```
+
+If `judge` is unavailable (older CLI, or a server before v2.3.0), ask before using `report`.
 
 ---
 
