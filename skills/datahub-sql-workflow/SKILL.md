@@ -77,27 +77,15 @@ one row. Write the query with the placeholder or a bound parameter; do not ask
 the user for the real value. Ask a clarifying question only when the metric or
 grain itself is ambiguous.
 
-### 1a. Schema-discovery questions are `INFORMATION_SCHEMA` queries
+### 1a. Schema-discovery questions are catalog questions
 
-"Which tables exist in schema S", "what columns does T have", "rank tables by
-row count" ask about catalog structure, not data. Documents and anchors cannot
-answer them. Answer with an `INFORMATION_SCHEMA` query:
-
-```sql
-SELECT table_name, row_count
-FROM <db>.INFORMATION_SCHEMA.TABLES
-WHERE table_schema = 'S'
-ORDER BY row_count DESC
-```
-
-and for columns, `INFORMATION_SCHEMA.COLUMNS` filtered by `table_name`. Emit
-that query even in draft-only mode. `INFORMATION_SCHEMA.TABLES` or `.COLUMNS`
-is the table your query reads, so cite it like any other source:
-`urn:li:dataset:(urn:li:dataPlatform:<platform>,<db>.information_schema.tables,PROD)`
-with `<platform>` the warehouse and `<db>` the database from the question,
-lowercased. Do not answer by listing tables from `search` or `get_entities`:
-that returns the wrong objects. Use `search` or `list_schema_fields` only to
-fill in a concrete name the query needs.
+"Which tables exist in schema S", "what columns does T have", "what values does
+column C take" ask about structure, not data. Documents and anchors cannot
+answer them, so skip the document steps and answer from the catalog: `search`
+with an `entity_type = dataset` filter for the tables, `list_schema_fields` for
+the columns, `get_entities` for descriptions and profiles. If the user wants SQL
+for it, write the `INFORMATION_SCHEMA` query in the warehouse's dialect and cite
+only dataset URNs a tool returned; never construct a URN by hand.
 
 ## 2. Choose the tables
 
