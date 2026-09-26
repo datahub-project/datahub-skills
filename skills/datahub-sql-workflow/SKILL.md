@@ -71,22 +71,6 @@ budget for a grounded query is the card, one `inspect_tables_for_sql` call, and
 at most three document fetches; every extra call spends context the answer
 needs.
 
-Many questions are templates: they name an entity by a placeholder or a sample
-value ("for account X", "e.g. ORDERS"). They ask for the reusable query, not for
-one row. Write the query with the placeholder or a bound parameter; do not ask
-the user for the real value. Ask a clarifying question only when the metric or
-grain itself is ambiguous.
-
-### 1a. Schema-discovery questions are catalog questions
-
-"Which tables exist in schema S", "what columns does T have", "what values does
-column C take" ask about structure, not data. Documents and anchors cannot
-answer them, so skip the document steps and answer from the catalog: `search`
-with an `entity_type = dataset` filter for the tables, `list_schema_fields` for
-the columns, `get_entities` for descriptions and profiles. If the user wants SQL
-for it, write the `INFORMATION_SCHEMA` query in the warehouse's dialect and cite
-only dataset URNs a tool returned; never construct a URN by hand.
-
 ## 2. Choose the tables
 
 Name every table the answer needs, then confirm each one appears in evidence
@@ -104,21 +88,13 @@ inventing its columns.
   already provides the requested measures at the requested grain, use its
   native columns instead of reconstructing them from lower-grain tables.
 - **The question's grain decides between canonical sources.** When two curated
-  documents both claim to be canonical, match each one's stated grain ("one row
-  per account per day", "per user") to the grain the question asks for. A table
-  that is canonical per user is not the source for a per-account question when
-  an account-grain rollup exists. Aggregate from the finer table only when no
+  documents both claim to be canonical, the one whose stated grain matches the
+  grain the question asks for wins. Aggregate from a finer table only when no
   document matches the requested grain, and say so.
-- **Return names next to ids.** When the chosen table is keyed by an entity id
-  (account, user, region), join the entity's canonical table on that key to
-  return the human-readable name. An id-only result is incomplete, and the
-  entity table is a source your query reads, so cite it.
-- **Resolve names with a contains predicate.** When the question names an
-  entity by name, filter the entity table's name column with a case-insensitive
-  contains predicate. Never copy a literal id or an equality predicate from a
-  notebook or a saved query; those are one analyst's shortcut. Use equality only
-  when a curated document or a declared value domain (section 3) confirms the
-  exact stored value.
+- **Take literals from the question, not from saved queries.** A literal id or
+  value inside a saved query or notebook is one analyst's shortcut; do not copy
+  it into a filter. Use the value the question gives, or a value a curated
+  document or a declared value domain (section 3) confirms.
 - **Do not simplify away a canonical join.** Treat the tables and joins of the
   closest saved pattern as a checklist: investigate an omitted join before
   dropping it. A table can be canonical for one purpose without being canonical
@@ -262,8 +238,8 @@ filters and output. Before you return it, check every item:
   guard or date shape, a verified join, or a probe finding you will report;
   every guard the pattern or documents apply is carried at the same scope, or
   its omission is recorded with a reason;
-- every literal comes from a value domain, a document, or a case-insensitive
-  contains predicate;
+- every literal comes from the question, a value domain or a document, never
+  from a saved query's sample values;
 - every join key is verified on both sides and each join is forced by a
   required output column;
 - the aggregation grain matches the question: a present-tense or point-in-time
