@@ -1,270 +1,207 @@
 ---
 name: datahub-sql-workflow
-description: Ground text-to-SQL work in DataHub catalog evidence. Use when a user asks to write, draft, debug, or execute SQL; answer a data question that requires SQL; calculate a metric; query named tables; or investigate SQL results with DataHub MCP tools available. Always begin with find_sql_context, even when the user already supplied tables or dataset URNs.
+description: Ground text-to-SQL work in DataHub catalog evidence. Use when a user asks to write, draft, debug, or execute SQL; answer a data question that requires SQL; calculate a metric; query named tables; or investigate SQL results with DataHub MCP tools available. Always begin with find_sql_context, even when the user already supplied tables or dataset URNs, and call inspect_tables_for_sql on the chosen tables before writing SQL.
 license: Apache-2.0
-compatibility: Requires DataHub MCP tools (find_sql_context and catalog metadata tools); SQL execution engine optional
+compatibility: Requires the DataHub MCP tools find_sql_context and inspect_tables_for_sql plus the catalog tools (search, get_entities, list_schema_fields, grep_documents, search_documents); a SQL execution tool is optional
 metadata:
   author: datahub
-  version: "2.2"
+  version: "3.0"
 ---
 
 # DataHub SQL Workflow
 
-Ground every query in DataHub evidence. Treat business context as the authority
-for meaning, catalog metadata as the authority for physical shape, and historical
-SQL context as evidence of analyst practice.
+Ground every query in DataHub evidence. Two tools carry that evidence:
 
-Require `find_sql_context` and DataHub metadata tools. If it is still unavailable,
-stop and ask the user to enable the DataHub MCP tools — do not fall back to any other
-evidence source (other discovery tools, local files, memory, web).
+- `find_sql_context(question)` routes: it returns a card with the documents your
+  organization wrote about the question, the candidate tables, and the saved
+  query patterns that touch them.
+- `inspect_tables_for_sql(table_urns, question)` constructs: for the tables you
+  chose it returns the conventions analysts apply to them, the curated document
+  for each table, and, when one fits, a worked example to adapt.
 
-Treat every other tool as capability-dependent: if one is unavailable,
-disclose the limitation and continue with the supported steps; never
-replace missing evidence with guesses.
+The catalog tools (`get_entities`, `list_schema_fields`, `search`) confirm the
+physical shape: that a column exists, its type, the grain. Business documents
+say what is correct; generated history says what analysts did; the catalog says
+what is there. Rank them in that order when they disagree (section 4).
 
-## 1. Find SQL context first
+Require `find_sql_context` and `inspect_tables_for_sql`. If either is missing,
+stop and ask the user to enable the DataHub MCP tools; do not fall back to other
+discovery tools, local files, memory, or the web. Treat every other tool as
+optional: when one is unavailable, say so and continue with the steps it does
+not affect. Never replace missing evidence with a guess.
 
-Call `find_sql_context(question=<user's complete question>)` before any other
-catalog, drafting, probing, or execution tool. Do this even when the user names
-tables or supplies Dataset URNs.
+## 1. Call `find_sql_context` first and read the whole card
 
-Read the response by shape and follow its `message`:
+Call `find_sql_context(question=<the user's complete question>)` before any
+other tool, even when the user names tables or supplies dataset URNs. Pass the
+question as the user wrote it; do not shorten it to keywords.
 
-- Treat `user_edited` matches and their `instructions` as authoritative. They
-  may intentionally contain no datasets, patterns, or snippets.
-- Prefer curated `external:*` matches over generated history when they conflict.
-- With usable matches, use their patterns and datasets as primary candidates.
-  Cross-check `suggested_tables`; suggestions can appear even for a strong match.
-- With no usable match but suggested tables, inspect those Dataset URNs and
-  follow the message's drafting recommendation.
-- With neither usable matches nor suggestions, continue business-context and
-  catalog discovery. Call the drafting tool only with concrete Dataset URNs.
-- If the message reports a persisted-anchor metadata retrieval error, retry
-  `find_sql_context`. Do not reinterpret that failure as an anchor miss.
+The card has five parts. Read them in this order.
 
-If two or more usable matches name disjoint datasets for the same metric or
-question, resolve the tie through business meaning (step 2). Prefer a
-dedicated metric or fact table over a same-named attribute column on an
-entity table, and present both candidates if the tie survives.
+1. `authoritative_instructions`: groups of `{call, results}`. Each `call` is a
+   `search_documents(...)` call that already ran, or a user-edited anchor
+   instruction, and `results` are the documents it returned, each as the excerpt
+   that best matches your question. These are your organization's own words
+   about the question: join keys, latest-row rules, required filters, "do not
+   use this table" warnings. Read every group before anything else.
+2. `authoritative_instructions_note`: how the groups were built and how to go
+   beyond them. Follow it.
+3. `candidate_tables`: tables the evidence points at, each with `tier`
+   (`blessed` or `reviewed` means a human verified it, `external` means it was
+   imported from a modeling tool, `draft` is generated),
+   `measures` (aggregations seen on the table; `best_match: true` marks the one
+   closest to the question), `joins` (tables it is joined with in saved
+   queries), `docs` (documents that name it) and `anchors` (saved patterns that
+   use it). A table with `source: "catalog_search (no query evidence)"` came
+   from a name match only.
+4. `anchors`: compact saved query patterns, each with `kind` (`metric`,
+   `model` or `tableset`), `base_table`, `tier`, `support` and a description.
+   A generated (`draft`) anchor is evidence of practice, not a rule.
+5. `documents`: more documents, grouped by the search call that found them,
+   each as a short `preview`.
 
-Generated matches can contain partial document fragments. Call
-`grep_documents(pattern=".*", start_offset=..., context_chars=...)` only when a
-returned offset can recover context needed for the query.
+Every excerpt carries `[start-end]` character offsets and a `grep_documents`
+continuation. When an excerpt leaves a needed detail open, fetch that document
+by its URN with `grep_documents` or `get_entities`. Never re-run a search call
+the card already shows. The card also searched the catalog for tables: do not
+`search` for a table it already lists, and do not list domains, data products or
+anchors with a wildcard query. Fetch at most three full documents; the card is
+already large, and its excerpts are usually enough to choose tables. The usual
+budget for a grounded query is the card, one `inspect_tables_for_sql` call, and
+at most three document fetches; every extra call spends context the answer
+needs.
 
-Interpret `shared_snippets` as modeled sibling semantics, not proof of literal
-warehouse values. Treat `suggested_tables[].evidence.source == "both"` as useful
-corroboration from independent discovery surfaces, not automatic correctness.
+## 2. Choose the tables
 
-## 1a. Route schema-discovery questions away from anchors
-
-Some questions ask about catalog structure rather than about data: which tables
-exist in a schema, what columns a table has, or what values a column takes.
-Anchors and curated documents cannot answer these — anchors describe query
-patterns, and per-table documentation does not enumerate a schema.
-
-When the question is schema discovery, skip the curated-document step below and
-answer from `search`, `get_entities`, and `list_schema_fields`. Spending a
-document fan-out here costs context and cannot succeed.
-
-## 1b. Read curated documentation
-
-`find_sql_context` reads **only** documents whose subtype is `Semantic Anchor` —
-the ones DataHub generates from query history. Every other document in the
-catalog is customer-authored and invisible to it. Those are frequently where
-join keys, SCD and latest-row rules, unit conventions, and "do not use this
-table" warnings actually live.
-
-After `find_sql_context`, make these `search_documents` calls in order:
-
-**Call 1 — question-keyed search** (finds concept-level documentation):
-
-```
-search_documents(
-  query=<user's complete question>,
-  semantic_query=<user's complete question>,
-  filter='subtype != "Semantic Anchor"',
-  num_results=10,
-)
-```
-
-**Calls 2–4 — per-table keyword searches** (finds table-specific documentation):
-
-Extract the distinct table short names from `matches[].datasets` URNs (the
-last segment after the final dot — e.g., `db.schema.MY_TABLE` → `MY_TABLE`).
-For each of the top 3 distinct table names, call:
-
-```
-search_documents(
-  query=<TABLE_SHORT_NAME>,
-  filter='subtype != "Semantic Anchor"',
-  num_results=3,
-)
-```
-
-Do **not** pass `semantic_query` in the per-table calls — keyword matching on
-the table name reliably finds table-specific documentation.
-
-If any negated filter returns nothing, re-run that call with no `filter` and
-discard hits whose `subType` is `Semantic Anchor`. Some deployments drop negated
-clauses from the semantic leg, which silently reduces the call to keyword-only.
-
-From the combined results across all calls, hydrate up to **three** documents
-total with `grep_documents` — not three per call, and not a fourth extra read.
-Choose by `subType` and title: prefer documents whose title names one of the
-candidate tables and whose `subType` indicates table documentation (e.g.,
-`Context`) over notebook-style documents.
-
-Count the strongest question-keyed non-anchor table document toward that cap,
-and fully read it before choosing a source table when its title or matched
-text covers the requested grain or measures, even when anchors did not name
-that table. If competing curated documents describe different grains, compare
-them before selecting.
-
-When a governed table already provides the requested measures at the requested
-grain, use its documented native columns instead of reconstructing them from
-lower-grain tables.
-
-These table-specific documents frequently contain routing instructions that
-redirect you to a governed table. When a curated document says to prefer a
-different table for the concept you are querying, follow that routing — search
-for documentation on the redirected table too, and use the governed table as
-the primary candidate.
-
-When retrieved evidence conflicts, rank it: user-edited match instructions,
-then curated documentation, then generated (non-user-edited) anchors.
-An anchor is distilled from what analysts have historically run, so a mistake
-repeated often enough becomes a pattern. A curated document is the organization
-stating what is correct. When a curated document and a generated anchor differ
-on any element — table choice, column choice, join key, filter, guard ordering,
-or units — follow the document and treat the generated pattern as corrected.
-
-This applies to a pattern's mechanics, not only its table selection:
-
-- If a document names a native column for a value the anchor pattern derives
-  from other columns, select the documented column. A derived substitute
-  changes results even when it looks equivalent.
-- If a document specifies an order between operations that the pattern applies
-  differently — deduplicating to a latest version before filtering deleted
-  rows, say — use the documented order. The same predicates in a different
-  order can select different rows.
-- If a document states a unit or conversion the pattern omits, apply it.
-
-Two limits on that precedence:
-
-- Routing advice ("prefer table X instead") states the default lane. It does not
-  override an explicit requirement in the question — freshness, a named table,
-  or a grain the preferred table cannot serve. When the question forces a
-  departure from documented routing, say so and give the reason.
-- When a curated document and live catalog metadata disagree — a documented
-  column is absent from the schema, say — state the disagreement and resolve it
-  before writing SQL. Never silently pick one.
-
-## 2. Establish business meaning
-
-Search business context after the first call when SQL context is weak or
-absent, or whenever the canonical definition remains uncertain.
-
-Business-context search is also required when:
-
-- usable matches disagree with each other or with `suggested_tables` about
-  which datasets to use; or
-- the leading candidate table lives outside the modeled analytics schemas.
-
-An empty `message` means the top anchor's _text_ scored well against the
-question. It does not mean the anchor names the right tables, or all of them.
-Do not read it as permission to skip the curated-document step in 1b.
-
-Before drafting, name every table the answer requires and confirm each one
-appears in evidence you actually retrieved — `matches[].datasets`,
-`suggested_tables`, `standard_filters_by_table`, or a curated document. A
-required table that appears in none of them is unverified; say so rather than
+Name every table the answer needs, then confirm each one appears in evidence
+you retrieved: a card document, `candidate_tables`, an anchor, or a catalog
+lookup. A table that appears in none of them is unverified; say so rather than
 inventing its columns.
 
-`search_documents` can also return anchor documents (subtype "Semantic
-Anchor"); skip those here — `find_sql_context` already provided them. Focus on
-glossary terms, domain alignment, and data products instead, using `search`
-with an `entity_type` filter.
+- **Follow redirects.** When a document says to prefer a different table for
+  the concept you are querying, use that table as the primary candidate and
+  read its documentation too. Routing advice states the default lane; it does
+  not override an explicit requirement in the question (freshness, a named
+  table, a grain the preferred table cannot serve). When the question forces a
+  departure, say so and give the reason.
+- **Take the governed table at the requested grain.** When a documented table
+  already provides the requested measures at the requested grain, use its
+  native columns instead of reconstructing them from lower-grain tables.
+- **The question's grain decides between canonical sources.** When two curated
+  documents both claim to be canonical, the one whose stated grain matches the
+  grain the question asks for wins. Aggregate from a finer table only when no
+  document matches the requested grain, and say so.
+- **Take literals from the question, not from saved queries.** A literal id or
+  value inside a saved query or notebook is one analyst's shortcut; do not copy
+  it into a filter. Use the value the question gives, or a value a curated
+  document or a declared value domain (section 3) confirms.
+- **Do not simplify away a canonical join.** Treat the tables and joins of the
+  closest saved pattern as a checklist: investigate an omitted join before
+  dropping it. A table can be canonical for one purpose without being canonical
+  for every column it carries; do not take an entity label or lifecycle field
+  from a bridge or lookup table when evidence assigns it to the entity table.
+- **Prefer governed surfaces.** Prefer a table inside a matching domain or data
+  product over an identically named table outside them.
+- **Metric tables over same-named attributes.** When two candidates carry the
+  same metric name, prefer a dedicated metric or fact table over a same-named
+  attribute column on an entity table, and present both if the tie survives.
 
-If a document or glossary definition names a table or calculation, follow it
-unless live evidence exposes a concrete conflict. A catalog table that looks
-more specific, newer, or better-named than the documented one is not by
-itself a reason to deviate — verify with metadata before overriding. When
-documentation and catalog results disagree, state the disagreement and
-resolve it before writing SQL. When no business definition exists, state the
-gap and ask the user — do not fill it with an inferred interpretation.
+When the card is thin (no authoritative document, only `draft` or
+catalog-search candidates) or candidates disagree, establish the business
+meaning before choosing: `search` with an `entity_type` filter for a named
+glossary term, domain or data product that the question or a document mentions
+and the card does not resolve; `get_entities` on the candidate URNs the card
+left ambiguous, to read descriptions, ownership, tags, terms and table type as
+intent signals; and `search_documents` only for an angle no card call covered,
+worded around the
+question's measures and grain in column-name style (`order_total units_sold per
+region daily`) with `filter='subtype != "Semantic Anchor"'`. If the negated
+filter returns nothing, re-run without the filter and skip anchor hits. When no
+business definition exists, state the gap and ask the user; do not fill it with
+an inferred interpretation.
 
-Prefer datasets that belong to a matching domain or data product over
-identically-named tables outside them — data products mark the curated,
-governed query surfaces.
+Confirm columns and grain with targeted `list_schema_fields` calls when the
+card and documents leave them open, and always before joining tables whose keys
+no document states. Verify every join key on both sides; do not add a
+speculative inner join that could drop unmatched rows. Confirm that an "all X"
+question is not answered from a segmented subset.
 
-## 3. Verify candidate datasets
+## 3. Call `inspect_tables_for_sql` on the chosen tables, once
 
-When a strong, unambiguous match provides a pattern with sufficient column
-and filter detail to draft SQL, go straight to step 5. Run the verification
-steps below when the anchor pattern alone is not enough to draft
-confidently: columns or join keys are unclear, the message is non-empty
-(weak or no match), matches and suggestions name different tables, a curated
-document contradicts the anchor, or the query requires joining multiple tables.
+Before writing SQL, call
+`inspect_tables_for_sql(table_urns=[<every table the SQL will SELECT FROM or JOIN>], question=<the user's complete question>)`
+in one call, with the full dataset URNs from the card or the catalog. If a
+document redirected you to a new table after the call, inspect that table too.
+Skipping this call is the most common reason a query misses the filters
+analysts always apply. The response has these parts:
 
-For every requested output column, identify the authoritative table and exact
-field that supplies it. A table can be canonical for one purpose without being
-canonical for every column it carries. Do not replace an entity label or
-lifecycle field with a similarly named column from a bridge or lookup table
-when evidence assigns that output to the canonical entity table or direct
-field. Treat tables and joins in the closest matching SQL pattern as a
-checklist: investigate any omitted canonical join before simplifying it away.
-Do not invent `COALESCE` fallbacks or other derivations when documentation is
-silent; nullable lifecycle fields can encode state.
+- `instructions`: conventions for the tables you asked about. Follow them.
+- `tables[]`, one per table with any known conventions:
+  - `observed_guards`: predicates analysts apply on nearly every query of the
+    table (soft-delete, latest-version, active-state, tenant scope), each with
+    `support_pct`. Apply the ones that fit the question; skip one only when the
+    question or a curated document says otherwise, and say which you skipped
+    and why. Silently dropping a soft-delete, latest-version or active-state
+    guard is the most common way the query is wrong.
+  - `value_domains`: `declared` values (from tests, assertions and accepted
+    values) and `observed` values (from past `WHERE` clauses) per column. Take
+    literals from here, preferring declared over observed, and keep their exact
+    type, casing and whitespace. Observed values are samples, not the full set.
+  - `date_shapes`: how analysts filter dates on the table. Apply the one that
+    fits a point-in-time or snapshot question.
+  - `curated_documents`: the documents your organization wrote about this
+    table, ranked for your question, each as an excerpt with `chars_shown` of
+    `chars_total`. They are authoritative for the table's grain, required
+    filters and column meanings. When an excerpt is cut before the rule you
+    need, read the rest with `grep_documents` on its URN.
+- `tables_without_advisory`: tables with no known conventions. That means no
+  evidence, not "no filters": disposition the table's lifecycle and validity
+  columns yourself from `list_schema_fields`.
+- `worked_example`: at most one saved pattern over these same tables, with its
+  `relevance`, `tables` and rendered `patterns`. It is a construction template:
+  adapt its grain and filters to the question rather than copying it, and
+  replace `<value>` and `<analyst picks: ...>` placeholders with literals chosen
+  for this question.
+- `message`: present when more than eight tables were passed; only the first
+  eight were inspected. Pass just the tables the SQL uses.
 
-1. Call `get_entities` on the candidate URNs. Read the metadata as intent
-   signals: description, ownership, tags, glossary terms, domain, data
-   product, table type, partition or clustering keys. Compare candidates on
-   these signals, not by name.
-2. Use targeted `list_schema_fields` calls to confirm relevant columns, types,
-   and grain.
-3. Prefer a governed table already at the requested grain over reconstructing
-   the same metric from raw or event-level data. Schema naming conventions
-   vary by org — treat a source-schema location as a hypothesis, not a
-   conclusion.
-4. Confirm that an "all X" question is not answered from a segmented subset.
-5. Verify every proposed join key on both sides. Do not add a speculative inner
-   join that could silently discard unmatched rows. When a curated document
-   names a non-obvious join key, use it rather than the same-named column.
-6. When resolving a user-provided name or search token without evidence of the
-   exact stored value, use a case-insensitive contains predicate rather than
-   copying an equality predicate from historical SQL. Use equality only when
-   curated documentation or `declared_enum_values` confirms the exact value.
-7. After `list_schema_fields` on the chosen table, disposition every
-   lifecycle and validity column it exposes — deletion markers, state or
-   status columns, snapshot or partition dates, latest-row flags. Apply a
-   guard only when the question's intended population, a standard-filter
-   advisory, a curated document, or an anchor pattern requires it; otherwise
-   record the column as considered and omitted.
+If a `draft_sql_for_tables` tool is also present, you do not need it. It
+predates this workflow; draft the SQL yourself from the evidence above.
 
-Use `standard_filters_by_table` from `find_sql_context` throughout verification:
+## 4. When evidence disagrees
 
-- Apply applicable guards and date shapes unless the user explicitly overrides
-  them.
-- Preserve the exact JSON scalar type, casing, and whitespace of
-  `declared_enum_values`.
-- Treat observed `enum_values` as samples, not an exhaustive allowed set.
-- Treat absent advisories as incomplete, not as evidence of no filters;
-  response budgeting can omit lower-support details.
+Rank the sources:
 
-## 4. Run targeted probe queries
+1. Human guidance: `authoritative_instructions`, `curated_documents`, and
+   `blessed` or `reviewed` anchors. An anchor is distilled from what analysts
+   ran, so a repeated mistake becomes a pattern; a curated document is the
+   organization stating what is correct. When a document and a generated
+   pattern differ on any element (table, column, join key, filter, the order of
+   deduplication and filtering, units), follow the document.
+2. Generated evidence: `draft` anchors, `observed_guards`, observed value
+   domains and date shapes, the `worked_example`.
+3. The catalog for physical shape. When a document names a column the schema
+   does not have, or the definition's filter cannot be expressed, state the
+   disagreement and resolve it before writing SQL. Never silently pick one.
+4. Your own assumptions, stated as such.
 
-This step requires a SQL execution tool. If none is available, check
-DataHub for data profiles or sample data on the candidate datasets via
-`get_entities` — these can resolve column-value, null-rate, and
-cardinality questions without a live query. If neither execution nor
-profiles are available, skip to step 5 and note any assumptions that a
-probe would have resolved.
+This applies to a pattern's mechanics, not only its table choice: if a document
+names a native column for a value the pattern derives, select the documented
+column; if it states an order between operations, use that order; if it states
+a unit or conversion the pattern omits, apply it. Do not invent `COALESCE`
+fallbacks or other derivations when documentation is silent; nullable lifecycle
+fields can encode state.
 
-Run a probe only when its result could materially change the table, join,
-filter, grain, or time-window decision — skip it when metadata is already
-decisive.
+## 5. Probe with read-only queries when you can execute
 
-Recommend the cheapest row-shape probe first:
+This section applies only when a SQL execution tool is available. Without one,
+check `get_entities` for data profiles or sample data on the candidate tables,
+then continue to section 6 and record the assumptions a probe would have
+settled.
+
+Run a probe only when its result could change the table, join, filter, grain or
+time-window decision; skip it when metadata is already decisive. Start with the
+cheapest row-shape probe:
 
 ```sql
 SELECT <needed_columns>
@@ -272,107 +209,76 @@ FROM <fully_qualified_table>
 LIMIT 1
 ```
 
-Use named columns when known. Use `SELECT * ... LIMIT 1` only when metadata
-cannot identify the relevant fields. Omit `LIMIT 1` from aggregates that
-already return one row.
+Use named columns when known and `SELECT *` only when metadata cannot identify
+the relevant fields. Other minimal probes: `COUNT(*)` or small grouped counts
+for filter viability and grain; `COUNT(DISTINCT key)` and duplicate checks for
+uniqueness; null counts or small distributions for candidate fields; `MIN` and
+`MAX` timestamps for coverage and freshness; matched and unmatched counts for
+join coverage. Select only required fields, apply the known guards, constrain
+verified partitions. Never use a probe to manufacture a business rule. Treat
+empty results, unexpected magnitudes, errors and timeouts as evidence about
+access, freshness, schema drift or table suitability.
 
-Use other minimal read-only probes as needed:
+When authoritative context and the data drift apart (the definition's filter
+returns nothing, a named column is missing or behaves differently, the answer
+needs an assumption the definition does not cover), probe only to characterize
+the difference, then stop before the final query: quote the definition, name
+the drift in one sentence, offer two or three plain-language interpretations,
+and ask which matches the user's intent. Allow at most three diagnostic rounds,
+each testing a new hypothesis.
 
-- `COUNT(*)` or small grouped counts to test filter viability or grain;
-- `COUNT(DISTINCT key)` and duplicate checks to test uniqueness;
-- null counts or small grouped distributions to inspect candidate fields;
-- `MIN`/`MAX` timestamps to check coverage and freshness;
-- matched and unmatched counts to test join coverage;
-- comparable aggregates to distinguish otherwise plausible tables.
+## 6. Draft and verify the SQL
 
-Select only required fields, apply known guards, and constrain verified
-partitions when appropriate. Never use a probe to manufacture a business rule.
-Treat empty results, unexpected magnitudes, errors, and timeouts as evidence
-about access, freshness, schema drift, table type, or candidate suitability.
+Draft the SQL yourself from the evidence. Start from the `worked_example` or the
+closest saved pattern when one fits, and rewrite it for this question's grain,
+filters and output. Before you return it, check every item:
 
-If authoritative context and observed schema or data drift apart — the
-definition's filter returns nothing, a named column is missing or behaves
-differently than described, or the answer requires an assumption the
-definition does not cover — use read-only probes only to characterize the
-difference. Stop before the final answer query. Quote the definition
-exactly, name the drift in one sentence, offer two or three plain-language
-interpretations, and ask which matches the user's intent.
+- every table the SQL reads was inspected in section 3 and is cited;
+- every predicate traces to the question, a curated document, an observed
+  guard or date shape, a verified join, or a probe finding you will report;
+  every guard the pattern or documents apply is carried at the same scope, or
+  its omission is recorded with a reason;
+- every literal comes from the question, a value domain or a document, never
+  from a saved query's sample values;
+- every join key is verified on both sides and each join is forced by a
+  required output column;
+- the aggregation grain matches the question: a present-tense or point-in-time
+  question pins to the latest valid snapshot and returns one result, and a trend
+  or per-period breakdown appears only when the question asks for one;
+- the query is the minimal one that answers the question.
 
-Allow at most three diagnostic rounds. Make each round test a new hypothesis;
-do not guess-and-retry.
-
-## 5. Draft and verify SQL
-
-Draft directly from a verified anchor pattern when it clearly fits. Call
-`draft_sql_for_tables` only when `find_sql_context`'s message explicitly
-recommends it — a viable anchor pattern is always preferred over a
-generated draft.
-
-Pass the complete question, verified Dataset URNs, and actual SQL platform.
-Treat the result as an untrusted draft. Inspect its confidence, explanation,
-assumptions, ambiguities, suggested clarifications, tables used, and semantic
-model summary. An empty SQL string is a failed draft.
-
-Verify every table, field, join, literal, predicate, and aggregation against the
-evidence gathered above. Reconcile the draft with `standard_filters_by_table`:
-the tool's internal injection is best-effort, so add missing required predicates
-and remove duplicates. Reconcile against the anchor pattern the same way:
-carry every guard predicate the pattern applies into the final query, at the
-same scope the pattern applies it, or record why it is intentionally
-dropped. Apply the same reconciliation to any required filter a curated
-document states — and where a document and an anchor pattern disagree about a
-predicate, its scope, or its order, the document wins.
-
-Match the answer's shape to the question:
-
-- A present-tense or point-in-time question pins to the latest valid
-  snapshot and returns a single result; produce a trend or per-period
-  breakdown only when the question asks for one.
-- Default to the minimal query that answers the question. Add a join only
-  when a required output column cannot come from the chosen table, and be
-  able to state which requirement forces each join.
-
-Before execution, ensure every predicate traces to the user's question,
-authoritative business context, anchor instructions, a curated document, a
-standard-filter advisory, a verified join, or a probe finding that will be
-reported. Confirm that the aggregation grain matches the question.
-
-## 6. Execute safely and report
+## 7. Execute safely and report
 
 Execute only a single read-only `SELECT` statement, including read-only CTEs.
-Reject DDL, DML, stored procedures, and side-effecting functions even if the
-drafting tool merely lowers confidence instead of blocking them.
-
-Execute the final query unless the user requested draft-only output. Do not carry
-an exploratory `LIMIT 1` into the final query unless the user requested one row
-or a sample. If execution fails, re-ground the next attempt in catalog evidence
-or a targeted probe.
-
-Treat a `truncated` result as a sample. Never compute complete totals or other
-final aggregates from truncated rows; perform those calculations in SQL.
+Reject DDL, DML, stored procedures and side-effecting functions. Execute the
+final query unless the user asked for a draft only. Do not carry an exploratory
+`LIMIT 1` into the final query unless the user asked for one row or a sample.
+If execution fails, re-ground the next attempt in catalog evidence or a probe.
+Treat a `truncated` result as a sample: compute totals and other final
+aggregates in SQL, never from truncated rows.
 
 Return:
 
-- the answer or execution limitation;
+- the answer, or the execution limitation;
 - the final SQL;
-- every source your answer relies on — datasets, curated documents, glossary
-  terms, domains, data products — cited as a markdown link
-  `[display name](urn:li:...)` using the URN a tool returned. For dataset
-  tables the SQL touches, cite the dataset entity URN (`urn:li:dataset:...`).
-  If you also relied on a curated document about that table, cite both the
-  dataset and the document — they are separate entities;
-- probe findings that changed the decision;
+- every source the answer relies on, each as a markdown link
+  `[display name](urn:li:...)` using the URN a tool returned: the dataset URN
+  (`urn:li:dataset:...`) of every table the SQL reads, plus the URN of each
+  curated document, glossary term, domain or data product you relied on. A
+  document about a table is a separate entity from the table; cite both. When
+  the same table exists as a modeling-tool dataset (for example dbt) and as a
+  warehouse dataset, the SQL reads the warehouse table: cite the warehouse
+  dataset URN, looking it up with `search` when the card offered only the
+  modeling copy, and name the modeling copy as an alternate;
+- probe findings that changed a decision;
 - any table used without corroborating evidence;
-- assumptions and unresolved ambiguity.
+- assumptions, guards you skipped, and unresolved ambiguity.
 
 Separate facts from documentation, facts from catalog metadata, and your own
-inferences; never present an inference as a fact.
+inferences; never present an inference as a fact. In draft-only mode, omit
+execution but keep every other step, including source reporting.
 
-In draft-only mode, omit execution but retain context discovery, verification,
-targeted probes when needed, ambiguity handling, and source reporting.
-
-Report any discrepancies, gaps, or missing metadata discovered during the
-workflow via `note_metadata_observation` — this includes missing glossary
-definitions, wrong or outdated descriptions, anchor-vs-catalog conflicts,
-curated-document-vs-anchor conflicts, and missing column documentation. The
-tool is fire-and-forget and does not block the answer.
+When `note_metadata_observation` is available, report discrepancies and gaps you
+found (a missing glossary definition, a wrong or outdated description, a
+document that contradicts the schema or an anchor, missing column
+documentation) through it. It is fire-and-forget and does not block the answer.
