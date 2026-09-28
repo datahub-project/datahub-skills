@@ -10,7 +10,8 @@ There is no script. The skill drives it:
 1. `acryl-datahub-cloud evals list|get` fetches the evals and their conditions.
 2. You show the plan and get a yes — one eval is one full agent run.
 3. Each eval is answered in a **fresh agent** with the DataHub tools attached: a subagent, or
-   `claude -p` when the tool surface needs constraining.
+   `claude -p` when the tool surface needs constraining. It is barred from calling
+   `note_metadata_observation`, so an eval run never writes into the catalog it measures.
 4. `acryl-datahub-cloud evals report` sends the answer **without a verdict**, so DataHub scores it with
    the same judge it uses for its own runs.
 5. `acryl-datahub-cloud evals history` reads the verdict back.
