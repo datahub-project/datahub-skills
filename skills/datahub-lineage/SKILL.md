@@ -145,7 +145,7 @@ This avoids N+1 calls — collect the URNs from lineage output and resolve them 
 
 ### Siblings in lineage results
 
-Lineage may return a dbt model URN when the user is thinking of the warehouse table (or vice versa). These are linked via the `siblings` aspect. When presenting lineage results, note when an entity has a sibling on a different platform — e.g., "dbt model `stg_orders` (sibling: Snowflake `analytics.stg_orders`)". See the entity model reference for sibling resolution details.
+Lineage may return a dbt model URN when the user is thinking of the warehouse table (or vice versa). These are linked via the `siblings` aspect. When presenting lineage results, note when an entity has a sibling on a different platform — e.g., "dbt model `stg_orders` (sibling: Snowflake `analytics.stg_orders`)". See "Resolving siblings" in `/datahub-search` for sibling resolution details, including how to read `isPrimary`.
 
 ### Specific path tracing
 
