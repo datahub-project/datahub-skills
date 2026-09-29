@@ -274,11 +274,15 @@ datahub graphql --query 'mutation {
 datahub graphql --query 'mutation {
   upsertStructuredProperties(input: {
     assetUrn: "<ENTITY_URN>",
-    structuredPropertyInputs: [{
+    structuredPropertyInputParams: [{
       structuredPropertyUrn: "urn:li:structuredProperty:<PROP>",
-      values: ["<VALUE>"]
+      values: [{ stringValue: "<VALUE>" }]
     }]
-  })
+  }) {
+    properties {
+      structuredProperty { urn }
+    }
+  }
 }' --format json
 
 # Remove structured property values
@@ -286,9 +290,19 @@ datahub graphql --query 'mutation {
   removeStructuredProperties(input: {
     assetUrn: "<ENTITY_URN>",
     structuredPropertyUrns: ["urn:li:structuredProperty:<PROP>"]
-  })
+  }) {
+    properties {
+      structuredProperty { urn }
+    }
+  }
 }' --format json
 ```
+
+`values` is `[PropertyValueInput!]!`, so each value is an object rather than a bare
+string. Match the property's declared type: `{ stringValue: "..." }` for `STRING`,
+`DATE`, `URN` and `RICH_TEXT`, `{ numberValue: 4.0 }` for `NUMBER`. Sending
+`stringValue` to a `NUMBER`-typed property is accepted by GraphQL and then dropped
+server-side, with no error returned and no value stored.
 
 ---
 
