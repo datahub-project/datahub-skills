@@ -144,6 +144,13 @@ sees only the config file you pass — the parent session's servers, and anythin
 `claude mcp list` shows, are irrelevant to it. Write a config for the instance the results go
 to, and point at that instance and no other.
 
+**Never let the answering agent call `note_metadata_observation`.** An eval run measures
+the catalog; it must not write to it. The SQL workflow skill tells agents to report metadata
+gaps through that tool, so an agent answering an eval will file observations unless told not
+to. Those observations then land in the catalog the next run reads from. Block the tool with
+`--disallowedTools`, which overrides `--allowedTools`, and say so in the prompt too. A
+subagent cannot have its tools narrowed, so for a subagent the prompt is the only guard.
+
 ---
 
 ## Running an eval
@@ -175,7 +182,8 @@ cd "$(mktemp -d)" || exit 1                             # an empty working direc
   --model claude-opus-5 \
   --strict-mcp-config --mcp-config <config.json> \
   --allowedTools mcp__<datahub-server> \
-  --append-system-prompt "When answering, include both the answer and the SQL where relevant."
+  --disallowedTools mcp__<datahub-server>__note_metadata_observation \
+  --append-system-prompt "When answering, include both the answer and the SQL where relevant. Do not call note_metadata_observation."
 ```
 
 Two things in that recipe are load-bearing:
@@ -186,7 +194,8 @@ Two things in that recipe are load-bearing:
 - **An empty working directory.** Run from a populated one — a repo checkout — and the child
   ingests it as context, which can overflow the window before it reaches the question.
 
-Or one subagent per eval when the tool surface allows it.
+Or one subagent per eval when the tool surface allows it. Its prompt must tell it not to call
+`note_metadata_observation`.
 
 **Pin the model** for any run whose pass rate will be compared with another. The CLI default
 moves, so an unpinned run is not repeatable — say so rather than naming a model you did not
