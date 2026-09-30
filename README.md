@@ -1,6 +1,6 @@
 # datahub-skills
 
-Agent skills for working with DataHub — plan and review connectors, search the catalog, enrich metadata, trace lineage, manage data quality, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
+Agent skills for working with DataHub — plan and review connectors, search and verify the catalog, enrich metadata, trace lineage, manage data quality, and set up connections. Works with [Claude Code](https://claude.ai/claude-code), [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code), [Cursor](https://cursor.sh), [Codex](https://openai.com/codex), [Copilot](https://github.com/features/copilot), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Windsurf](https://windsurf.com), and other [Agent Skills](https://skills.sh)-compatible tools.
 
 ## What's in here
 
@@ -70,6 +70,16 @@ Each eval is answered in a fresh agent with the DataHub tools attached, then rep
 ```
 
 Needs the DataHub Cloud CLI — `pip install 'acryl-datahub-cloud[datahub-evals]'` — and a DataHub MCP server for the answering agent.
+
+#### Verify
+
+Verify a proposed data-code change before an agent acts on it, check whether the catalog's claims are supported by live-source evidence, and select only assets that carry fresh verification records. Keeps `unverified`, `stale`, `unverifiable`, and `rejected` as distinct outcomes rather than treating missing evidence as clean. Requires a connected [Sidq](https://github.com/NexuChat/sidq) MCP server.
+
+```
+> Verify this SQL before proposing it
+> Is this dataset trustworthy right now?
+> Find verified customer assets for a broad query
+```
 
 ### Connector development skills
 
@@ -231,6 +241,7 @@ cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-verify           your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
 
@@ -326,6 +337,9 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-verify/              # Evidence-first catalog verification
+│   │   ├── SKILL.md
+│   │   └── README.md
 │   ├── datahub-connector-planning/  # Connector planning
 │   │   ├── SKILL.md
 │   │   ├── standards -> ../../standards
@@ -373,7 +387,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`, `skills/datahub-verify/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
