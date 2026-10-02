@@ -39,12 +39,13 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 
 ## Not This Skill
 
-| If the user wants to...                             | Use this instead   |
-| --------------------------------------------------- | ------------------ |
-| Search or discover entities (without quality focus) | `/datahub-search`  |
-| Update metadata (descriptions, tags, ownership)     | `/datahub-enrich`  |
-| Explore lineage or dependencies                     | `/datahub-lineage` |
-| Install CLI, authenticate, configure defaults       | `/datahub-setup`   |
+| If the user wants to...                             | Use this instead                  |
+| --------------------------------------------------- | --------------------------------- |
+| Search or discover entities (without quality focus) | `/datahub-search`                 |
+| Update metadata (descriptions, tags, ownership)     | `/datahub-enrich`                 |
+| Explore lineage or dependencies                     | `/datahub-lineage`                |
+| Diagnose _why_ data is wrong and fix it             | `/datahub-incident-investigation` |
+| Install CLI, authenticate, configure defaults       | `/datahub-setup`                  |
 
 **Key boundaries:**
 
@@ -52,6 +53,8 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 - "Find tables owned by team-x" → **Search** (metadata-filtered search)
 - "Add a PII tag" → **Enrich** (metadata write)
 - "Create a freshness assertion" → **Quality** (assertion management)
+- "Raise an incident on X" / "resolve incident Y" → **Quality** (incident state management)
+- "Why is X wrong?" / "root cause analysis" / "investigate and fix incident Y" → **Investigation** (Quality detects and records; Investigation explains and resolves)
 
 ---
 

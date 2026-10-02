@@ -40,8 +40,9 @@ This skill is designed to work across multiple coding agents (Claude Code, Curso
 | Answer "who owns X?" or "what is X?"                    | `/datahub-search` (metadata lookup, not lineage) |
 | Add or update metadata (descriptions, tags, owners)     | `/datahub-enrich`                                |
 | Create assertions, run quality checks, manage incidents | `/datahub-quality`                               |
+| Diagnose which upstream is wrong and why, then fix it   | `/datahub-incident-investigation`                |
 
-**Key boundary:** Lineage handles **lineage and dependency questions** ("what feeds into X?", "what breaks if I change X?"). Search handles **metadata questions** ("who owns X?"). Enrich handles **metadata updates** ("set owner", "tag this").
+**Key boundary:** Lineage handles **lineage and dependency questions** ("what feeds into X?", "what breaks if I change X?"). Search handles **metadata questions** ("who owns X?"). Enrich handles **metadata updates** ("set owner", "tag this"). Investigation handles **defect localization** — Lineage answers "what is upstream of X"; Investigation answers "which upstream node is wrong, and why".
 
 ---
 
@@ -69,6 +70,8 @@ Find the entity the user wants to trace.
 | **Full pipeline**   | Both       | "Show the complete data flow"         | "full lineage", "end to end", "trace the pipeline"    |
 | **Cross-platform**  | Both       | "How does data flow between systems?" | "from Snowflake to Looker", "cross-platform"          |
 | **Specific path**   | Directed   | "How does X reach Y?"                 | "path from X to Y", "how does X connect to Y"         |
+
+**Root cause mode is topology only** — it shows what feeds the entity. If the user is trying to explain a defect ("the numbers are wrong, which upstream broke it?"), that needs evidence collection and hypothesis elimination: redirect to `/datahub-incident-investigation`.
 
 ### Depth configuration
 
@@ -215,6 +218,7 @@ After presenting lineage:
 - "Want to see metadata details for any of these?" → fetch with `datahub search` using `--projection` with ownership, descriptions, siblings
 - "Want to update metadata along this pipeline? Use `/datahub-enrich`"
 - "Want to run an impact audit? Use `/datahub-audit`"
+- "One of these upstreams looks wrong? Use `/datahub-incident-investigation` to localize the defect and confirm a root cause"
 
 ---
 
