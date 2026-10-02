@@ -104,19 +104,19 @@ datahub search "revenue"
 datahub search "customers" --limit 20
 
 # Filter by platform (simple filter)
-datahub search "*" --filter platform=snowflake
+datahub search --filter platform=snowflake
 
 # Filter by entity type
-datahub search "*" --where "entity_type = dataset"
+datahub search --where "entity_type = dataset"
 
 # SQL-like WHERE expressions (recommended for agents)
-datahub search "*" --where "platform = snowflake AND env = PROD"
-datahub search "*" --where "platform IN (snowflake, bigquery)"
-datahub search "*" --where "entity_type = dataset AND platform = snowflake"
+datahub search --where "platform = snowflake AND env = PROD"
+datahub search --where "platform IN (snowflake, bigquery)"
+datahub search --where "entity_type = dataset AND platform = snowflake"
 
 # Multiple simple filters (AND between fields, comma = OR within field)
-datahub search "*" --filter platform=snowflake --filter env=PROD
-datahub search "*" --filter platform=snowflake,bigquery
+datahub search --filter platform=snowflake --filter env=PROD
+datahub search --filter platform=snowflake,bigquery
 
 # Output formats
 datahub search "revenue" --table          # Human-readable table
@@ -128,7 +128,7 @@ datahub search "customers" --limit 50 --offset 0     # page 1
 datahub search "customers" --limit 50 --offset 50    # page 2
 
 # Facets only (counts by type/platform/etc.)
-datahub search "*" --facets-only --format json
+datahub search --facets-only --format json
 
 # Dry run (preview query without executing)
 datahub search "revenue" --where "platform = snowflake" --dry-run
@@ -137,33 +137,33 @@ datahub search "revenue" --where "platform = snowflake" --dry-run
 datahub search "customers" --projection "urn type"
 
 # Column-level search (find datasets containing a specific field)
-datahub search "*" --where "entity_type = dataset AND fieldPaths = customer_id"
+datahub search --where "entity_type = dataset AND fieldPaths = customer_id"
 
 # Sorting
-datahub search "*" --sort-by lastModifiedAt --sort-order desc --limit 10
-datahub search "*" --sort-by _entityName --sort-order asc --limit 10
+datahub search --sort-by lastModifiedAt --sort-order desc --limit 10
+datahub search --sort-by _entityName --sort-order asc --limit 10
 
 # Popularity / usage sorting (Cloud only — check serverEnv first)
 # Most queried datasets
-datahub search "*" --where "entity_type = dataset" \
+datahub search --where "entity_type = dataset" \
   --sort-by queryCountLast30DaysFeature --sort-order desc --limit 10 \
   --projection "urn type ... on Dataset { properties { name } platform { name } statsSummary { queryCountLast30Days uniqueUserCountLast30Days } }"
 
 # Most updated datasets
-datahub search "*" --where "entity_type = dataset" --sort-by writeCountLast30DaysFeature --sort-order desc --limit 10
+datahub search --where "entity_type = dataset" --sort-by writeCountLast30DaysFeature --sort-order desc --limit 10
 
 # Largest tables (by row count or bytes)
-datahub search "*" --where "entity_type = dataset" --sort-by rowCountFeature --sort-order desc --limit 10
-datahub search "*" --where "entity_type = dataset" --sort-by sizeInBytesFeature --sort-order desc --limit 10
+datahub search --where "entity_type = dataset" --sort-by rowCountFeature --sort-order desc --limit 10
+datahub search --where "entity_type = dataset" --sort-by sizeInBytesFeature --sort-order desc --limit 10
 
 # Existence filters (IS NULL / IS NOT NULL)
-datahub search "*" --where "entity_type = dataset AND description IS NULL AND editableDescription IS NULL"
-datahub search "*" --where "entity_type = dataset AND glossary_term IS NOT NULL"
+datahub search --where "entity_type = dataset AND description IS NULL AND editableDescription IS NULL"
+datahub search --where "entity_type = dataset AND glossary_term IS NOT NULL"
 
 # Sibling-aware description audit (single query, no N+1 fetches)
 # Step 1: Find datasets missing both ingestion and user-edited descriptions
 # Step 2: Project siblings with their descriptions to compute effective coverage
-datahub search "*" \
+datahub search \
   --where "entity_type = dataset AND platform = snowflake AND description IS NULL AND editableDescription IS NULL" \
   --projection "urn type ... on Dataset { siblings { isPrimary siblings { urn ... on Dataset { properties { name description } editableProperties { description } } } } }" \
   --format json --limit 50
@@ -177,16 +177,16 @@ datahub search "large table" --where "entity_type = tag" --urns-only --limit 1
 # → urn:li:tag:sample_data___default_large_table
 
 # Step 2: Use the URN in a filter
-datahub search "*" --where "entity_type = dataset AND tags = 'urn:li:tag:sample_data___default_large_table'"
+datahub search --where "entity_type = dataset AND tags = 'urn:li:tag:sample_data___default_large_table'"
 
 # Same pattern for domains:
 datahub search "ecommerce" --where "entity_type = domain" --urns-only --limit 1
 # → urn:li:domain:91994180-...
-datahub search "*" --where "entity_type = dataset AND domain = 'urn:li:domain:91994180-...'"
+datahub search --where "entity_type = dataset AND domain = 'urn:li:domain:91994180-...'"
 
 # And glossary terms:
 datahub search "PII" --where "entity_type = glossaryTerm" --urns-only --limit 1
-datahub search "*" --where "entity_type = dataset AND glossary_term = 'urn:li:glossaryTerm:...'"
+datahub search --where "entity_type = dataset AND glossary_term = 'urn:li:glossaryTerm:...'"
 
 # Discover available filters
 datahub search list-filters
@@ -433,7 +433,7 @@ datahub version
 datahub get --urn "urn:li:corpuser:datahub"
 
 # Test search (confirms search index works)
-datahub search "*" --limit 1
+datahub search --limit 1
 
 # Server configuration
 datahub check server-config
