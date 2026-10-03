@@ -47,6 +47,16 @@ Manage data quality — create and run assertions (freshness, volume, SQL, field
 > Subscribe me to assertion failures via Slack
 ```
 
+#### ML incident response
+
+Investigate a freshness breach, feature desynchronization, duplicate replay, partial backfill, late event, or stale lineage path. Combines verified metadata, bounded lineage, ownership, remediation, validation, rollback, and a dry-run writeback payload without making an automatic catalog change.
+
+```
+> Payment authorizations are 132 minutes late; what breaks before fraud scoring resumes?
+> Offline velocity is 18 but online serving is 7
+> The pipeline serves fraud_risk_v3 while the catalog says v2
+```
+
 #### Setup
 
 Install the DataHub CLI, configure authentication, verify connectivity, and set up default scopes and profiles for the other interaction skills.
@@ -144,6 +154,7 @@ Then:
 > /datahub-enrich add description to orders table
 > /datahub-lineage what feeds into the revenue dashboard?
 > /datahub-quality find datasets with failing assertions
+> /datahub-ml-incident-response payment events are late
 > /datahub-setup verify my connection
 > /connector-review snowflake
 > /connector-planning duckdb
@@ -230,6 +241,7 @@ cp -r datahub-skills/skills/datahub-search          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-enrich           your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-lineage          your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-quality          your-project/.agents/skills/
+cp -r datahub-skills/skills/datahub-ml-incident-response your-project/.agents/skills/
 cp -r datahub-skills/skills/datahub-setup            your-project/.agents/skills/
 cp -r datahub-skills/skills/shared-references        your-project/.agents/skills/
 cp -r datahub-skills/skills/using-datahub            your-project/.agents/skills/
@@ -250,6 +262,7 @@ Each skill directory is self-contained. The `standards` symlinks get dereference
 | Metadata enrichment         | Yes                   | Yes                                              |
 | Lineage exploration         | Yes                   | Yes                                              |
 | Data quality management     | Yes                   | Yes                                              |
+| ML incident response        | Yes                   | Yes                                              |
 | Connection setup            | Yes                   | Yes                                              |
 | Planning workflow           | Yes                   | Yes                                              |
 | Load standards              | Yes                   | Yes                                              |
@@ -265,13 +278,14 @@ Other platforms do the same things through natural language.
 
 ### Catalog interaction
 
-| Command                     | What it does                                    |
-| --------------------------- | ----------------------------------------------- |
-| `/catalog-search [query]`   | Search the catalog and answer questions         |
-| `/catalog-enrich [entity]`  | Add or update metadata                          |
-| `/catalog-lineage [entity]` | Explore lineage and trace dependencies          |
-| `/catalog-quality [entity]` | Manage assertions, incidents, and subscriptions |
-| `/catalog-setup [task]`     | Set up connection and configure defaults        |
+| Command                                    | What it does                                    |
+| ------------------------------------------ | ----------------------------------------------- |
+| `/catalog-search [query]`                  | Search the catalog and answer questions         |
+| `/catalog-enrich [entity]`                 | Add or update metadata                          |
+| `/catalog-lineage [entity]`                | Explore lineage and trace dependencies          |
+| `/catalog-quality [entity]`                | Manage assertions, incidents, and subscriptions |
+| `/catalog-ml-incident-response [incident]` | Investigate ML data incidents safely            |
+| `/catalog-setup [task]`                    | Set up connection and configure defaults        |
 
 ### Connector development
 
@@ -322,6 +336,9 @@ datahub-skills/
 │   │   ├── SKILL.md
 │   │   ├── references/
 │   │   └── templates/
+│   ├── datahub-ml-incident-response/ # Safe ML incident investigation
+│   │   ├── SKILL.md
+│   │   └── templates/
 │   ├── datahub-setup/               # Connection setup and config
 │   │   ├── SKILL.md
 │   │   ├── references/
@@ -354,6 +371,7 @@ datahub-skills/
 │   ├── catalog-enrich.md
 │   ├── catalog-lineage.md
 │   ├── catalog-quality.md
+│   ├── catalog-ml-incident-response.md
 │   ├── catalog-setup.md
 │   ├── connector-planning.md
 │   ├── connector-review.md
@@ -373,7 +391,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions and release proces
 
 Where things live:
 
-- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-setup/`
+- Catalog interaction skills: `skills/datahub-search/`, `skills/datahub-enrich/`, `skills/datahub-lineage/`, `skills/datahub-quality/`, `skills/datahub-ml-incident-response/`, `skills/datahub-setup/`
 - Shared references: `skills/shared-references/`
 - Connector standards: `standards/`
 - Review checklists: `skills/datahub-connector-pr-review/SKILL.md`
